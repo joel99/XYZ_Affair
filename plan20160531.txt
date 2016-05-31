@@ -1,0 +1,11 @@
+========================================
+Roadmap
+updated 05.21.2016
+========================================
+- Finish skeletons for core classes
+  - Passenger.java
+  - Station.java
+  - TrainLine.java
+- Add shape generation for Stations
+  - Basic shapes (triangle, square, circle)
+- Create basic line generation algortihm 
