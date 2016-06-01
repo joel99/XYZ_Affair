@@ -4,13 +4,13 @@ void drawStation(int x, int y, int shapeID){
   stroke(0);
   switch(shapeID){
   case 1:
-    drawCircle(x, y, true);
+    drawCircle(x, y, 10, true);
     break;
   case 2:
-    drawTriangle(x, y, true);
+    drawTriangle(x, y, 10, true);
     break;
   case 3:
-    drawSquare(x, y, true);
+    drawSquare(x, y, 10, true);
     break;    
   }
 }
