@@ -1,21 +1,22 @@
-public class Map{
+public class Map {
   //false - unoccupied, true - occupied
   public boolean[][] slots;
-  
+
   int w;
   int h;
   int activeW; //how many slots it extends past centerX
   int activeH;
   int centerX;
   int centerY;
-  
+
   //slot constants;
   public int maxX;
   public int maxY;
   public int minX;
   public int minY;
-  
-  public Map(){
+
+  public Map() {
+    //stroke(255, 0, 0);
     w = 60;
     h = 90;
     //center holds bottom right corner of array;
@@ -29,9 +30,9 @@ public class Map{
     minX = centerX - 1 - activeW;
     minY = centerY - 1 - activeH;
   }
-  
+
   //transforms slotX and slotY to map coords.
-  public int[] transform(int slotX, int slotY){
+  public int[] transform(int slotX, int slotY) {
     int unitX = width / (2 * activeW + 1); //how many pixels per slot
     int unitY = height / (2 * activeH + 1);
     //top left corner of slots (centerX - 1 - activeW)(centerY - 1 - activeY) maps to 0,0 on world
@@ -40,12 +41,21 @@ public class Map{
     int retX = unitX * (slotX - minX);
     int retY = unitY * (slotY - minY);
     return new int[]{retX, retY};
+  }
+
+  public void grow() {
+    maxX += 1;
+    maxY += 1;
+    minX -= 1;
+    minY -= 1;
+  }
+
+  public void debug() {
+    stroke(255, 0, 0);
+    for (int i = minX; i <= maxX; i++) {
+      for (int j = minY; j <= maxY; j++) {
+        ellipse(transform(i, j)[0], transform(i, j)[1], 2, 2);
+      }
     }
-    
-    public void grow(){
-      maxX += 1;
-      maxY += 1;
-      minX -= 1;
-      minY -= 1;
-    }
+  }
 }
