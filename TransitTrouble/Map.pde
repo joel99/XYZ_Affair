@@ -41,7 +41,7 @@ public class Map {
     int retX = unitX * (slotX - minX);
     int retY = unitY * (slotY - minY);
     //flip retX, retY because processing is dumb.
-    return new int[]{retX, retY};
+    return new int[]{retX, retY, slotX, slotY};
   }
 
   public void grow() {

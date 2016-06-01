@@ -12,7 +12,7 @@ void setup() {
   size(900, 600); // Default Size - Subject to Change
   // ==================================================
   // Debugging
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 1; i++) {
     genStation();
   }
   
@@ -20,11 +20,11 @@ void setup() {
 }
 
 void draw() {
+  background(255,255,255);
   map.debug(); //draws red dots
   for (Station s : _stations) {
     s.update(); //draws each station
   }
-
 }
 
 void mousePressed(){
