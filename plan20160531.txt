@@ -1,6 +1,6 @@
 ========================================
 Roadmap
-updated 05.21.2016
+updated 05.31.2016
 ========================================
 - GOALS (In priority order): (Generate map building manually before doing it in-game) [ALL WORK IS FRONTEND AND BACKEND TOGETHER]
   - Collaborative Work:
@@ -21,3 +21,26 @@ updated 05.21.2016
 - Features on the horizon:
   - Rivers
   - Closed loop lines
+
+
+========================================================================================================================
+ASSIGNED ROLES
+========================================================================================================================
+Note: These designated roles are tentative, as we're looking to diversify jobs to involve both front and back end, so all members get a taste of both.
+
+Joel
+> General frontend development and enhancement, visual pedantics
+> Train movement
+
+Zicheng
+> Polyline engineering
+  > extremely important for visual representation of train lines and possibly rivers
+> Class to Class Interactions
+  > Composition/Inheritance Trees, connecting trains, passengers, and stations
+
+William
+> Infrastructural development
+> Middleware (making sure there are no conflicts between front/back)
+
+
+========================================================================================================================
