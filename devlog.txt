@@ -16,3 +16,10 @@ XYZ_Affair Devlog
 ============================================
 05.31.16
 - Made files, shape generation skeleton added - Joel
+- Station skeleton completed - Zicheng
+============================================
+
+============================================
+06.01.16
+- Grid to world conversion set up, station spawning algo completed - Joel
+- Shapes scale according to world, circle triangle square added - Joel
