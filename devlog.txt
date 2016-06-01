@@ -12,3 +12,7 @@ XYZ_Affair Devlog
 - Final Proposal: Transit Trouble
 - Project proposal added
 ============================================
+
+============================================
+05.31.16
+- Made files, shape generation skeleton added - Joel

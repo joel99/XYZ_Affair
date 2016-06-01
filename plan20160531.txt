@@ -2,10 +2,22 @@
 Roadmap
 updated 05.21.2016
 ========================================
+- GOALS (In priority order): (Generate map building manually before doing it in-game) [ALL WORK IS FRONTEND AND BACKEND TOGETHER]
+  - Collaborative Work:
+    - Set up stations and lines connecting them. (To finish by 6/1)
+    - Have trains cars follow the lines and stop at stations. (To finish by 6/1)
+  - For singletons:
+    - Station spawning algo.
+    - Add passengers to stations. (Includes display)
+    - Add train car / passenger functionality.
 - Finish skeletons for core classes
   - Passenger.java
   - Station.java
   - TrainLine.java
 - Add shape generation for Stations
   - Basic shapes (triangle, square, circle)
-- Create basic line generation algortihm 
+- Create basic line generation algorithm
+
+- Features on the horizon:
+  - Rivers
+  - Closed loop lines
