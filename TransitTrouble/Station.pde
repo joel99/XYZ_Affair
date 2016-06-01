@@ -69,6 +69,11 @@ public class Station {
     _y = newY;
     return oldY; 
   }
+ 
+  void recalc(int[] coords){
+    _x = coords[0];
+    _y = coords[1];
+  } 
    
   // =======================================
   // Drawing Station

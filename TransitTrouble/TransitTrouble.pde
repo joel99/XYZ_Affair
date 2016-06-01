@@ -37,9 +37,14 @@ void genStation(){
   int pad = 2;
   int newStationX = pad + map.minX + int(random(map.maxX - map.minX - 2 * pad));
   int newStationY = pad + map.minY + int(random(map.maxY - map.minY - 2 * pad));
+  int ctr = 0;
   while (map.slots[newStationX][newStationY]){
+    if (ctr == 100) {
+      println("Outta lives");
+      map.grow();}
     newStationX = pad + map.minX + int(random(map.maxX - map.minX - 2 * pad));
     newStationY = pad + map.minY + int(random(map.maxY - map.minY - 2 * pad));
+    ctr++;
   }
   _stations.add(new Station(map.transform(newStationX, newStationY)));
   print(_stations.get(_stations.size() - 1)._x + " " + _stations.get(_stations.size() - 1)._y + "\n");
@@ -52,5 +57,8 @@ void genStation(){
   
   if ((map.maxX - map.minX) * (map.maxY - map.minY) / _stations.size()  < 20){
     map.grow();    
+    for (Station s: _stations){
+      s.recalc(map.transform(s.getGridX(),s.getGridY()));
+    }
   }
 }
