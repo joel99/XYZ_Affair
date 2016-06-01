@@ -40,11 +40,18 @@ public class TrainLine {
    **/
   int getDirection(Station first, Station second) {
     int x1,y1,x2,y2;
-    x1 = first.getX();
-    y1 = first.getY();
-    x2 = second.getX();
-    y2 = second.getY();
-    return -1;
+    x1 = first.getGridX();
+    y1 = first.getGridY();
+    x2 = second.getGridX();
+    y2 = second.getGridY();
+    int ret = 0;
+    if (y2 > y1) ret += 2;
+    if (y2 == y1) ret += 1;
+    ret *= 3;
+    if (x2 > x1) ret += 2;
+    if (x2 == x1) ret += 1;
+    ret += 1;
+    return ret;
   }
   
   // =======================================
