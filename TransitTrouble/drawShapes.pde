@@ -2,14 +2,15 @@
 void drawStation(int x, int y, int shapeID){
   fill(255);
   stroke(0);
+  strokeWeight(3);
   switch(shapeID){
-  case 1:
+  case 0:
     drawCircle(x, y, 10, true);
     break;
-  case 2:
+  case 1:
     drawTriangle(x, y, 10, true);
     break;
-  case 3:
+  case 2:
     drawSquare(x, y, 10, true);
     break;    
   }
@@ -25,7 +26,7 @@ void drawPerson(int x, int y, int shapeID){
 //isStation is true if drawing station, false if drawing passenger
 void drawCircle(int x, int y, int r, boolean isStation){
   if (isStation){
-  
+    ellipse(x, y, 20, 20);
   }
   else {
   

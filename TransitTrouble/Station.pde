@@ -12,22 +12,21 @@ public class Station {
   // Instance Variables
   // =======================================
   private int _shape; // (0 to 6);
-  private float _x;
-  private float _y;
+  private int _x;
+  private int _y;
   
   // =======================================
   // Default Constructor
   // Creates a station bounded by xmin, xmax, ymin and ymax.
   // =======================================
-  public Station(float xmin, float ymin, float xmax, float ymax) {
-    _shape = int(random(7)); // To adjust depending on time
-    _x = xmin + random(xmax - xmin);
-    _y = ymin + random(ymax - ymin);
+  public Station(int[] coords) {
+    _shape = 0; // To adjust depending on time
+    _x = coords[0];
+    _y = coords[1];
     // System.out.println(_shape); // Debugging
   }
   
   void update() {
-    // drawShapes.drawStation(_x, _y, _shape);
-    ellipse(_x,_y,10,10);
+    drawStation(_x, _y, _shape);
   }
 }
