@@ -17,14 +17,14 @@ public class Map {
 
   public Map() {
     //stroke(255, 0, 0);
-    w = 60;
-    h = 90;
+    w = 90;
+    h = 60;
     //center holds bottom right corner of array;
     centerX = w / 2; 
     centerY = h / 2; 
     slots = new boolean[w][h];
-    activeW = 4;
-    activeH = 6;
+    activeW = 6;
+    activeH = 4;
     maxX = centerX + activeW;
     maxY = centerY + activeH;
     minX = centerX - 1 - activeW;
@@ -40,6 +40,7 @@ public class Map {
     //slots[centerX - 1 - activeW][centerY - 1 - activeY];
     int retX = unitX * (slotX - minX);
     int retY = unitY * (slotY - minY);
+    //flip retX, retY because processing is dumb.
     return new int[]{retX, retY};
   }
 
@@ -48,6 +49,8 @@ public class Map {
     maxY += 1;
     minX -= 1;
     minY -= 1;
+    activeW++;
+    activeH++;
   }
 
   public void debug() {

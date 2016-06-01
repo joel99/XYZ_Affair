@@ -12,8 +12,8 @@ public class Station {
   // Instance Variables
   // =======================================
   private int _shape; // (0 to 6);
-  private int _x;
-  private int _y;
+  public int _x;
+  public int _y;
   
   // =======================================
   // Default Constructor
