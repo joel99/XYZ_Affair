@@ -17,8 +17,8 @@ public class Map {
 
   public Map() {
     //stroke(255, 0, 0);
-    w = 90;
-    h = 60;
+    w = 30;
+    h = 20;
     //center holds bottom right corner of array;
     centerX = w / 2; 
     centerY = h / 2; 

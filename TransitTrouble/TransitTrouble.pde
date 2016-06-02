@@ -3,7 +3,10 @@
  * <DESCRIPTION>
  *************************************/
 //NOTE: SCREEN RATIO 3:2
+
 ArrayList<Station> _stations = new ArrayList<Station>();
+ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
+
 Map map = new Map();
 
 void setup() {
@@ -15,21 +18,31 @@ void setup() {
   for (int i = 0; i < 1; i++) {
     genStation();
   }
-
+  _trainlines.add(new TrainLine());
+  for (Station s : _stations) {
+    _trainlines.get(0).addStation(s); 
+  }
   // ==================================================
 }
 
 void draw() {
   background(255, 255, 255);
   map.debug(); //draws red dots
+  for (TrainLine tl : _trainlines) {
+    tl.update(); 
+  }
   for (Station s : _stations) {
     s.update(); //draws each station
   }
 }
 
+// ==================================================
+// Helper Methods
+// ==================================================
 void mousePressed() {
   print("I pressed");
   genStation();
+  _trainlines.get(0).addStation(_stations.get(_stations.size()-1)); // Debugging
 }
 
 void genStation() {
@@ -47,7 +60,7 @@ void genStation() {
     ctr++;
   }
   _stations.add(new Station(map.transform(newStationX, newStationY)));
-  print(_stations.get(_stations.size() - 1)._x + " " + _stations.get(_stations.size() - 1)._y + "\n");
+  // print(_stations.get(_stations.size() - 1)._x + " " + _stations.get(_stations.size() - 1)._y + "\n");
   //voids station and everything immediately next to it as spots for future stations...
   for (int i = newStationX - 2; i < newStationX + 3; i++) {
     for (int j = newStationY - 2; j < newStationY + 3; j++) {

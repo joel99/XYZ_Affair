@@ -45,7 +45,7 @@ public class TrainLine {
     x2 = second.getGridX();
     y2 = second.getGridY();
     int ret = 0;
-    if (y2 > y1) ret += 2;
+    if (y2 < y1) ret += 2;
     if (y2 == y1) ret += 1;
     ret *= 3;
     if (x2 > x1) ret += 2;
@@ -62,8 +62,79 @@ public class TrainLine {
   // Drawing Trainline
   // =======================================
   void update() {
-    for (int i = 0; i < _stations.size(); i++) {
-      ; 
+    Station Station1, Station2;
+    for (int i = 0; i < _stations.size() - 1; i++) {
+      Station1 = _stations.get(i);
+      Station2 = _stations.get(i+1);
+      int dir = getDirection(Station1, Station2);
+      int x1,y1,x2,y2;
+      x1 = Station1.getGridX();
+      y1 = Station1.getGridY();
+      int diagX = x1;
+      int diagY = y1;
+      x2 = Station2.getGridX();
+      y2 = Station2.getGridY();
+      int dx = 0;
+      int dy = 0;
+      boolean checkX = false;
+      boolean checkY = false;
+      /* print("Station1 X: " + x1 + "\n" +
+            "Station1 Y: " + y1 + "\n" +
+            "Station2 X: " + x2 + "\n" +
+            "Station2 Y: " + y2 + "\n" +
+            "Diagonal X: " + diagX + "\n" +
+            "Diagonal Y: " + diagY + "\n" +
+            "Direction: " + dir + "\n"); */
+      switch (dir) { // start switch
+        case 1: 
+          dx--;
+          dy++;
+          checkX = checkY = true;
+          break;
+        case 2: 
+          dy++;
+          checkY = true;
+          break;
+        case 3: 
+          dx++;
+          dy++;
+          checkX = checkY = true;
+          break;
+        case 4: 
+          dx--;
+          checkX = true;
+          break;
+        case 6: 
+          dx++;
+          checkX = true;
+          break;
+        case 7: 
+          dx--;
+          dy--;
+          checkX = checkY = true;
+          break;
+        case 8: 
+          dy--;
+          checkY = true;
+          break;
+        case 9: 
+          dx++;
+          dy--;
+          checkX = checkY = true;
+          break;
+      } // end switch
+      while (true) {
+        if (checkX && (diagX == x2)) break;
+        if (checkY && (diagY == y2)) break;
+        diagX += dx; 
+        diagY += dy; 
+        // New x1, y1 will be the end of the diagonal
+      }
+      int[] Station1_xy = map.transform(x1,y1);
+      int[] Diag_xy = map.transform(diagX, diagY);
+      int[] Station2_xy = map.transform(x2,y2);
+      line(Station1_xy[0],Station1_xy[1],Diag_xy[0],Diag_xy[1]);
+      line(Diag_xy[0],Diag_xy[1],Station2_xy[0],Station2_xy[1]);
     }
   }
 }

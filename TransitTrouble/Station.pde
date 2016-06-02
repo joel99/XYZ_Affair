@@ -27,7 +27,7 @@ public class Station {
     _gridX = coords[2];
     _gridY = coords[3];
     _line = new PriorityQueue<Person>();
-    println(_shape, _x, _y, _gridX, _gridY); // Debugging
+    // println(_shape, _x, _y, _gridX, _gridY); // Debugging
   }
     
   // =======================================
