@@ -1,0 +1,6 @@
+============================================
+IMMEDIATE TODO LIST as of 06.02.16
+- Add a isEnd(Station s) to train lines and/or isEnd() to stations to make
+  them valid candidates for connection
+- removing train line connections
+============================================

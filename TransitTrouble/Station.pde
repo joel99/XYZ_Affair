@@ -15,6 +15,7 @@ public class Station {
   private int _gridX;
   private int _gridY;
   private PriorityQueue<Person> _line;
+  private TrainLine _trainLine;
   
   // =======================================
   // Default Constructor
@@ -27,6 +28,7 @@ public class Station {
     _gridX = coords[2];
     _gridY = coords[3];
     _line = new PriorityQueue<Person>();
+    _trainLine = null;
     // println(_shape, _x, _y, _gridX, _gridY); // Debugging
   }
     
@@ -68,6 +70,14 @@ public class Station {
     int oldY = _y;
     _y = newY;
     return oldY; 
+  }
+  
+  void setTrainLine(TrainLine tl){
+    _trainLine = tl;
+  }
+  
+  TrainLine getTrainLine(){
+    return _trainLine;
   }
  
   void recalc(int[] coords){

@@ -23,3 +23,11 @@ XYZ_Affair Devlog
 06.01.16
 - Grid to world conversion set up, station spawning algo completed - Joel
 - Shapes scale according to world, circle triangle square added - Joel
+- Train line connection algo added - Zicheng
+============================================
+
+============================================
+06.02.16
+- Train line connection algo revised - Joel
+- Primitive connection via drag added - Joel
+============================================

@@ -8,7 +8,7 @@ public class TrainLine {
   // Instance Variables
   // =======================================
   ArrayList<Station> _stations;
-  
+  color c;
   // =======================================
   // Default Constructor
   // Creates a TrainLine. 
@@ -16,9 +16,10 @@ public class TrainLine {
   public TrainLine() {
     _stations = new ArrayList<Station>();
     strokeWeight(5);
-    stroke(128,0,0); // To Be Changed
+    stroke(128, 0, 0); // To Be Changed
+    c = color(int(random(255)), int(random(255)), int(random(255)));
   }
-  
+
   // =======================================
   // TrainLine Methods
   // =======================================
@@ -28,113 +29,57 @@ public class TrainLine {
    * postcond: _stations includes the new station **/
   void addStation(Station s) {
     _stations.add(s);
+    s.setTrainLine(this);
   }
-  
-  /** getDirection(Station first, Station second)
-   * Finds direction of second station with respect to the first
-   * precond: Station first and second are not the same station
-   * postcond: Returns int representing station orientation as follows: 
-   * 7 8 9
-   * 4 S 6 where S is the first station
-   * 1 2 3
-   **/
-  int getDirection(Station first, Station second) {
-    int x1,y1,x2,y2;
-    x1 = first.getGridX();
-    y1 = first.getGridY();
-    x2 = second.getGridX();
-    y2 = second.getGridY();
-    int ret = 0;
-    if (y2 < y1) ret += 2;
-    if (y2 == y1) ret += 1;
-    ret *= 3;
-    if (x2 > x1) ret += 2;
-    if (x2 == x1) ret += 1;
-    ret += 1;
-    return ret;
-  }
-  
+
   // =======================================
   // Mutators and Accessors
   // ======================================= 
-  
+
   // =======================================
   // Drawing Trainline
   // =======================================
   void update() {
-    Station Station1, Station2;
+    //declare stroke in connect() because it's used in other places besides update();
     for (int i = 0; i < _stations.size() - 1; i++) {
-      Station1 = _stations.get(i);
-      Station2 = _stations.get(i+1);
-      int dir = getDirection(Station1, Station2);
-      int x1,y1,x2,y2;
-      x1 = Station1.getGridX();
-      y1 = Station1.getGridY();
-      int diagX = x1;
-      int diagY = y1;
-      x2 = Station2.getGridX();
-      y2 = Station2.getGridY();
-      int dx = 0;
-      int dy = 0;
-      boolean checkX = false;
-      boolean checkY = false;
-      /* print("Station1 X: " + x1 + "\n" +
-            "Station1 Y: " + y1 + "\n" +
-            "Station2 X: " + x2 + "\n" +
-            "Station2 Y: " + y2 + "\n" +
-            "Diagonal X: " + diagX + "\n" +
-            "Diagonal Y: " + diagY + "\n" +
-            "Direction: " + dir + "\n"); */
-      switch (dir) { // start switch
-        case 1: 
-          dx--;
-          dy++;
-          checkX = checkY = true;
-          break;
-        case 2: 
-          dy++;
-          checkY = true;
-          break;
-        case 3: 
-          dx++;
-          dy++;
-          checkX = checkY = true;
-          break;
-        case 4: 
-          dx--;
-          checkX = true;
-          break;
-        case 6: 
-          dx++;
-          checkX = true;
-          break;
-        case 7: 
-          dx--;
-          dy--;
-          checkX = checkY = true;
-          break;
-        case 8: 
-          dy--;
-          checkY = true;
-          break;
-        case 9: 
-          dx++;
-          dy--;
-          checkX = checkY = true;
-          break;
-      } // end switch
-      while (true) {
-        if (checkX && (diagX == x2)) break;
-        if (checkY && (diagY == y2)) break;
-        diagX += dx; 
-        diagY += dy; 
-        // New x1, y1 will be the end of the diagonal
+      connect(_stations.get(i), _stations.get(i+1));
+    }
+  }
+
+  void connect(Station s1, Station s2) {
+    stroke(c);
+    int x1, y1, x2, y2, dx, dy, diagx, diagy;
+    //we use grid coordinates for simplicity in debugging.
+    x1 = s1.getGridX();
+    y1 = s1.getGridY();
+    x2 = s2.getGridX();
+    y2 = s2.getGridY();
+    dx = x2 - x1;
+    dy = y2 - y1;
+    
+    //we only need one line 
+    if (dx == 0 || dy == 0 || abs(dx) == abs(dy)) {
+      line(s1.getX(), s1.getY(), s2.getX(), s2.getY());
+    }
+    //we need a diagonal and then a horizontal/vertical
+    //calculate the x/y of turning point.
+    //requires some casework
+    else {
+      int m; //slope for line
+      if (dx * dy > 0) m = 1;
+      else m = -1;
+      
+      if (abs(dx) < abs(dy)) {
+        diagx = x2;
+        //line is y - y1 = m * (x - x1)
+        diagy = m * dx + y1;
+      } else {
+        diagy = y2;
+        diagx = dy * m + x1;
       }
-      int[] Station1_xy = map.transform(x1,y1);
-      int[] Diag_xy = map.transform(diagX, diagY);
-      int[] Station2_xy = map.transform(x2,y2);
-      line(Station1_xy[0],Station1_xy[1],Diag_xy[0],Diag_xy[1]);
-      line(Diag_xy[0],Diag_xy[1],Station2_xy[0],Station2_xy[1]);
+      int[] Diag_xy = map.transform(diagx, diagy);
+      line(s1.getX(), s1.getY(), Diag_xy[0], Diag_xy[1]);
+      line(Diag_xy[0], Diag_xy[1], s2.getX(), s2.getY());
     }
   }
 }
