@@ -2,8 +2,32 @@
 Roadmap
 updated 06.06.2016
 ========================================
+- GOALS (In priority order): (Generate map building manually before doing it in-game) [ALL WORK IS FRONTEND AND BACKEND TOGETHER]
+  - Collaborative Work:
+    - Have trains cars follow the lines and stop at stations.
+  - For singletons:
+    - Add passengers to stations. (Includes display)
+    - Add train car / passenger functionality.
+- Add shape generation for Stations
+- Complex station shapes (Arrow, star)
+- Create basic line generation algorithm
 
+- Features on the horizon:
+  - Rivers
+  - Closed loop lines
 
+========================================================================================================================
+ASSIGNED ROLES
+========================================================================================================================
 
+Joel
+> Station click n' drag functionality
 
+Zicheng
+> Class to Class Interactions
+  > Composition/Inheritance Trees, connecting trains, passengers, and stations
+
+William
+> Train (both visuals and implementation)
+> Passenger interaction with trains
 
