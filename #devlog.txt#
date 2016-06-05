@@ -1,0 +1,77 @@
+============================================
+XYZ_Affair Devlog
+============================================
+
+============================================
+05.18.16 - 05.21.16
+- Argued about what game to make
+============================================
+
+============================================
+05.22.16
+- Final Proposal: Transit Trouble
+- Project proposal added
+============================================
+
+============================================
+05.31.16
+- Made files, shape generation skeleton added - Joel
+- Station skeleton completed - Zicheng
+============================================
+
+============================================
+06.01.16
+- Grid to world conversion set up, station spawning algo completed - Joel
+- Shapes scale according to world, circle triangle square added - Joel
+- Train line connection algo added - Zicheng
+============================================
+
+
+  //hmm..
+  if (mousePressed) {
+    int falloff = 30;
+    //line creation
+    //if no station has been selected.
+    if (!lockedActive) {
+      //check all stations to see if mouse might be referring to it
+      for (Station s : _stations) {
+        if (dist(s.getX(), s.getY(), mouseX, mouseY) < falloff) {
+          activeStation = s;
+          lockedActive = true;
+          println("STATION SELECTED!");
+          break;
+        }
+      }
+    }
+    //station is already being connected
+    else {
+      //no target in particular
+      if (!lockedTarget) {
+        line(activeStation.getX(), activeStation.getY(), mouseX, mouseY);
+        //check to see if close to other stations
+        for (Station s : _stations) {
+          //don't connect to yourself
+          if (s == activeStation) 
+            continue;
+          if (dist(s.getX(), s.getY(), mouseX, mouseY) < 2 * falloff) {
+            lockedTarget = true;
+            activeStation.getTrainLine().connect(activeStation, s);
+            targetStation = s;
+            break;
+          }
+        }
+      }
+      //station is locked on - increase falloff. continue checking for different connections.
+      else {
+        activeStation.getTrainLine().connect(activeStation, targetStation);
+        //very far? unlock
+        if (dist(targetStation.getX(), targetStation.getY(), mouseX, mouseY) > 4 * falloff){
+          targetStation = null;
+          lockedTarget = false;
+        }
+      }
+    }
+06.02.16
+- Train line connection algo revised - Joel
+- Primitive connection via drag added - Joel
+============================================

@@ -9,6 +9,7 @@ public class TrainLine {
   // =======================================
   ArrayList<Station> _stations;
   color c;
+
   // =======================================
   // Default Constructor
   // Creates a TrainLine. 
@@ -27,15 +28,36 @@ public class TrainLine {
    * Adds station to the TrainLine
    * precond: Station exists
    * postcond: _stations includes the new station **/
+   //generic case, base case
   void addStation(Station s) {
+    if (_stations.size() > 1) {
+      _stations.get(_stations.size() - 1).setEnd(false);
+    }
+    s.setEnd(true);
     _stations.add(s);
     s.setTrainLine(this);
+    
+  } 
+   //in general
+  void addStation(Station s1, Station s2) {
+    s1.setEnd(false);
+    s2.setEnd(true);
+    if (s1.equals(_stations.get(0))) {
+      _stations.add(0, s2);
+    } else {
+      _stations.add(s2);
+    }
+    s2.setTrainLine(this);
   }
 
   // =======================================
   // Mutators and Accessors
   // ======================================= 
 
+  //return ends of the lines assuming that size > 0
+  Station[] getEnds() {
+    return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
+  }
   // =======================================
   // Drawing Trainline
   // =======================================
@@ -56,7 +78,7 @@ public class TrainLine {
     y2 = s2.getGridY();
     dx = x2 - x1;
     dy = y2 - y1;
-    
+
     //we only need one line 
     if (dx == 0 || dy == 0 || abs(dx) == abs(dy)) {
       line(s1.getX(), s1.getY(), s2.getX(), s2.getY());
@@ -68,7 +90,7 @@ public class TrainLine {
       int m; //slope for line
       if (dx * dy > 0) m = 1;
       else m = -1;
-      
+
       if (abs(dx) < abs(dy)) {
         diagx = x2;
         //line is y - y1 = m * (x - x1)

@@ -16,6 +16,7 @@ public class Station {
   private int _gridY;
   private PriorityQueue<Person> _line;
   private TrainLine _trainLine;
+  private boolean isEnd;
   
   // =======================================
   // Default Constructor
@@ -79,6 +80,14 @@ public class Station {
   TrainLine getTrainLine(){
     return _trainLine;
   }
+ 
+ boolean isEnd(){
+   return isEnd;
+ }
+ 
+ void setEnd(boolean b){
+   isEnd = b;
+ }
  
   void recalc(int[] coords){
     _x = coords[0];

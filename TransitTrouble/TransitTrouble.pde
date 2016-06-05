@@ -41,7 +41,12 @@ void draw() {
   for (Station s : _stations) {
     s.update(); //draws each station
   }
+  
+  updateDrag();
+}
 
+
+void updateDrag(){
   //hmm..
   if (mousePressed) {
     int falloff = 30;
@@ -50,7 +55,7 @@ void draw() {
     if (!lockedActive) {
       //check all stations to see if mouse might be referring to it
       for (Station s : _stations) {
-        if (dist(s.getX(), s.getY(), mouseX, mouseY) < falloff) {
+        if (s.isEnd() && dist(s.getX(), s.getY(), mouseX, mouseY) < falloff) {
           activeStation = s;
           lockedActive = true;
           println("STATION SELECTED!");
@@ -89,21 +94,22 @@ void draw() {
   }
 }
 
+
 // ==================================================
 // Helper Methods
 // ==================================================
+void keyPressed(){
+  genStation();
+}
+
 void mousePressed() {
-  if (!lockedActive){
-    genStation();
-  //_trainlines.get(0).addStation(_stations.get(_stations.size()-1)); // Debugging
-  }
   //get mouseX, mouseY.
 }
 
 void mouseReleased() {
   //if there's something to add.
   if (lockedTarget){
-    activeStation.getTrainLine().addStation(targetStation);
+    activeStation.getTrainLine().addStation(activeStation, targetStation);
   }
   activeStation = null;
   lockedActive = false;

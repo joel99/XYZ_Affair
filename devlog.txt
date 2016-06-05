@@ -31,3 +31,9 @@ XYZ_Affair Devlog
 - Train line connection algo revised - Joel
 - Primitive connection via drag added - Joel
 ============================================
+
+============================================
+06.06.16
+- Added isEnd sensitivity when adding stations - Joel
+
+============================================
