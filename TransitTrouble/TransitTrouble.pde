@@ -17,17 +17,19 @@ Map map = new Map();
 
 void setup() {
   smooth(4);
+  strokeWeight(5);
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
   // ==================================================
   // Debugging
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 2; i++) {
     genStation();
   }
-  _trainlines.add(new TrainLine());
-  for (Station s : _stations) {
-    _trainlines.get(0).addStation(s);
-  }
+  Connector c = new Connector(_stations.get(0), _stations.get(1));
+  _trainlines.add(new TrainLine(c));
+  //for (Station s : _stations) {
+   // _trainlines.get(0).addStation(s);
+  //}
   // ==================================================
 }
 
@@ -35,19 +37,17 @@ void draw() {
   background(255, 255, 255);
   map.debug(); //draws red dots
   ellipse(mouseX, mouseY, 60, 60);
+  
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
-  for (Station s : _stations) {
-    s.update(); //draws each station
-  }
-  
   updateDrag();
 }
 
-
+//might as well be obsolete rn.
 void updateDrag(){
   //hmm..
+  /*
   if (mousePressed) {
     int falloff = 30;
     //line creation
@@ -92,6 +92,7 @@ void updateDrag(){
       }
     }
   }
+  */
 }
 
 
@@ -99,7 +100,10 @@ void updateDrag(){
 // Helper Methods
 // ==================================================
 void keyPressed(){
+  println("LMAO");
   genStation();
+  println("LMNAO");
+  _trainlines.get(0).addTerminal(_stations.get(_stations.size() - 1));
 }
 
 void mousePressed() {
@@ -109,7 +113,7 @@ void mousePressed() {
 void mouseReleased() {
   //if there's something to add.
   if (lockedTarget){
-    activeStation.getTrainLine().addStation(activeStation, targetStation);
+    //activeStation.getTrainLine().addStation(activeStation, targetStation);
   }
   activeStation = null;
   lockedActive = false;
@@ -148,7 +152,10 @@ void genStation() {
 
 void grow() {
   map.grow();    
-  for (Station s : _stations) {
+  for (Station s: _stations){
     s.recalc(map.transform(s.getGridX(), s.getGridY()));
+  }
+  for (TrainLine tl: _trainlines){
+    tl.recalc();
   }
 }

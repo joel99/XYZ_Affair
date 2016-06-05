@@ -35,5 +35,6 @@ XYZ_Affair Devlog
 ============================================
 06.06.16
 - Added isEnd sensitivity when adding stations - Joel
+- SCRATCH ABOVE... Lots of backend structure changed, new Connector and Terminal class, TrainLine now holds arraylists of connectors and has two terminals. Adding new stations will be based completely on those two classes being dragged, not stations being clicked. To do - add hitboxes for interactivity. - Joel
 
 ============================================

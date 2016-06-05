@@ -8,37 +8,56 @@ public class TrainLine {
   // Instance Variables
   // =======================================
   ArrayList<Station> _stations;
+  ArrayList<Connector> _connectors;
+  Terminal _tStart;
+  Terminal _tEnd;
   color c;
 
   // =======================================
   // Default Constructor
   // Creates a TrainLine. 
   // =======================================
-  public TrainLine() {
+  public TrainLine(Connector con) {
     _stations = new ArrayList<Station>();
-    strokeWeight(5);
-    stroke(128, 0, 0); // To Be Changed
+    _connectors = new ArrayList<Connector>();
+    _connectors.add(con);
+    _stations.add(con.getStart());
+    _stations.add(con.getEnd());
+    _tStart = new Terminal(con.getStart(), con);
+    _tEnd = new Terminal(con.getEnd(), con);
+
     c = color(int(random(255)), int(random(255)), int(random(255)));
   }
 
   // =======================================
   // TrainLine Methods
   // =======================================
+  //two types of adding - terminus adding and end line adding.
   /** addStation(Station s)
    * Adds station to the TrainLine
    * precond: Station exists
    * postcond: _stations includes the new station **/
-   //generic case, base case
-  void addStation(Station s) {
-    if (_stations.size() > 1) {
-      _stations.get(_stations.size() - 1).setEnd(false);
+  //generic case, base case
+
+  //in general
+  void addTerminal(Station s, Station sNew){
+    if (s == _stations.get(0)){
+       _connectors.add(0, new Connector(sNew, s)); 
+       _stations.add(0, sNew);
+       _tStart = new Terminal(_connectors.get(0).getStart(), _connectors.get(0));
     }
-    s.setEnd(true);
-    _stations.add(s);
-    s.setTrainLine(this);
-    
-  } 
-   //in general
+    else {
+      _connectors.add(new Connector(s, sNew));
+      _stations.add(sNew);
+      _tEnd = new Terminal(_connectors.get(_connectors.size() - 1).getEnd(), _connectors.get(_connectors.size() - 1));
+    }
+  }
+  
+  void addTerminal(Station s){
+    addTerminal(_stations.get(_stations.size() - 1), s);
+  }
+  
+  /*
   void addStation(Station s1, Station s2) {
     s1.setEnd(false);
     s2.setEnd(true);
@@ -49,25 +68,7 @@ public class TrainLine {
     }
     s2.setTrainLine(this);
   }
-
-  // =======================================
-  // Mutators and Accessors
-  // ======================================= 
-
-  //return ends of the lines assuming that size > 0
-  Station[] getEnds() {
-    return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
-  }
-  // =======================================
-  // Drawing Trainline
-  // =======================================
-  void update() {
-    //declare stroke in connect() because it's used in other places besides update();
-    for (int i = 0; i < _stations.size() - 1; i++) {
-      connect(_stations.get(i), _stations.get(i+1));
-    }
-  }
-
+  */
   void connect(Station s1, Station s2) {
     stroke(c);
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
@@ -102,6 +103,41 @@ public class TrainLine {
       int[] Diag_xy = map.transform(diagx, diagy);
       line(s1.getX(), s1.getY(), Diag_xy[0], Diag_xy[1]);
       line(Diag_xy[0], Diag_xy[1], s2.getX(), s2.getY());
+    }
+  }
+
+  // =======================================
+  // Mutators and Accessors
+  // ======================================= 
+
+  //return ends of the lines assuming that size > 0
+  Station[] getEnds() {
+    return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
+  }
+  
+  
+  // =======================================
+  // Drawing Trainline
+  // =======================================
+  void recalc(){
+    for (Connector c: _connectors){
+      c.recalc();
+    }
+    _tStart.recalc();
+    _tEnd.recalc();
+  }
+  
+  void update() {
+    //draw terminals
+    _tStart.update();
+    _tEnd.update();
+
+    //draw the rest.
+    for (int i = 0; i < _connectors.size(); i++) {
+      _connectors.get(i).update();
+    }
+    for (int i = 0; i < _stations.size(); i++) {
+      _stations.get(i).update();
     }
   }
 }
