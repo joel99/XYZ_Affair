@@ -53,7 +53,7 @@ public class Map {
     activeH++;
   }
 
-  public void debug() {
+public void debug() {
     stroke(255, 0, 0);
     for (int i = minX; i <= maxX; i++) {
       for (int j = minY; j <= maxY; j++) {

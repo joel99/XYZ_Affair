@@ -7,35 +7,47 @@ import java.util.Stack;
 
 public class Train {
   Stack<Person> _carriage;
-  TrainLine _line;
-  Station _target;
+  Connector _connector;
   int _x, _y, _targetX, _targetY;
-  int curInd = 0; //TEMP
+  boolean _reachedMid;
   
-  public Train( TrainLine line, Station _start  ) { // Given a starting station and assigned train line
+  
+  public Train( Connector kinektor ) {
     _carriage = new Stack<Person>(); // Initial Holding Capacity
-    _line = line;
-    _target = _line._stations.get(0);
-    _x = _start.getX();   //TO DO: change to grid coords?
-    _y = _start.getY();
-    _targetX = _target.getX();
-    _targetY = _target.getY();
+    _connector = kinektor;
+    _x = _connector.start.getX();
+    _y = _connector.start.getY();
+    
+    _reachedTarget = false;
+    
+    if ( _connector.hasMid() ) {
+      _targetX = _connector.transMid[0]; //get to mid first
+      _targetY = _connector.transMid[1];
+      _reachedMid = false;
+    }
+    else _reachedMid = true; //target will be redirected to station in move()
   }
    
-  public void move() {
+  public void move() {    
     int threshold = 5; //5 pixel variability
-    if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold) {
-      //you made it to target, so set your target to a new station
-      _target = _line._stations.get( curInd );
+    if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold) { //target is either mid or end
+      if ( _reachedMid ) { //if had already reached mid, then target was end station's target and you've reached the end
+        //todo: SET TARGET TO NEW STATION
+      }
+      
+      
     }
     else {
-      _x += Integer.compare(_x, _targetX); //if x<targetX: move -1, if same: stay in place, if x>targetX: move +1
-      _y += Integer.compare(_y, _targetY);
+      _x -= Integer.compare(_x, _targetX); //if x<targetX: move -1, if same: stay in place, if x>targetX: move +1
+      _y -= Integer.compare(_y, _targetY);
     }
+    
   }
   
   public void update() {
     move();
+    println( "ME: " + _x + " " + _y );
+    println( "TAR: " + _targetX + " " + _targetY );
     rect(_x, _y, 30, 15);
   }
   
