@@ -2,6 +2,10 @@
 public class Connector {
   //holds at most 3 nodes
   int pos; //in case more than train line passes through same spot
+  int state; //construction level
+  //0 - tentative
+  //1 - confirmed
+  //-1 - confirmed to be possibly deleted
   Station start;
   Station end;
   int[] mid;  //holds turning point (if existing)
@@ -14,6 +18,7 @@ public class Connector {
     calcMid(start, end);
     //load up middle point, if existing.
     recalc();
+    state = 0;
   }
 
   boolean hasMid(){

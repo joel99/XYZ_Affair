@@ -57,6 +57,9 @@ public class TrainLine {
     addTerminal(_stations.get(_stations.size() - 1), s);
   }
   
+  Terminal[] getTerminals(){
+    return new Terminal[]{_tStart, _tEnd};
+  }
   /*
   void addStation(Station s1, Station s2) {
     s1.setEnd(false);
