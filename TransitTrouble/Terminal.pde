@@ -1,6 +1,6 @@
 //class Terminal -- holds end grips data. extends in opposite direction of next connector line
 
-public class Terminal {
+public class Terminal implements Draggable{
 
   private Station _s;
   //holds first connector to get direction
@@ -20,6 +20,14 @@ public class Terminal {
 
   void setStation(Station s) {
     _s = s;
+  }
+  
+  int getX(){
+    return x;
+  }
+  
+  int getY(){
+    return y;
   }
   
   void calcXY() {
@@ -54,6 +62,9 @@ public class Terminal {
     println("CALCULATED!" + x + y);
   }
   
+  public boolean isNear(int falloff){
+    return dist(mouseX, mouseY, x, y) < falloff;
+  }
   
   void recalc(){
     calcXY();
