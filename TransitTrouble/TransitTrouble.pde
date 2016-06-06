@@ -13,6 +13,8 @@ Station activeStation = null;
 boolean lockedTarget = false;
 Station targetStation = null;
 
+Train testTrain;
+
 Map map = new Map();
 
 void setup() {
@@ -27,6 +29,8 @@ void setup() {
   }
   Connector c = new Connector(_stations.get(0), _stations.get(1));
   _trainlines.add(new TrainLine(c));
+  
+  testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
   //for (Station s : _stations) {
    // _trainlines.get(0).addStation(s);
   //}
@@ -41,6 +45,9 @@ void draw() {
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
+  
+  testTrain.update(); //temporary
+  
   updateDrag();
 }
 
