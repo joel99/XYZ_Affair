@@ -9,7 +9,7 @@ public class Train {
   Stack<Person> _carriage;
   Connector _connector;
   int _x, _y, _targetX, _targetY;
-  boolean _reachedMid;
+  boolean _reachedMid; 
   
   
   public Train( Connector kinektor ) {
