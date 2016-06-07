@@ -1,0 +1,6 @@
+So here's the actual dragging mechanism:
+When a terminal / connector is clicked on, a second mode activates - any stations the mouse then passes through is added to a trainline to connect in that order. If the mouse passes through in the reverse direction... it appears to disconnect (temporarily). releasing, of course cancels everything.
+In this dragging mode,...
+case terminal: a connector connects the last station on the generation queue to the current mouse. queue initiates at terminal's station. (it gets turned into temp)
+case connector: a connector connects startStation with mouse and another with mouse with endStation. connected in queue stations get put after startStation and it becomes the new startStations.
+case station: same as case connector, but disconnect station and form a connector with it's two neighbors. proceed as in connector

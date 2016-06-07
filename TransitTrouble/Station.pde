@@ -14,6 +14,7 @@ public class Station {
   private int _y;
   private int _gridX;
   private int _gridY;
+  private float _crowd; // Health - Higher = Bad
   private PriorityQueue<Person> _line;
   private TrainLine _trainLine;
   private boolean isEnd;
@@ -73,22 +74,43 @@ public class Station {
     return oldY; 
   }
   
+  /** setTrainLine
+   * sets trainline(s) that this Station belongs to */
   void setTrainLine(TrainLine tl){
     _trainLine = tl;
   }
-  
+  /** getTrainLine
+   * returns trainline(s) that this Station belongs to */
   TrainLine getTrainLine(){
     return _trainLine;
   }
  
- boolean isEnd(){
-   return isEnd;
- }
+  /** isEnd
+   * returns whether this Station is at the front or end of the TrainLine */
+  boolean isEnd(){
+    return isEnd;
+  }
+  /** setEnd
+   * precond: boolean b, telling whether this station is an end Station
+   * postcond: isEnd is updated to reflect the Station's state */
+  void setEnd(boolean b){
+    isEnd = b;
+  }
  
- void setEnd(boolean b){
-   isEnd = b;
- }
+  /** getCrowd
+   * returns crowdedness value of this Station */
+  float getCrowd() {
+    return _crowd; 
+  }
+  /** setCrowd
+   * sets crowdedness value to specified float */
+  void setCrowd(float newCrowd) {
+    _crowd = newCrowd; 
+  }
  
+  /** recalc
+   * precond: integer array contained mapX and mapY
+   * postcond: sets _x and _y accordingly */
   void recalc(int[] coords){
     _x = coords[0];
     _y = coords[1];
@@ -98,6 +120,11 @@ public class Station {
   // Drawing Station
   // =======================================
   void update() {
+    // Update Crowdedness
+    _crowd += 0.01;
+    // print(getCrowd()); // Debugging
+    
+    drawStationHealth(_x,_y,_crowd);
     drawStation(_x, _y, _shape);
   }
 }

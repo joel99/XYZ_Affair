@@ -19,7 +19,7 @@ Map map = new Map();
 
 void setup() {
   smooth(4);
-  strokeWeight(5);
+  strokeWeight(8);
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
   // ==================================================
@@ -39,11 +39,15 @@ void setup() {
 
 void draw() {
   background(255, 255, 255);
-  map.debug(); //draws red dots
-  ellipse(mouseX, mouseY, 60, 60);
+  
+  map.debug(); //Debugging - Maps red dots to each grid coordinate
+  ellipse(mouseX, mouseY, 60, 60); // Debugging
 
   for (TrainLine tl : _trainlines) {
     tl.update();
+  }
+  for (Station s : _stations) {
+    s.update();
   }
 
   testTrain.update(); //temporary
@@ -54,20 +58,45 @@ void draw() {
 //might as well be obsolete rn.
 void updateDrag() {
   if (mousePressed) {
-    int falloff = 30;
+    int falloff = 20;
     //check for things to drag - terminal, station, connector
     //if nothing has been locked from yet
     if (!lockedActive) {
       for (TrainLine tl : _trainlines) {
-        for (Terminal t: tl.getTerminals()){
+        for (Terminal t : tl.getTerminals()) {
           if (t.isNear(falloff)) {
             activeFrom = t;
             lockedActive = true;
+            //turns immediate station/connector/terminal to tentative.
             println("Terminal selected");
             break;
           }
         }
-        
+        //other draggable things here.
+      }
+    }
+    else {
+      //no target in particular
+      if (!lockedTarget){
+        //check to see if we can lock on to other stations
+        for (Station s: _stations){
+          //if (s == 
+          if (dist(s.getX(), s.getY(), mouseX, mouseY) < 2 * falloff) {
+            lockedTarget = true;
+            //activeStation.getTrainLine().connect(activeStation, s);
+            //targetStation = s;
+            break;
+          }
+        }
+      }
+      
+      else {
+        //activeStation.getTrainLine().connect(activeStation, targetStation);
+        //very far? unlock
+        if (dist(targetStation.getX(), targetStation.getY(), mouseX, mouseY) > 4 * falloff) {
+          targetStation = null;
+          lockedTarget = false;
+        }
       }
     }
   }
@@ -75,50 +104,50 @@ void updateDrag() {
   //hmm..
   /*
   if (mousePressed) {
-   int falloff = 30;
-   //line creation
-   //if no station has been selected.
-   if (!lockedActive) {
-   //check all stations to see if mouse might be referring to it
-   for (Station s : _stations) {
-   if (s.isEnd() && dist(s.getX(), s.getY(), mouseX, mouseY) < falloff) {
-   activeStation = s;
-   lockedActive = true;
-   println("STATION SELECTED!");
-   break;
-   }
-   }
-   }
-   //station is already being connected
-   else {
-   //no target in particular
-   if (!lockedTarget) {
-   line(activeStation.getX(), activeStation.getY(), mouseX, mouseY);
-   //check to see if close to other stations
-   for (Station s : _stations) {
-   //don't connect to yourself
-   if (s == activeStation) 
-   continue;
-   if (dist(s.getX(), s.getY(), mouseX, mouseY) < 2 * falloff) {
-   lockedTarget = true;
-   activeStation.getTrainLine().connect(activeStation, s);
-   targetStation = s;
-   break;
-   }
-   }
-   }
-   //station is locked on - increase falloff. continue checking for different connections.
-   else {
-   activeStation.getTrainLine().connect(activeStation, targetStation);
-   //very far? unlock
-   if (dist(targetStation.getX(), targetStation.getY(), mouseX, mouseY) > 4 * falloff){
-   targetStation = null;
-   lockedTarget = false;
-   }
-   }
-   }
-   }
-   */
+    int falloff = 30;
+    //line creation
+    //if no station has been selected.
+    if (!lockedActive) {
+      //check all stations to see if mouse might be referring to it
+      for (Station s : _stations) {
+        if (s.isEnd() && dist(s.getX(), s.getY(), mouseX, mouseY) < falloff) {
+          activeStation = s;
+          lockedActive = true;
+          println("STATION SELECTED!");
+          break;
+        }
+      }
+    }
+    //station is already being connected
+    else {
+      //no target in particular
+      if (!lockedTarget) {
+        line(activeStation.getX(), activeStation.getY(), mouseX, mouseY);
+        //check to see if close to other stations
+        for (Station s : _stations) {
+          //don't connect to yourself
+          if (s == activeStation) 
+            continue;
+          if (dist(s.getX(), s.getY(), mouseX, mouseY) < 2 * falloff) {
+            lockedTarget = true;
+            activeStation.getTrainLine().connect(activeStation, s);
+            targetStation = s;
+            break;
+          }
+        }
+      }
+      //station is locked on - increase falloff. continue checking for different connections.
+      else {
+        activeStation.getTrainLine().connect(activeStation, targetStation);
+        //very far? unlock
+        if (dist(targetStation.getX(), targetStation.getY(), mouseX, mouseY) > 4 * falloff) {
+          targetStation = null;
+          lockedTarget = false;
+        }
+      }
+    }
+  }
+  */
 }
 
 
@@ -141,7 +170,7 @@ void mouseReleased() {
   if (lockedTarget) {
     //activeStation.getTrainLine().addStation(activeStation, targetStation);
   }
-  activeConnector = null;
+  //activeConnector = null;
   lockedActive = false;
   targetStation = null;
   lockedTarget = false;
