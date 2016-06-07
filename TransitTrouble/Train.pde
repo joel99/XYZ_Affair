@@ -18,7 +18,7 @@ public class Train {
     _x = _connector.start.getX();
     _y = _connector.start.getY();
     
-    _reachedTarget = false;
+    boolean _reachedTarget = false;
     
     if ( _connector.hasMid() ) {
       _targetX = _connector.transMid[0]; //get to mid first
