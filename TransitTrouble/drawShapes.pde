@@ -1,4 +1,21 @@
-//DRAWING HELPER FUNCTIONS
+/*************************************
+ * drawShapes Utility File
+ * Contains drawing methods for each of the classes for convenience. Used in update.
+ *************************************/
+
+// =======================================
+// Stations
+// =======================================
+void drawStationHealth(int x, int y, float HP) {
+  noStroke();
+  fill(0,0,0,30);
+  int r = width / (map.maxX - map.minX);
+  arc(x, y, r, r, 0, HP, PIE);
+}
+
+// =======================================
+// General
+// =======================================
 void drawStation(int x, int y, int shapeID){
   fill(255);
   stroke(0);

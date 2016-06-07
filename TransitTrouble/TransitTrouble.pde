@@ -39,11 +39,15 @@ void setup() {
 
 void draw() {
   background(255, 255, 255);
-  map.debug(); //draws red dots
-  ellipse(mouseX, mouseY, 60, 60);
+  
+  map.debug(); //Debugging - Maps red dots to each grid coordinate
+  ellipse(mouseX, mouseY, 60, 60); // Debugging
 
   for (TrainLine tl : _trainlines) {
     tl.update();
+  }
+  for (Station s : _stations) {
+    s.update();
   }
 
   testTrain.update(); //temporary
