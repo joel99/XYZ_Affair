@@ -3,6 +3,7 @@
  * <DESCRIPTION>
  *************************************/
 //NOTE: SCREEN RATIO 3:2
+import java.util.LinkedList;
 
 ArrayList<Station> _stations = new ArrayList<Station>();
 ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
@@ -10,6 +11,7 @@ ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
 //safer to have boolean locks than to check if station is null...
 boolean lockedActive = false;
 Draggable activeFrom = null;
+//LinkedList dragList = null;
 boolean lockedTarget = false;
 Station targetStation = null;
 
@@ -30,7 +32,7 @@ void setup() {
   Connector c = new Connector(_stations.get(0), _stations.get(1));
   _trainlines.add(new TrainLine(c));
 
-  testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
+  //testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
   //for (Station s : _stations) {
   // _trainlines.get(0).addStation(s);
   //}
@@ -58,7 +60,7 @@ void draw() {
 //might as well be obsolete rn.
 void updateDrag() {
   if (mousePressed) {
-    int falloff = 20;
+    int falloff = 10;
     //check for things to drag - terminal, station, connector
     //if nothing has been locked from yet
     if (!lockedActive) {
@@ -69,36 +71,21 @@ void updateDrag() {
             lockedActive = true;
             //turns immediate station/connector/terminal to tentative.
             println("Terminal selected");
+            //dragList = new Stack<Station>();
+            //load up entire station lines worth of things. 
+            //dragStack.push(t.getStation());
             break;
           }
         }
+        
         //other draggable things here.
       }
     }
+    
     else {
-      //no target in particular
-      if (!lockedTarget){
-        //check to see if we can lock on to other stations
-        for (Station s: _stations){
-          //if (s == 
-          if (dist(s.getX(), s.getY(), mouseX, mouseY) < 2 * falloff) {
-            lockedTarget = true;
-            //activeStation.getTrainLine().connect(activeStation, s);
-            //targetStation = s;
-            break;
-          }
-        }
-      }
       
-      else {
-        //activeStation.getTrainLine().connect(activeStation, targetStation);
-        //very far? unlock
-        if (dist(targetStation.getX(), targetStation.getY(), mouseX, mouseY) > 4 * falloff) {
-          targetStation = null;
-          lockedTarget = false;
-        }
-      }
     }
+    
   }
 
   //hmm..

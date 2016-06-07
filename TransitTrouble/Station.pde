@@ -18,6 +18,8 @@ public class Station {
   private PriorityQueue<Person> _line;
   private TrainLine _trainLine;
   private boolean isEnd;
+  private Draggable d1;
+  private Draggable d2;
   
   // =======================================
   // Default Constructor
