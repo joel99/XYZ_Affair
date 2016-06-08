@@ -16,10 +16,8 @@ public class Station {
   private int _gridY;
   private float _crowd; // Health - Higher = Bad
   private PriorityQueue<Person> _line;
-  private TrainLine _trainLine;
+  private ArrayList<TrainLine> _trainLines;
   private boolean isEnd;
-  private Draggable d1;
-  private Draggable d2;
   
   // =======================================
   // Default Constructor
@@ -32,7 +30,7 @@ public class Station {
     _gridX = coords[2];
     _gridY = coords[3];
     _line = new PriorityQueue<Person>();
-    _trainLine = null;
+    _trainLines = new ArrayList<TrainLine>();
     // println(_shape, _x, _y, _gridX, _gridY); // Debugging
   }
     
@@ -76,15 +74,34 @@ public class Station {
     return oldY; 
   }
   
+  //PRECOND: assuming no train line is set.
   /** setTrainLine
    * sets trainline(s) that this Station belongs to */
-  void setTrainLine(TrainLine tl){
-    _trainLine = tl;
+  void addTrainLine(TrainLine tl){
+    _trainLines.add(tl);
   }
   /** getTrainLine
    * returns trainline(s) that this Station belongs to */
-  TrainLine getTrainLine(){
-    return _trainLine;
+  ArrayList<TrainLine> getTrainLines(){
+    return _trainLines;
+  }
+  
+  void removeTrainLine(TrainLine tl){
+    _trainLines.remove(tl);
+  }
+ 
+  //returns two connectors given trainline
+  Draggable[] getEnds(TrainLine tl){
+    return null;
+  }
+  
+  //returns other end on same train line given one end.
+  Draggable getOtherEnd(Draggable d, TrainLine tl){
+    //cases - d is terminal.
+    if (tl.getConnectors().size() == 0){
+      //return tl.getTerminals()[tl.getTerminals().indexOf(d)];
+    }
+    return null;
   }
  
   /** isEnd

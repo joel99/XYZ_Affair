@@ -4,13 +4,13 @@ public class Terminal implements Draggable{
 
   private Station _s;
   //holds first connector to get direction
-  private Connector _c;
+  private TrainLine _tl;
   int x;
   int y;
 
-  public Terminal(Station s, Connector c) {
+  public Terminal(Station s, TrainLine tl) {
     _s = s;
-    _c = c;
+    _tl = tl;
     calcXY();
   }
 
@@ -22,32 +22,42 @@ public class Terminal implements Draggable{
     _s = s;
   }
   
-  int getX(){
+  public int getX(){
     return x;
   }
   
-  int getY(){
+  public int getY(){
     return y;
   }
   
+  public TrainLine getTrainLine(){
+    return _tl;
+  }
+  
+  public boolean isNear(int falloff){
+    return dist(mouseX, mouseY, x, y) < falloff;
+  }
+  
+  
   void calcXY() {
+    //Connector c = _s.getOtherEnd(this, _tl);
     int len = width / (map.maxX - map.minX) / 2;
     //get Xs and Ys, go opposite way for a bit. 
     int x1 = _s.getX();
     int y1 = _s.getY();
     int x2, y2;
-    if (_c.hasMid()) {
-        x2 = _c.getTransMid()[0];
-        y2 = _c.getTransMid()[1];
+    if (c.hasMid()) {
+        x2 = c.getTransMid()[0];
+        y2 = c.getTransMid()[1];
     }
     else {
-      if (_s == _c.getStart()){
-        x2 = _c.getEnd().getX();
-        y2 = _c.getEnd().getY();
+      if (_s == c.getStart()){
+        x2 = c.getEnd().getX();
+        y2 = c.getEnd().getY();
       }
       else{
-        x2 = _c.getStart().getX();
-        y2 = _c.getStart().getY();
+        x2 = c.getStart().getX();
+        y2 = c.getStart().getY();
       }
     }
     //xs and ys gotten, scale down
@@ -60,10 +70,6 @@ public class Terminal implements Draggable{
     x = x1 - dx;
     y = y1 - dy;
     println("CALCULATED!" + x + y);
-  }
-  
-  public boolean isNear(int falloff){
-    return dist(mouseX, mouseY, x, y) < falloff;
   }
   
   void recalc(){

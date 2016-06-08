@@ -26,11 +26,12 @@ void setup() {
   size(900, 600); // Default Size - Subject to Change
   // ==================================================
   // Debugging
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 1; i++) {
     genStation();
   }
-  Connector c = new Connector(_stations.get(0), _stations.get(1));
-  _trainlines.add(new TrainLine(c));
+  _trainlines.add(new TrainLine(_stations.get(0)));
+  //Connector c = new Connector(_stations.get(0), _stations.get(1));
+  
 
   //testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
   //for (Station s : _stations) {

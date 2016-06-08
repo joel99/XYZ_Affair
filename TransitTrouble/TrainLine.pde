@@ -8,6 +8,7 @@ public class TrainLine {
   // Instance Variables
   // =======================================
   ArrayList<Station> _stations;
+  //ArrayList<Draggable> _segments;
   ArrayList<Connector> _connectors;
   Terminal _tStart;
   Terminal _tEnd;
@@ -17,14 +18,15 @@ public class TrainLine {
   // Default Constructor
   // Creates a TrainLine. 
   // =======================================
-  public TrainLine(Connector con) {
+  public TrainLine(Station s) {
     _stations = new ArrayList<Station>();
     _connectors = new ArrayList<Connector>();
-    _connectors.add(con);
-    _stations.add(con.getStart());
-    _stations.add(con.getEnd());
-    _tStart = new Terminal(con.getStart(), con);
-    _tEnd = new Terminal(con.getEnd(), con);
+    _stations.add(s);
+    
+    //_stations.add(con.getStart());
+    //_stations.add(con.getEnd());
+    _tStart = new Terminal(con.getStart(), this);
+    _tEnd = new Terminal(con.getEnd(), this);
 
     c = color(int(random(255)), int(random(255)), int(random(255)));
   }
@@ -42,14 +44,14 @@ public class TrainLine {
   //in general
   void addTerminal(Station s, Station sNew){
     if (s == _stations.get(0)){
-       _connectors.add(0, new Connector(sNew, s)); 
+       _connectors.add(0, new Connector(sNew, s, this)); 
        _stations.add(0, sNew);
-       _tStart = new Terminal(_connectors.get(0).getStart(), _connectors.get(0));
+       _tStart = new Terminal(_connectors.get(0).getStart(), this);
     }
     else {
-      _connectors.add(new Connector(s, sNew));
+      _connectors.add(new Connector(s, sNew, this));
       _stations.add(sNew);
-      _tEnd = new Terminal(_connectors.get(_connectors.size() - 1).getEnd(), _connectors.get(_connectors.size() - 1));
+      _tEnd = new Terminal(_connectors.get(_connectors.size() - 1).getEnd(), this);
     }
   }
   
@@ -59,6 +61,10 @@ public class TrainLine {
   
   Terminal[] getTerminals(){
     return new Terminal[]{_tStart, _tEnd};
+  }
+  
+  ArrayList<Connector> getConnectors(){
+    return _connectors;
   }
   /*
   void addStation(Station s1, Station s2) {

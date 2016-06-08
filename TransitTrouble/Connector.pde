@@ -1,4 +1,5 @@
 //class Connector - holds train line data between stations
+//to implement draggable
 public class Connector {
   //holds at most 3 nodes
   int pos; //in case more than train line passes through same spot
@@ -6,16 +7,18 @@ public class Connector {
   //0 - tentative
   //1 - confirmed
   //-1 - confirmed to be possibly deleted
-  Station start;
-  Station end;
+  Station _start;
+  Station _end;
+  TrainLine _tl;
   int[] mid;  //holds turning point (if existing)
   int[] transMid;  //holds actual x y coords of mid.
   //make HITBOXES!!!
 
-  public Connector(Station s1, Station s2) {
-    start = s1;
-    end = s2;
-    calcMid(start, end);
+  public Connector(Station s1, Station s2, TrainLine tl) {
+    _start = s1;
+    _end = s2;
+    _tl = tl;
+    calcMid(_start, _end);
     //load up middle point, if existing.
     recalc();
     state = 0;
@@ -30,10 +33,10 @@ public class Connector {
   }
   
   Station getStart(){
-    return start;
+    return _start;
   }
   Station getEnd(){
-    return end;
+    return _end;
   }
 
   //adapted from connect()
@@ -90,10 +93,10 @@ public class Connector {
     //stroke(c);
     if (!hasMid()) {
       //println("I don't have a mid");
-      line(start.getX(), start.getY(), end.getX(), end.getY());
+      line(_start.getX(), _start.getY(), _end.getX(), _end.getY());
     } else {
-      line(start.getX(), start.getY(), transMid[0], transMid[1]);
-      line(transMid[0], transMid[1], end.getX(), end.getY());
+      line(_start.getX(), _start.getY(), transMid[0], transMid[1]);
+      line(transMid[0], transMid[1], _end.getX(), _end.getY());
     }
   }
 }
