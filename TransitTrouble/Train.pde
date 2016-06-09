@@ -9,16 +9,17 @@ public class Train {
   Stack<Person> _carriage;
   Connector _connector;
   int _x, _y, _targetX, _targetY;
-  boolean _reachedMid; 
+  boolean _reachedMid;
+  boolean _docked;
   
   
   public Train( Connector kinektor ) {
     _carriage = new Stack<Person>(); // Initial Holding Capacity
     _connector = kinektor;
-    _x = _connector.start.getX();
-    _y = _connector.start.getY();
+    _x = _connector._start.getX();
+    _y = _connector._start.getY();
     
-    _reachedTarget = false;
+    _docked = false;
     
     if ( _connector.hasMid() ) {
       _targetX = _connector.transMid[0]; //get to mid first
@@ -32,12 +33,13 @@ public class Train {
     int threshold = 5; //5 pixel variability
     if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold) { //target is either mid or end
       if ( _reachedMid ) { //if had already reached mid, then target was end station's target and you've reached the end
-        //todo: SET TARGET TO NEW STATION
+        _targetX = _connector._end.getX();
+        _targetY = _connector._end.getY();
       }
-      
-      
+      else _reachedMid = true;
     }
     else {
+      _docked = false;
       _x -= Integer.compare(_x, _targetX); //if x<targetX: move -1, if same: stay in place, if x>targetX: move +1
       _y -= Integer.compare(_y, _targetY);
     }
@@ -46,8 +48,6 @@ public class Train {
   
   public void update() {
     move();
-    println( "ME: " + _x + " " + _y );
-    println( "TAR: " + _targetX + " " + _targetY );
     rect(_x, _y, 30, 15);
   }
   

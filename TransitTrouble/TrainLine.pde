@@ -9,7 +9,7 @@ public class TrainLine {
   // =======================================
   ArrayList<Station> _stations;
   //corresponding list of tuples of draggables for _stations to track double ends.
-  ArrayList<Pair> _stationEnds;
+  ArrayList<Pair> _stationEnds; 
   //ArrayList<Connector> _connectors;
   Terminal _tStart;
   Terminal _tEnd;
@@ -78,8 +78,11 @@ public class TrainLine {
   }
 
   Draggable getOtherEnd(Station s, Draggable d){
-    Pair temp = _stationEnds.get(_stations.indexOf(s));
-    return temp.getOther(d);
+    if (_stationEnds.size() > 0) {
+      Pair temp = _stationEnds.get(_stations.indexOf(s));
+      return temp.getOther(d);
+    }
+    return null;
   }
 
   Terminal[] getTerminals() {
@@ -149,8 +152,8 @@ public class TrainLine {
   // Drawing Trainline
   // =======================================
   void recalc() {
-    for (Connector c : _connectors) {
-      c.recalc();
+    for (Pair p : _stationEnds) {
+      p.getA().update();
     }
     _tStart.recalc();
     _tEnd.recalc();

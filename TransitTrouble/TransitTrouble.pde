@@ -28,15 +28,24 @@ void setup() {
   // Debugging
   for (int i = 0; i < 1; i++) {
     genStation();
+    genStation();
   }
   _trainlines.add(new TrainLine(_stations.get(0)));
+  /*
+  _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
+  _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
+  _trainlines.get(0).update();
+  */
   //Connector c = new Connector(_stations.get(0), _stations.get(1));
   
 
-  //testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
-  //for (Station s : _stations) {
-  // _trainlines.get(0).addStation(s);
-  //}
+  //testTrain = new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getB());
+  
+  /*
+  for (Station s : _stations) {
+   _trainlines.get(0).addStation(s);
+  } 
+  */
   // ==================================================
 }
 
@@ -53,7 +62,7 @@ void draw() {
     s.update();
   }
 
-  testTrain.update(); //temporary
+  //testTrain.update(); //temporary
 
   updateDrag();
 }
