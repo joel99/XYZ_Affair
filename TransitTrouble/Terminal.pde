@@ -38,9 +38,14 @@ public class Terminal implements Draggable{
     return dist(mouseX, mouseY, x, y) < falloff;
   }
   
-  
+  //where do I go, sadbois...
   void calcXY() {
-    //Connector c = _s.getOtherEnd(this, _tl);
+    //in case of two terminals, i'm deceased.
+    
+    Draggable d = _tl.getOtherEnd(_s, this);
+    if (d instanceof Connector) {
+      Connector c = (Connector)d; 
+    
     int len = width / (map.maxX - map.minX) / 2;
     //get Xs and Ys, go opposite way for a bit. 
     int x1 = _s.getX();
@@ -70,13 +75,14 @@ public class Terminal implements Draggable{
     x = x1 - dx;
     y = y1 - dy;
     println("CALCULATED!" + x + y);
+    }
   }
   
   void recalc(){
     calcXY();
   }  
   
-  void update(){
+  public void update(){
     line(x, y, _s.getX(), _s.getY());  
   }
 }

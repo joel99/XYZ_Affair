@@ -8,8 +8,9 @@ public class TrainLine {
   // Instance Variables
   // =======================================
   ArrayList<Station> _stations;
-  //ArrayList<Draggable> _segments;
-  ArrayList<Connector> _connectors;
+  //corresponding list of tuples of draggables for _stations to track double ends.
+  ArrayList<Pair> _stationEnds;
+  //ArrayList<Connector> _connectors;
   Terminal _tStart;
   Terminal _tEnd;
   color c;
@@ -20,13 +21,11 @@ public class TrainLine {
   // =======================================
   public TrainLine(Station s) {
     _stations = new ArrayList<Station>();
-    _connectors = new ArrayList<Connector>();
+    _stationEnds = new ArrayList<Pair>();
     _stations.add(s);
-    
-    //_stations.add(con.getStart());
-    //_stations.add(con.getEnd());
-    _tStart = new Terminal(con.getStart(), this);
-    _tEnd = new Terminal(con.getEnd(), this);
+    _tStart = new Terminal(s, this);
+    _tEnd = new Terminal(s, this);
+    _stationEnds.add(new Pair(_tStart, _tEnd));
 
     c = color(int(random(255)), int(random(255)), int(random(255)));
   }
@@ -34,7 +33,7 @@ public class TrainLine {
   // =======================================
   // TrainLine Methods
   // =======================================
-  //two types of adding - terminus adding and end line adding.
+  //two types of adding - terminus adding and mid-line adding.
   /** addStation(Station s)
    * Adds station to the TrainLine
    * precond: Station exists
@@ -42,42 +41,63 @@ public class TrainLine {
   //generic case, base case
 
   //in general
-  void addTerminal(Station s, Station sNew){
-    if (s == _stations.get(0)){
-       _connectors.add(0, new Connector(sNew, s, this)); 
-       _stations.add(0, sNew);
-       _tStart = new Terminal(_connectors.get(0).getStart(), this);
-    }
-    else {
-      _connectors.add(new Connector(s, sNew, this));
-      _stations.add(sNew);
-      _tEnd = new Terminal(_connectors.get(_connectors.size() - 1).getEnd(), this);
+
+  //addTerminal - adds to either end, adjusting _stations and _stationEnds
+  void addTerminal(Station s, Station sNew) {
+    if (_stations.size() == 1) {
+      //this is a problem.
+    } else {
+
+      int end; //either 0 or size - 1 (slightly more compact method of coding)
+      //first check whichever end to retain.
+      if (s == _stations.get(0)) {
+        end = 0;
+        _tStart = new Terminal(sNew, this);
+      } else {// repeat of above, but s is now the other end
+        end = _stationEnds.size() - 1;
+        _tEnd = new Terminal(sNew, this);
+      }
+
+      Connector c = new Connector(sNew, s, this);
+      _stations.add(end, sNew);
+      Pair temp = _stationEnds.get(end);
+
+      //if else block adjusts old end
+      if (temp.getA() instanceof Terminal) {
+        _stationEnds.set(end, new Pair(c, temp.getB()));
+      } else {//getB() is terminal
+        _stationEnds.set(end, new Pair(temp.getA(), c));
+      }
+
+      //load in new end - I have to check again
+      if (end == 0)
+        _stationEnds.add(end, new Pair(c, _tStart));
+      else 
+      _stationEnds.add(new Pair(c, _tEnd));
     }
   }
-  
-  void addTerminal(Station s){
-    addTerminal(_stations.get(_stations.size() - 1), s);
+
+  Draggable getOtherEnd(Station s, Draggable d){
+    Pair temp = _stationEnds.get(_stations.indexOf(s));
+    return temp.getOther(d);
   }
-  
-  Terminal[] getTerminals(){
+
+  Terminal[] getTerminals() {
     return new Terminal[]{_tStart, _tEnd};
   }
-  
-  ArrayList<Connector> getConnectors(){
-    return _connectors;
-  }
+
   /*
   void addStation(Station s1, Station s2) {
-    s1.setEnd(false);
-    s2.setEnd(true);
-    if (s1.equals(_stations.get(0))) {
-      _stations.add(0, s2);
-    } else {
-      _stations.add(s2);
-    }
-    s2.setTrainLine(this);
-  }
-  */
+   s1.setEnd(false);
+   s2.setEnd(true);
+   if (s1.equals(_stations.get(0))) {
+   _stations.add(0, s2);
+   } else {
+   _stations.add(s2);
+   }
+   s2.setTrainLine(this);
+   }
+   */
   void connect(Station s1, Station s2) {
     stroke(c);
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
@@ -123,27 +143,26 @@ public class TrainLine {
   Station[] getEnds() {
     return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
   }
-  
-  
+
+
   // =======================================
   // Drawing Trainline
   // =======================================
-  void recalc(){
-    for (Connector c: _connectors){
+  void recalc() {
+    for (Connector c : _connectors) {
       c.recalc();
     }
     _tStart.recalc();
     _tEnd.recalc();
   }
-  
+
   void update() {
     //draw terminals
     _tStart.update();
     _tEnd.update();
-
     //draw the rest.
-    for (int i = 0; i < _connectors.size(); i++) {
-      _connectors.get(i).update();
+    for (int i = 1; i < _stationEnds.size(); i++) {
+      _stationEnds.get(i).getA().update();
     }
     for (int i = 0; i < _stations.size(); i++) {
       _stations.get(i).update();

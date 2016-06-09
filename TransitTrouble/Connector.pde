@@ -1,6 +1,6 @@
 //class Connector - holds train line data between stations
 //to implement draggable
-public class Connector {
+public class Connector implements Draggable {
   //holds at most 3 nodes
   int pos; //in case more than train line passes through same spot
   int state; //construction level
@@ -39,6 +39,20 @@ public class Connector {
     return _end;
   }
 
+  public TrainLine getTrainLine(){
+    return _tl;
+  }
+  
+  //NEEDS TO BE DONE!!!
+  //for mouse detection
+  //use triangle inequality
+  public boolean isNear(int falloff){
+    
+    return false;
+  }
+
+
+
   //adapted from connect()
   void calcMid(Station s1, Station s2) {
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
@@ -73,14 +87,6 @@ public class Connector {
 
       mid = new int[]{diagx, diagy};
     }
-  }
-
-
-//NEEDS TO BE DONE!!!
-  //for mouse detection
-  boolean isNear(int x, int y){
-    
-    return false;
   }
 
   void recalc(){

@@ -95,12 +95,10 @@ public class Station {
     return null;
   }
   
-  //returns other end on same train line given one end.
+  //returns other end of station on same train line given one end.
   Draggable getOtherEnd(Draggable d, TrainLine tl){
     //cases - d is terminal.
-    if (tl.getConnectors().size() == 0){
-      //return tl.getTerminals()[tl.getTerminals().indexOf(d)];
-    }
+    tl.getOtherEnd(this, d);
     return null;
   }
  

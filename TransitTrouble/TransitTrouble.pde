@@ -145,8 +145,6 @@ void updateDrag() {
 void keyPressed() {
   println("LMAO");
   genStation();
-  println("LMNAO");
-  _trainlines.get(0).addTerminal(_stations.get(_stations.size() - 1));
 }
 
 void mousePressed() {
