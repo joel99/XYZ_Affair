@@ -5,6 +5,6 @@ public interface Draggable{
   
   //int getX();
   //int getY();
-  
+  void recalc();
   void update();//who needs a drawable interface anyway
 }

@@ -26,8 +26,13 @@ public class TrainLine {
     _tStart = new Terminal(s, this);
     _tEnd = new Terminal(s, this);
     _stationEnds.add(new Pair(_tStart, _tEnd));
-
+    _tEnd.calcXY();
     c = color(int(random(255)), int(random(255)), int(random(255)));
+  }
+
+//test method
+  public Station getStation(int i){
+    return _stations.get(i);
   }
 
   // =======================================
@@ -45,9 +50,19 @@ public class TrainLine {
   //addTerminal - adds to either end, adjusting _stations and _stationEnds
   void addTerminal(Station s, Station sNew) {
     if (_stations.size() == 1) {
+      //it doesn't matterrr have the thing recalc, wlog use tEnd for this new station
+      Connector c= new Connector(s, sNew, this);
+      //update stations
+      _stations.add(sNew);
+      _tEnd = new Terminal(sNew, this);
+
+      //we now have two stations.
+      //update stationEnds
+      _stationEnds.set(0, new Pair(_tStart, c));
+      _stationEnds.add(new Pair(c, _tEnd));
       //this is a problem.
     } else {
-
+      println("hmm");
       int end; //either 0 or size - 1 (slightly more compact method of coding)
       //first check whichever end to retain.
       if (s == _stations.get(0)) {
@@ -57,7 +72,7 @@ public class TrainLine {
         end = _stationEnds.size() - 1;
         _tEnd = new Terminal(sNew, this);
       }
-
+      println("hmm2 " + end);
       Connector c = new Connector(sNew, s, this);
       _stations.add(end, sNew);
       Pair temp = _stationEnds.get(end);
@@ -71,14 +86,14 @@ public class TrainLine {
 
       //load in new end - I have to check again
       if (end == 0)
-        _stationEnds.add(end, new Pair(c, _tStart));
+        _stationEnds.add(end, new Pair(_tStart, c));
       else 
       _stationEnds.add(new Pair(c, _tEnd));
     }
   }
 
   Draggable getOtherEnd(Station s, Draggable d){
-    if (_stationEnds.size() > 0) {
+    if (_stationEnds.size() > 0 && _stations.indexOf(s) != -1) {
       Pair temp = _stationEnds.get(_stations.indexOf(s));
       return temp.getOther(d);
     }
@@ -153,7 +168,8 @@ public class TrainLine {
   // =======================================
   void recalc() {
     for (Pair p : _stationEnds) {
-      p.getA().update();
+      p.getA().recalc();
+      
     }
     _tStart.recalc();
     _tEnd.recalc();

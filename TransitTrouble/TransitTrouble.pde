@@ -28,9 +28,13 @@ void setup() {
   // Debugging
   for (int i = 0; i < 1; i++) {
     genStation();
-    genStation();
+    //genStation();
   }
   _trainlines.add(new TrainLine(_stations.get(0)));
+  genStation();
+  _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
+  
+  //println("gote");
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
   _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
@@ -60,6 +64,9 @@ void draw() {
   }
   for (Station s : _stations) {
     s.update();
+    textSize(16);
+    fill(0);
+    text(_stations.indexOf(s), s.getX(), s.getY());
   }
 
   //testTrain.update(); //temporary
@@ -154,6 +161,7 @@ void updateDrag() {
 void keyPressed() {
   println("LMAO");
   genStation();
+  _trainlines.get(0).addTerminal(_trainlines.get(0).getStation(0), _stations.get(_stations.size() - 1));
 }
 
 void mousePressed() {

@@ -95,7 +95,7 @@ public class Connector implements Draggable {
     }
   }
 
-  void update() {
+  public void update() {
     //stroke(c);
     if (!hasMid()) {
       //println("I don't have a mid");
