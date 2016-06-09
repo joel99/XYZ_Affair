@@ -30,9 +30,13 @@ public class TrainLine {
     c = color(int(random(255)), int(random(255)), int(random(255)));
   }
 
-//test method
+  //test method
   public Station getStation(int i){
     return _stations.get(i);
+  }
+
+  public ArrayList<Pair> getStationEnds(){
+    return _stationEnds;
   }
 
   // =======================================

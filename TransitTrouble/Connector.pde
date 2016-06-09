@@ -24,31 +24,44 @@ public class Connector implements Draggable {
     state = 0;
   }
 
-  boolean hasMid(){
+  boolean hasMid() {
     return mid != null;
   }
-  
-  int[] getTransMid(){
+
+  int[] getTransMid() {
     return transMid;
   }
-  
-  Station getStart(){
+
+  Station getStart() {
     return _start;
   }
-  Station getEnd(){
+  Station getEnd() {
     return _end;
   }
 
-  public TrainLine getTrainLine(){
+  public TrainLine getTrainLine() {
     return _tl;
   }
-  
+
   //NEEDS TO BE DONE!!!
   //for mouse detection
   //use triangle inequality
-  public boolean isNear(int falloff){
-    
-    return false;
+  //for mouse
+  public boolean isOn(int x1, int y1, int x2, int y2) {
+    float dist = dist(x1, y1, x2, y2);
+    float dist1 = dist(x1, y1, mouseX, mouseY);
+    float dist2 = dist(mouseX, mouseY, x2, y2);
+    return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4;
+  }
+  public boolean isNear() {
+    if (hasMid()) {
+      //float dist = dist(_start.getX(),_start.getY(), _end.getX(), _end.getY());
+      float dist1 = dist(_start.getX(), _start.getY(), mid[0], mid[1]);
+      float dist2 = dist(mid[0], mid[1], _end.getX(), _end.getY());
+      return isOn(_start.getX(), _start.getY(), mid[0], mid[1]) || isOn(mid[0], mid[1], _end.getX(), _end.getY());
+    } else {
+      return isOn(_start.getX(), _start.getY(), _end.getX(), _end.getY());
+    }
   }
 
 
@@ -89,8 +102,8 @@ public class Connector implements Draggable {
     }
   }
 
-  void recalc(){
-    if (hasMid()){
+  public void recalc() {
+    if (hasMid()) {
       transMid = map.transform(mid[0], mid[1]);
     }
   }

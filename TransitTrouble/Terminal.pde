@@ -44,8 +44,8 @@ public class Terminal implements Draggable {
     return _tl;
   }
 
-  public boolean isNear(int falloff) {
-    return dist(mouseX, mouseY, x, y) < falloff;
+  public boolean isNear() {
+    return dist(mouseX, mouseY, x, y) < width / (2 * map.activeW + 1) / 5;
   }
 
   //where do I go, sadbois...
@@ -91,7 +91,7 @@ public class Terminal implements Draggable {
     }
   }
 
-  void recalc() {
+  public void recalc() {
     calcXY();
   }  
 

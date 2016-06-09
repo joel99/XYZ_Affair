@@ -10,7 +10,8 @@ ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
 
 //safer to have boolean locks than to check if station is null...
 boolean lockedActive = false;
-Draggable activeFrom = null;
+ArrayList<Draggable> activeDrags = null;
+ArrayList<Station> activeStations = null;
 //LinkedList dragList = null;
 boolean lockedTarget = false;
 Station targetStation = null;
@@ -24,6 +25,9 @@ void setup() {
   strokeWeight(8);
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
+  
+  activeDrags = new ArrayList<Draggable>();
+  activeStations = new ArrayList<Station>();
   // ==================================================
   // Debugging
   for (int i = 0; i < 1; i++) {
@@ -77,14 +81,15 @@ void draw() {
 //might as well be obsolete rn.
 void updateDrag() {
   if (mousePressed) {
-    int falloff = 10;
+    int falloff = 30;
     //check for things to drag - terminal, station, connector
     //if nothing has been locked from yet
     if (!lockedActive) {
       for (TrainLine tl : _trainlines) {
+        //evaluate stations first to avoid crashing
         for (Terminal t : tl.getTerminals()) {
-          if (t.isNear(falloff)) {
-            activeFrom = t;
+          if (t.isNear()) {
+            activeDrags.add(t);
             lockedActive = true;
             //turns immediate station/connector/terminal to tentative.
             println("Terminal selected");
@@ -94,12 +99,29 @@ void updateDrag() {
             break;
           }
         }
-        
+        for (Pair p : tl.getStationEnds()){
+          if (p.getB().isNear()){
+            activeDrags.add(p.getB());
+            lockedActive = true;
+            println("dragB selected");
+          }
+          else if (p.getA().isNear()){
+            activeDrags.add(p.getA());
+            lockedActive = true;
+            println("dragA selected");
+          }
+        }
         //other draggable things here.
       }
     }
     
     else {
+      //get ready to QUEUE UP OH YEAH
+      for (TrainLine tl: _trainlines) {
+        for (Pair p: tl.getStationEnds()){
+          
+        }
+      }
       
     }
     
