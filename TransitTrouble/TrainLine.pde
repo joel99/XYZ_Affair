@@ -66,7 +66,7 @@ public class TrainLine {
       _stationEnds.add(new Pair(c, _tEnd));
       //this is a problem.
     } else {
-      println("hmm");
+      //println("hmm");
       int end; //either 0 or size - 1 (slightly more compact method of coding)
       //first check whichever end to retain.
       if (s == _stations.get(0)) {
@@ -106,6 +106,10 @@ public class TrainLine {
 
   Terminal[] getTerminals() {
     return new Terminal[]{_tStart, _tEnd};
+  }
+  
+  public color getColor(){
+    return c;
   }
 
   /*

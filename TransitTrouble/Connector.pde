@@ -43,22 +43,24 @@ public class Connector implements Draggable {
     return _tl;
   }
 
-  //NEEDS TO BE DONE!!!
-  //for mouse detection
-  //use triangle inequality
-  //for mouse
+  public int getState(){
+    return state;
+  }
+  
+  public void setState(int newState){
+    state = newState;
+  }
+  
   public boolean isOn(int x1, int y1, int x2, int y2) {
     float dist = dist(x1, y1, x2, y2);
     float dist1 = dist(x1, y1, mouseX, mouseY);
     float dist2 = dist(mouseX, mouseY, x2, y2);
     return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4;
   }
+  
   public boolean isNear() {
     if (hasMid()) {
-      //float dist = dist(_start.getX(),_start.getY(), _end.getX(), _end.getY());
-      float dist1 = dist(_start.getX(), _start.getY(), mid[0], mid[1]);
-      float dist2 = dist(mid[0], mid[1], _end.getX(), _end.getY());
-      return isOn(_start.getX(), _start.getY(), mid[0], mid[1]) || isOn(mid[0], mid[1], _end.getX(), _end.getY());
+      return isOn(_start.getX(), _start.getY(), transMid[0], transMid[1]) || isOn(transMid[0], transMid[1], _end.getX(), _end.getY());
     } else {
       return isOn(_start.getX(), _start.getY(), _end.getX(), _end.getY());
     }
@@ -109,7 +111,10 @@ public class Connector implements Draggable {
   }
 
   public void update() {
-    //stroke(c);
+    if (state == -1 || state == 1)
+      stroke(_tl.getColor() + 50);
+    else 
+      stroke(_tl.getColor());
     if (!hasMid()) {
       //println("I don't have a mid");
       line(_start.getX(), _start.getY(), _end.getX(), _end.getY());
