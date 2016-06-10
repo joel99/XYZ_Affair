@@ -107,6 +107,10 @@ public class TrainLine {
   Terminal[] getTerminals() {
     return new Terminal[]{_tStart, _tEnd};
   }
+  
+  public color getColor(){
+    return c;
+  }
 
   /*
   void addStation(Station s1, Station s2) {

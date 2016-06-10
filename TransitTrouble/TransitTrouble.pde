@@ -80,10 +80,10 @@ void draw() {
 //might as well be obsolete rn.
 void updateDrag() {
   if (mousePressed) {
-    int falloff = 30;
     //check for things to drag - terminal, station, connector
     //if nothing has been locked from yet
     if (!lockedActive) {
+      search:
       for (TrainLine tl : _trainlines) {
         //evaluate stations first to avoid crashing
         for (Terminal t : tl.getTerminals()) {
@@ -95,7 +95,7 @@ void updateDrag() {
             //dragList = new Stack<Station>();
             //load up entire station lines worth of things. 
             //dragStack.push(t.getStation());
-            break;
+            break search;
           }
         }
         for (Pair p : tl.getStationEnds()){
@@ -103,11 +103,13 @@ void updateDrag() {
             activeDrags.add(p.getB());
             lockedActive = true;
             println("dragB selected");
+            break search;
           }
           else if (p.getA().isNear()){
             activeDrags.add(p.getA());
             lockedActive = true;
             println("dragA selected");
+            break search;
           }
         }
         //other draggable things here.
@@ -116,9 +118,27 @@ void updateDrag() {
     
     else {
       //get ready to QUEUE UP OH YEAH
+      //track which things mouse goes through
+      //activeDrags.add();
+      //activeStations.add();
+      //DRAW DRAW DRAW
+      for (Draggable d: activeDrags){
+        //if (d.getState() == 0){
+        //  
+        //}
+        //else if(){
+        //
+        //}
+      }
+      //
       for (TrainLine tl: _trainlines) {
         for (Pair p: tl.getStationEnds()){
-          
+          if (activeDrags.indexOf(p.getA()) == -1 && p.getA().isNear()){
+            activeDrags.add(p.getA());
+          }
+          else if (activeDrags.indexOf(p.getB()) == -1 && p.getB().isNear()){
+            activeDrags.add(p.getB());
+          }
         }
       }
       
