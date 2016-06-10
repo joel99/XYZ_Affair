@@ -6,6 +6,7 @@ public class Terminal implements Draggable {
   //holds first connector to get direction
   private TrainLine _tl;
   private boolean isNotInit;
+  public int state;
   int x;
   int y;
 
@@ -38,6 +39,14 @@ public class Terminal implements Draggable {
 
   public void setY(int newY) {
     y = newY;
+  }
+
+  public int getState(){
+    return state;
+  }
+  
+  public void setState(int newState){
+    state = newState;
   }
 
   public TrainLine getTrainLine() {
