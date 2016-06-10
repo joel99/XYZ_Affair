@@ -19,8 +19,9 @@ public class Station {
   private TrainLine _trainLine;
   private boolean isEnd;
   private int _timeStart, _timeEnd; // Timing - Used for passenger generation
-  
   private static final int _CAPACITY = 12; // 12 people at most
+  private Draggable d1;
+  private Draggable d2;
   
   // =======================================
   // Default Constructor
