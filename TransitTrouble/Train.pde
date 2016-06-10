@@ -33,6 +33,7 @@ public class Train {
     int threshold = 5; //5 pixel variability
     if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold) { //target is either mid or end
       if ( _reachedMid ) { //if had already reached mid, then target was end station's target and you've reached the end
+        
         _targetX = _connector._end.getX();
         _targetY = _connector._end.getY();
       }

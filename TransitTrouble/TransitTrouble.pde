@@ -38,7 +38,6 @@ void setup() {
   genStation();
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
   
-  //println("gote");
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
   _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
@@ -47,7 +46,7 @@ void setup() {
   //Connector c = new Connector(_stations.get(0), _stations.get(1));
   
 
-  //testTrain = new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getB());
+  testTrain = new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA());
   
   /*
   for (Station s : _stations) {
@@ -73,7 +72,7 @@ void draw() {
     text(_stations.indexOf(s), s.getX(), s.getY());
   }
 
-  //testTrain.update(); //temporary
+  testTrain.update(); //temporary
 
   updateDrag();
 }
