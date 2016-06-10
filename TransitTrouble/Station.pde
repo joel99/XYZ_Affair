@@ -18,6 +18,10 @@ public class Station {
   private PriorityQueue<Person> _line;
   private ArrayList<TrainLine> _trainLines;
   private boolean isEnd;
+  private int _timeStart, _timeEnd; // Timing - Used for passenger generation
+  private static final int _CAPACITY = 12; // 12 people at most
+  private Draggable d1;
+  private Draggable d2;
   
   // =======================================
   // Default Constructor
@@ -30,8 +34,39 @@ public class Station {
     _gridX = coords[2];
     _gridY = coords[3];
     _line = new PriorityQueue<Person>();
+    _timeStart = millis();
+    _timeEnd = _timeStart + 15000;
     _trainLines = new ArrayList<TrainLine>();
     // println(_shape, _x, _y, _gridX, _gridY); // Debugging
+  }
+  
+  // =======================================
+  // Person Generation and Calculations
+  // =======================================
+  /** addPassenger - adds a passenger to the line
+   * precond: _timeEnd >= _timeStart, Station capacity is not at max
+   * postcond: _line has another Person, _timeStart and _timeEnd are updated accordingly */
+  boolean addPassenger() {
+    int tmpPriority = 0;
+    float roll = random(1);
+    if (0.25 > roll) // 20%
+      tmpPriority++; // 1
+    if (0.05 > roll) // 5%
+      tmpPriority++; // 2
+    
+    _timeEnd = millis();
+    _timeStart = _timeEnd + 1000 * int(random(5)); // Adjust Later - Add 0 to 4 seconds of extra delay
+    
+    // print("Passenger added!"); // Debugging
+    
+    return _line.add(new Person(tmpPriority));
+  }
+  
+  /** calculateCrowd - calculates crowdedness of Station
+   * precond:
+   * postcond: _crowd is updated accordingly */
+  void calculateCrowd() {
+    _crowd = _line.size() * 0.001; 
   }
     
   // =======================================
@@ -137,10 +172,19 @@ public class Station {
   // Drawing Station
   // =======================================
   void update() {
-    // Update Crowdedness
-    _crowd += 0.01;
-    // print(getCrowd()); // Debugging
+    // Update Time
+    _timeEnd = millis();
     
+    // Update Crowdedness
+    calculateCrowd();
+    
+    // Update Line
+    if (_timeEnd - 1000 >= _timeStart) { // 1 seconds
+      addPassenger();
+    }
+    // print(getCrowd()); // Debugging
+    // println(_timeEnd, _timeStart);
+    println(_crowd);
     drawStationHealth(_x,_y,_crowd);
     drawStation(_x, _y, _shape);
   }

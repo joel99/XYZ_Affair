@@ -19,6 +19,7 @@ public class Train {
     _x = _connector._start.getX();
     _y = _connector._start.getY();
     
+    boolean _reachedTarget = false;
     _docked = false;
     
     if ( _connector.hasMid() ) {
