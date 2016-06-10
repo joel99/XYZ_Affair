@@ -184,7 +184,7 @@ public class Station {
     }
     // print(getCrowd()); // Debugging
     // println(_timeEnd, _timeStart);
-    println(_crowd);
+    //println(_crowd);
     drawStationHealth(_x,_y,_crowd);
     drawStation(_x, _y, _shape);
   }
