@@ -10,7 +10,8 @@ ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
 
 //safer to have boolean locks than to check if station is null...
 boolean lockedActive = false;
-Draggable activeFrom = null;
+ArrayList<Draggable> activeDrags = null;
+ArrayList<Station> activeStations = null;
 //LinkedList dragList = null;
 boolean lockedTarget = false;
 Station targetStation = null;
@@ -24,18 +25,35 @@ void setup() {
   strokeWeight(8);
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
+  
+  activeDrags = new ArrayList<Draggable>();
+  activeStations = new ArrayList<Station>();
   // ==================================================
   // Debugging
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 1; i++) {
     genStation();
+    //genStation();
   }
-  Connector c = new Connector(_stations.get(0), _stations.get(1));
-  _trainlines.add(new TrainLine(c));
+  _trainlines.add(new TrainLine(_stations.get(0)));
+  genStation();
+  _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
+  
+  //println("gote");
+  /*
+  _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
+  _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
+  _trainlines.get(0).update();
+  */
+  //Connector c = new Connector(_stations.get(0), _stations.get(1));
+  
 
-  //testTrain = new Train(_trainlines.get(0), _trainlines.get(0)._stations.get(0));
-  //for (Station s : _stations) {
-  // _trainlines.get(0).addStation(s);
-  //}
+  //testTrain = new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getB());
+  
+  /*
+  for (Station s : _stations) {
+   _trainlines.get(0).addStation(s);
+  } 
+  */
   // ==================================================
 }
 
@@ -50,6 +68,9 @@ void draw() {
   }
   for (Station s : _stations) {
     s.update();
+    textSize(16);
+    fill(0);
+    text(_stations.indexOf(s), s.getX(), s.getY());
   }
 
   //testTrain.update(); //temporary
@@ -60,14 +81,15 @@ void draw() {
 //might as well be obsolete rn.
 void updateDrag() {
   if (mousePressed) {
-    int falloff = 10;
+    int falloff = 30;
     //check for things to drag - terminal, station, connector
     //if nothing has been locked from yet
     if (!lockedActive) {
       for (TrainLine tl : _trainlines) {
+        //evaluate stations first to avoid crashing
         for (Terminal t : tl.getTerminals()) {
-          if (t.isNear(falloff)) {
-            activeFrom = t;
+          if (t.isNear()) {
+            activeDrags.add(t);
             lockedActive = true;
             //turns immediate station/connector/terminal to tentative.
             println("Terminal selected");
@@ -77,12 +99,29 @@ void updateDrag() {
             break;
           }
         }
-        
+        for (Pair p : tl.getStationEnds()){
+          if (p.getB().isNear()){
+            activeDrags.add(p.getB());
+            lockedActive = true;
+            println("dragB selected");
+          }
+          else if (p.getA().isNear()){
+            activeDrags.add(p.getA());
+            lockedActive = true;
+            println("dragA selected");
+          }
+        }
         //other draggable things here.
       }
     }
     
     else {
+      //get ready to QUEUE UP OH YEAH
+      for (TrainLine tl: _trainlines) {
+        for (Pair p: tl.getStationEnds()){
+          
+        }
+      }
       
     }
     
@@ -144,8 +183,7 @@ void updateDrag() {
 void keyPressed() {
   println("LMAO");
   genStation();
-  println("LMNAO");
-  _trainlines.get(0).addTerminal(_stations.get(_stations.size() - 1));
+  _trainlines.get(0).addTerminal(_trainlines.get(0).getStation(0), _stations.get(_stations.size() - 1));
 }
 
 void mousePressed() {

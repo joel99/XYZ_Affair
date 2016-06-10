@@ -1,40 +1,70 @@
 //class Connector - holds train line data between stations
-public class Connector {
+//to implement draggable
+public class Connector implements Draggable {
   //holds at most 3 nodes
   int pos; //in case more than train line passes through same spot
   int state; //construction level
   //0 - tentative
   //1 - confirmed
   //-1 - confirmed to be possibly deleted
-  Station start;
-  Station end;
+  Station _start;
+  Station _end;
+  TrainLine _tl;
   int[] mid;  //holds turning point (if existing)
   int[] transMid;  //holds actual x y coords of mid.
   //make HITBOXES!!!
 
-  public Connector(Station s1, Station s2) {
-    start = s1;
-    end = s2;
-    calcMid(start, end);
+  public Connector(Station s1, Station s2, TrainLine tl) {
+    _start = s1;
+    _end = s2;
+    _tl = tl;
+    calcMid(_start, _end);
     //load up middle point, if existing.
     recalc();
     state = 0;
   }
 
-  boolean hasMid(){
+  boolean hasMid() {
     return mid != null;
   }
-  
-  int[] getTransMid(){
+
+  int[] getTransMid() {
     return transMid;
   }
-  
-  Station getStart(){
-    return start;
+
+  Station getStart() {
+    return _start;
   }
-  Station getEnd(){
-    return end;
+  Station getEnd() {
+    return _end;
   }
+
+  public TrainLine getTrainLine() {
+    return _tl;
+  }
+
+  //NEEDS TO BE DONE!!!
+  //for mouse detection
+  //use triangle inequality
+  //for mouse
+  public boolean isOn(int x1, int y1, int x2, int y2) {
+    float dist = dist(x1, y1, x2, y2);
+    float dist1 = dist(x1, y1, mouseX, mouseY);
+    float dist2 = dist(mouseX, mouseY, x2, y2);
+    return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4;
+  }
+  public boolean isNear() {
+    if (hasMid()) {
+      //float dist = dist(_start.getX(),_start.getY(), _end.getX(), _end.getY());
+      float dist1 = dist(_start.getX(), _start.getY(), mid[0], mid[1]);
+      float dist2 = dist(mid[0], mid[1], _end.getX(), _end.getY());
+      return isOn(_start.getX(), _start.getY(), mid[0], mid[1]) || isOn(mid[0], mid[1], _end.getX(), _end.getY());
+    } else {
+      return isOn(_start.getX(), _start.getY(), _end.getX(), _end.getY());
+    }
+  }
+
+
 
   //adapted from connect()
   void calcMid(Station s1, Station s2) {
@@ -72,28 +102,20 @@ public class Connector {
     }
   }
 
-
-//NEEDS TO BE DONE!!!
-  //for mouse detection
-  boolean isNear(int x, int y){
-    
-    return false;
-  }
-
-  void recalc(){
-    if (hasMid()){
+  public void recalc() {
+    if (hasMid()) {
       transMid = map.transform(mid[0], mid[1]);
     }
   }
 
-  void update() {
+  public void update() {
     //stroke(c);
     if (!hasMid()) {
       //println("I don't have a mid");
-      line(start.getX(), start.getY(), end.getX(), end.getY());
+      line(_start.getX(), _start.getY(), _end.getX(), _end.getY());
     } else {
-      line(start.getX(), start.getY(), transMid[0], transMid[1]);
-      line(transMid[0], transMid[1], end.getX(), end.getY());
+      line(_start.getX(), _start.getY(), transMid[0], transMid[1]);
+      line(transMid[0], transMid[1], _end.getX(), _end.getY());
     }
   }
 }

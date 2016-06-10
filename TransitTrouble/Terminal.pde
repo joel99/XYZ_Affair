@@ -1,17 +1,19 @@
 //class Terminal -- holds end grips data. extends in opposite direction of next connector line
 
-public class Terminal implements Draggable{
+public class Terminal implements Draggable {
 
   private Station _s;
   //holds first connector to get direction
-  private Connector _c;
+  private TrainLine _tl;
+  private boolean isNotInit;
   int x;
   int y;
 
-  public Terminal(Station s, Connector c) {
+  public Terminal(Station s, TrainLine tl) {
     _s = s;
-    _c = c;
-    calcXY();
+    _tl = tl;
+    isNotInit = true;
+    //calcXY();
   }
 
   public Station getStation() {
@@ -21,56 +23,83 @@ public class Terminal implements Draggable{
   void setStation(Station s) {
     _s = s;
   }
-  
-  int getX(){
+
+  public int getX() {
     return x;
   }
-  
-  int getY(){
+
+  public int getY() {
     return y;
   }
-  
+
+  public void setX(int newX) {
+    x = newX;
+  }
+
+  public void setY(int newY) {
+    y = newY;
+  }
+
+  public TrainLine getTrainLine() {
+    return _tl;
+  }
+
+  public boolean isNear() {
+    return dist(mouseX, mouseY, x, y) < width / (2 * map.activeW + 1) / 5;
+  }
+
+  //where do I go, sadbois...
   void calcXY() {
+    //in case of two terminals, i'm deceased.
     int len = width / (map.maxX - map.minX) / 2;
-    //get Xs and Ys, go opposite way for a bit. 
-    int x1 = _s.getX();
-    int y1 = _s.getY();
-    int x2, y2;
-    if (_c.hasMid()) {
-        x2 = _c.getTransMid()[0];
-        y2 = _c.getTransMid()[1];
-    }
-    else {
-      if (_s == _c.getStart()){
-        x2 = _c.getEnd().getX();
-        y2 = _c.getEnd().getY();
+    Draggable d = _tl.getOtherEnd(_s, this);
+    if (d != null) {
+      if (d instanceof Terminal) {
+        Terminal t = (Terminal) d;
+        x = _s.getX() - len;
+        y = _s.getY();
+        t.setX(_s.getX() + len);
+        t.setY(_s.getY());
+      } else {//it's a connector, which we want.
+        Connector c = (Connector)d; 
+        //get Xs and Ys, go opposite way for a bit. 
+        int x1 = _s.getX();
+        int y1 = _s.getY();
+        int x2, y2;
+        if (c.hasMid()) {
+          x2 = c.getTransMid()[0];
+          y2 = c.getTransMid()[1];
+        } else {
+          if (_s == c.getStart()) {
+            x2 = c.getEnd().getX();
+            y2 = c.getEnd().getY();
+          } else {
+            x2 = c.getStart().getX();
+            y2 = c.getStart().getY();
+          }
+        }
+        //xs and ys gotten, scale down
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        if (dx != 0)
+          dx = dx / int(abs(dx)) * len;
+        if (dy != 0)
+          dy = dy / int(abs(dy)) * len;
+        x = x1 - dx;
+        y = y1 - dy;
       }
-      else{
-        x2 = _c.getStart().getX();
-        y2 = _c.getStart().getY();
-      }
     }
-    //xs and ys gotten, scale down
-    int dx = x2 - x1;
-    int dy = y2 - y1;
-    if (dx != 0)
-      dx = dx / int(abs(dx)) * len;
-    if (dy != 0)
-      dy = dy / int(abs(dy)) * len;
-    x = x1 - dx;
-    y = y1 - dy;
-    println("CALCULATED!" + x + y);
   }
-  
-  public boolean isNear(int falloff){
-    return dist(mouseX, mouseY, x, y) < falloff;
-  }
-  
-  void recalc(){
+
+  public void recalc() {
     calcXY();
   }  
-  
-  void update(){
-    line(x, y, _s.getX(), _s.getY());  
+
+  public void update() {
+    if (isNotInit) {
+      calcXY();
+      isNotInit = false;
+    }
+    line(x, y, _s.getX(), _s.getY());
   }
 }
