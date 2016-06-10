@@ -13,14 +13,37 @@ void drawStationHealth(int x, int y, float HP) {
   arc(x, y, r, r, 0, HP, PIE);
 }
 
+void drawStationLine(int x, int y, PriorityQueue<Person> line) {
+  noStroke(); 
+  fill(0,0,0,60);
+  float r = width / (map.maxX - map.minX) / 5.5; // Radius of Station, ~Diameter of Person
+  for (int i = 0; i < line.size(); i++) {
+    float drawX = x; float drawY = y;
+    drawX += 1.5 * r;
+    drawX += 1.1 * r * i;
+    
+    drawY += r;
+    if (i > 6) drawY *= -1;
+    drawPerson(drawX, drawY, r, 1);
+}
+}
+
+// =======================================
+// People
+// =======================================
+void drawPerson(float x, float y, float r, int shape) {
+  if (shape == 1)
+    ellipse(x,y,r,r);
+}
+
 // =======================================
 // General
 // =======================================
 void drawStation(int x, int y, int shapeID){
   fill(255);
   stroke(0);
-  strokeWeight(3);
-  int r = width / (map.maxX - map.minX) / 5;
+  strokeWeight(2);
+  int r = width / (map.maxX - map.minX) / 5; // Radius
   switch(shapeID){
   case 0:
     ellipse(x, y, 2 * r, 2 * r);

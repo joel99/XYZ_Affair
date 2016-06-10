@@ -47,6 +47,8 @@ public class Station {
    * precond: _timeEnd >= _timeStart, Station capacity is not at max
    * postcond: _line has another Person, _timeStart and _timeEnd are updated accordingly */
   boolean addPassenger() {
+    if (_line.size() >= _CAPACITY) // Station Capacity = 12
+      return false; // Passenger not added
     int tmpPriority = 0;
     float roll = random(1);
     if (0.25 > roll) // 20%
@@ -66,7 +68,11 @@ public class Station {
    * precond:
    * postcond: _crowd is updated accordingly */
   void calculateCrowd() {
-    _crowd = _line.size() * 0.001; 
+    _crowd += (_line.size() - 6) * 0.001; // BALANCE LATER
+    if (_crowd < 0)
+      _crowd = 0;
+    if (_crowd > 999) // END GAME - IMPLEMENT LATER
+      ;
   }
     
   // =======================================
@@ -184,8 +190,8 @@ public class Station {
     }
     // print(getCrowd()); // Debugging
     // println(_timeEnd, _timeStart);
-    println(_crowd);
     drawStationHealth(_x,_y,_crowd);
     drawStation(_x, _y, _shape);
+    drawStationLine(_x,_y,_line);
   }
 }
