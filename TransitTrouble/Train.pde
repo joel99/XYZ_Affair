@@ -40,14 +40,10 @@ public class Train {
     if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold ) { //target is either mid or end
       if ( _reachedMid && !_lock ) { //if had already reached mid, then target was end station's target and you've reached the end
         _docked = true;
-        /*
         _targetX = _connector._end.getX();
         _targetY = _connector._end.getY();
-        */
-        //println("REACHED STATION!");
       }
       else { //just reached mid
-        //println("I JUST REACHED MID!");
         _reachedMid = true;
         _lock = true;
         _targetX = _connector._end.getX();
@@ -64,7 +60,8 @@ public class Train {
  
   public void update() {
     move();
-    rect(_x, _y, 30, 15);
+    fill(_connector.getTrainLine().c);
+    rect(_x-15, _y-10, 30, 20, 2);
   }
   
 }

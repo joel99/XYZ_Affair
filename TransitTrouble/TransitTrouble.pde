@@ -233,8 +233,8 @@ void mouseReleased() {
     
     }
   }
-  activeDrags = new ArrayList<>();
-  activeStations = new ArrayList<>();
+  activeDrags = new ArrayList();
+  activeStations = new ArrayList();
   //activeConnector = null;
   lockedActive = false;
   targetStation = null;
