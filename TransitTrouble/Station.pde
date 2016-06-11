@@ -173,9 +173,10 @@ public class Station {
   /** recalc
    * precond: integer array contained mapX and mapY
    * postcond: sets _x and _y accordingly */
-  void recalc(int[] coords){
-    _x = coords[0];
-    _y = coords[1];
+  void recalc(){
+    int[] temp = map.transform(_gridX, _gridY);
+    _x = temp[0];
+    _y = temp[1];
   } 
    
   // =======================================

@@ -15,17 +15,18 @@ void drawStationHealth(int x, int y, float HP) {
 
 void drawStationLine(int x, int y, PriorityQueue<Person> line) {
   noStroke(); 
-  fill(0,0,0,60);
+  fill(0,0,0,75);
   float r = width / (map.maxX - map.minX) / 5.5; // Radius of Station, ~Diameter of Person
   for (int i = 0; i < line.size(); i++) {
     float drawX = x; float drawY = y;
-    drawX += 1.5 * r;
-    drawX += 1.1 * r * i;
     
-    drawY += r;
-    if (i > 6) drawY *= -1;
-    drawPerson(drawX, drawY, r, 1);
-}
+    drawX += 1.9 * r; // Right side of station
+    drawX += 1.15 * r * (i % 6);
+    drawY -= 0.55 * r;
+    if (i >= 6) // Bottom Row
+      drawY += 1.1 * r;
+    drawPerson(drawX, drawY, r, 1); // Top Row
+  }
 }
 
 // =======================================

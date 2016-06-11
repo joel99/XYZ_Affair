@@ -105,7 +105,7 @@ public class Terminal implements Draggable {
   }  
 
   public void update() {
-    if (state == -1 || state == 0)
+    if (state == -1)
       stroke(_tl.getColor() + 50);
     else 
       stroke(_tl.getColor());

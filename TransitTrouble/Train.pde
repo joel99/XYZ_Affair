@@ -15,7 +15,7 @@ public class Train {
   boolean _reachedMid;
   boolean _docked;
   boolean _lock = false; //used for when train triggers _reachedMid multiple times
-  
+  //public static final int peakVelocity = 3;
   
   public Train( Connector kinektor ) {
     _carriage = new Stack<Person>(); // Initial Holding Capacity
