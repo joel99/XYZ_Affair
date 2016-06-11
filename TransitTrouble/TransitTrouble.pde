@@ -278,7 +278,7 @@ void genStation() {
 void grow() {
   map.grow();    
   for (Station s : _stations) {
-    s.recalc(map.transform(s.getGridX(), s.getGridY()));
+    s.recalc();
   }
   for (TrainLine tl : _trainlines) {
     tl.recalc();
