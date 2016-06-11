@@ -8,7 +8,10 @@ import java.util.Stack;
 public class Train {
   Stack<Person> _carriage;
   Connector _connector;
+  int _capacity = 6;
   int _x, _y, _targetX, _targetY;
+  int _offsetX = 15;
+  int _offsetY = 10;
   boolean _reachedMid;
   boolean _docked;
   boolean _lock = false; //used for when train triggers _reachedMid multiple times
@@ -61,7 +64,50 @@ public class Train {
   public void update() {
     move();
     fill(_connector.getTrainLine().c);
-    rect(_x-15, _y-10, 30, 20, 2);
+    if (_carriage.size() > 0) {
+      //load people
+      
+    }
+    rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
+    
+    //DECEASED HOPES AND DREAMS LIE BELOW
+    /*
+    pushMatrix();
+    if (_x != _targetX || _y != _targetY) {
+      rotate(PI / 4); 
+    }
+   
+    //translate(width/2, height/2);
+    //rotate(PI/3.0);
+    rotate(1); 
+    translate((width/2), (height/2));
+    rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
+    println(_x + ", " + _y);
+    //translate(-(width/2), -(height/2));
+    rotate(-1);
+    translate(0-(width/2), 0-(height/2));
+    popMatrix();
+    */
+    
+  }
+  
+  public boolean isFull() {
+    return _carriage.size() > _capacity; 
+  }
+  
+  public void pushPerson( Person p ) { //or Station s, may change later
+    _carriage.push(p); //load passenger on train
+    update();
+  }
+  
+  public void popPerson() {
+    _carriage.pop();
+    update();
+  }
+  
+  
+  public void recalc() {
+    //IMPLEMENTATION HERE???
   }
   
 }

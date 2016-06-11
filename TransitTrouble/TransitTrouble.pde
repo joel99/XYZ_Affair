@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 ArrayList<Station> _stations = new ArrayList<Station>();
 ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
+ArrayList<Train> _trains = new ArrayList<Train>();
 
 //safer to have boolean locks than to check if station is null...
 boolean lockedActive = false;
@@ -16,8 +17,6 @@ TrainLine activeTrainLine;
 //LinkedList dragList = null;
 boolean lockedTarget = false;
 Station targetStation = null;
-
-Train testTrain;
 
 Map map = new Map();
 
@@ -48,7 +47,7 @@ void setup() {
   //Connector c = new Connector(_stations.get(0), _stations.get(1));
   
 
-  testTrain = new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA());
+  _trains.add( new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA()) );
   
   /*
   for (Station s : _stations) {
@@ -67,14 +66,15 @@ void draw() {
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
+  for (Train tr : _trains) {
+     tr.update(); 
+  }
   for (Station s : _stations) {
     s.update();
     textSize(16);
     fill(0);
     text(_stations.indexOf(s), s.getX(), s.getY());
   }
-
-  testTrain.update(); //temporary
 
   updateDrag();
 }
@@ -277,5 +277,8 @@ void grow() {
   }
   for (TrainLine tl : _trainlines) {
     tl.recalc();
+  }
+  for (Train tr : _trains) {
+    tr.recalc();
   }
 }
