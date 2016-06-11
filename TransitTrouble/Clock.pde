@@ -2,47 +2,34 @@ public class Clock{
   
   private int _x;
   private int _y;
-  private int _time; //0 - 24
+  private int _time; //0 - 360
+  private int _r;
+  private int _day;
+  private final String[] DAYS = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
   
   public Clock(int x, int y){
     _x = x;
     _y = y;
+    _r = 20;
     _time = 0;
+    _day = 0;
   }
   
-  void draw() {
-  
-    background(0);
+  void update() {
   
     fill(80);
-  
     noStroke();
-  
-    // Angles for sin() and cos() start at 3 o'clock;
-  
-    // subtract HALF_PI to make them start at the top
-  
-    ellipse(100, 100, 160, 160);
-  
-    float s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
-  
-    float m = map(minute(), 0, 60, 0, TWO_PI) - HALF_PI;
-  
-    float h = map(hour() % 12, 0, 12, 0, TWO_PI) - HALF_PI;
-  
+    _time += 2;
+    if (_time >= 360) {
+      _day = (_day + 1) % 7;
+      _time -= 360;
+    }
+    ellipse(_x, _y, _r, _r);
     stroke(255);
-  
-    strokeWeight(1);
-  
-    line(100, 100, cos(s) * 72 + 100, sin(s) * 72 + 100);
-  
-    strokeWeight(2);
-  
-    line(100, 100, cos(m) * 60 + 100, sin(m) * 60 + 100);
-  
     strokeWeight(4);
-  
-    line(100, 100, cos(h) * 50 + 100, sin(h) * 50 + 100);
+    line(_x, _y, cos(radians(_time)) * _r + _x, sin(radians(_time)) * _r + _y);
+    stroke(0);
+    text(DAYS[_day], _x - 3 * _r, _y - 2 * _r);
   
   }
 }
