@@ -12,6 +12,7 @@ ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>();
 boolean lockedActive = false;
 ArrayList<Draggable> activeDrags = null;
 ArrayList<Station> activeStations = null;
+TrainLine activeTrainLine;
 //LinkedList dragList = null;
 boolean lockedTarget = false;
 Station targetStation = null;
@@ -28,6 +29,7 @@ void setup() {
   
   activeDrags = new ArrayList<Draggable>();
   activeStations = new ArrayList<Station>();
+  activeTrainLine = null;
   // ==================================================
   // Debugging
   for (int i = 0; i < 1; i++) {
@@ -90,11 +92,8 @@ void updateDrag() {
           if (t.isNear()) {
             activeDrags.add(t);
             lockedActive = true;
+            activeTrainLine = tl;
             //turns immediate station/connector/terminal to tentative.
-            println("Terminal selected");
-            //dragList = new Stack<Station>();
-            //load up entire station lines worth of things. 
-            //dragStack.push(t.getStation());
             break search;
           }
         }
@@ -102,13 +101,13 @@ void updateDrag() {
           if (p.getB().isNear()){
             activeDrags.add(p.getB());
             lockedActive = true;
-            println("dragB selected");
+            activeTrainLine = tl;
             break search;
           }
           else if (p.getA().isNear()){
             activeDrags.add(p.getA());
             lockedActive = true;
-            println("dragA selected");
+            activeTrainLine = tl;
             break search;
           }
         }
@@ -117,27 +116,43 @@ void updateDrag() {
     }
     
     else {
+      //todo: replace with queue
       //get ready to QUEUE UP OH YEAH
-      //track which things mouse goes through
+      //track which stationss mouse goes through
+      //if not active, add to list, set state based on if in train line or not.
       //activeDrags.add();
       //activeStations.add();
       //DRAW DRAW DRAW
       for (Draggable d: activeDrags){
-        //if (d.getState() == 0){
-        //  
-        //}
-        //else if(){
-        //
-        //}
+        d.update();
+      }
+      for (Station s: activeStations){
+        s.update();
       }
       //
-      for (TrainLine tl: _trainlines) {
-        for (Pair p: tl.getStationEnds()){
-          if (activeDrags.indexOf(p.getA()) == -1 && p.getA().isNear()){
-            activeDrags.add(p.getA());
+      for (Station s: _stations) {
+        //to do - add cooldown timer.
+        if (s.isNear()){
+          //if station is not active, add to queue of interest
+          if (activeStations.indexOf(s) == -1){
+            activeStations.add(s);
+            //if station is not on the train line, add the station of concern.
+            if (activeTrainLine.indexOf(s) == -1){
+              if (activeDrags.indexOf(s) == -1)
+                activeDrags.add(new Connector(activeStations.get(activeStations.size() - 1), s, activeTrainLine));
+              else if (activeDrags.indexOf(s) == activeDrags.size() - 1)
+                activeDrags.remove(activeDrags.size() - 1);
+              else
+                continue;
+              //s.setState(1);
+            }
+            
+            else {
+              //remove from train line
+            }
           }
-          else if (activeDrags.indexOf(p.getB()) == -1 && p.getB().isNear()){
-            activeDrags.add(p.getB());
+          else {//already queued up - remove from queue only if at top, otherwise ignore.
+            
           }
         }
       }
@@ -211,9 +226,15 @@ void mousePressed() {
 
 void mouseReleased() {
   //if there's something to add.
-  if (lockedTarget) {
-    //activeStation.getTrainLine().addStation(activeStation, targetStation);
+  for (Draggable d: activeDrags){
+    if (d.getState() == 0)
+      d.setState(1);
+    else if (d.getState() == -1){
+    
+    }
   }
+  activeDrags = new ArrayList<>();
+  activeStations = new ArrayList<>();
   //activeConnector = null;
   lockedActive = false;
   targetStation = null;

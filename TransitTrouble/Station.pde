@@ -115,6 +115,10 @@ public class Station {
     return oldY; 
   }
   
+  public boolean isNear() {
+    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 7;
+  }
+  
   //PRECOND: assuming no train line is set.
   /** setTrainLine
    * sets trainline(s) that this Station belongs to */

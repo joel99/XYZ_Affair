@@ -66,8 +66,6 @@ public class Connector implements Draggable {
     }
   }
 
-
-
   //adapted from connect()
   void calcMid(Station s1, Station s2) {
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
@@ -111,7 +109,7 @@ public class Connector implements Draggable {
   }
 
   public void update() {
-    if (state == -1 || state == 1)
+    if (state == -1 || state == 0)
       stroke(_tl.getColor() + 50);
     else 
       stroke(_tl.getColor());

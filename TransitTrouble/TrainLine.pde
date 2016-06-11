@@ -34,6 +34,11 @@ public class TrainLine {
   public Station getStation(int i){
     return _stations.get(i);
   }
+  
+  public int indexOf(Station s){
+    return _stations.indexOf(s);
+  }
+  
 
   public ArrayList<Pair> getStationEnds(){
     return _stationEnds;
