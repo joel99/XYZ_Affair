@@ -62,6 +62,8 @@ void draw() {
   background(255, 255, 255);
   
   map.debug(); //Debugging - Maps red dots to each grid coordinate
+  //stroke(255);
+  fill(255);
   ellipse(mouseX, mouseY, 60, 60); // Debugging
 
   for (TrainLine tl : _trainlines) {
@@ -142,12 +144,15 @@ void updateDrag() {
                 activeDrags.add(new Connector(activeStations.get(activeStations.size() - 1), s, activeTrainLine));
               else if (activeDrags.indexOf(s) == activeDrags.size() - 1)
                 activeDrags.remove(activeDrags.size() - 1);
-              else
-                continue;
+              //else
+               // continue;
               //s.setState(1);
             }
             
             else {
+              Pair temp = activeTrainLine.getStationEnds().get(activeTrainLine.indexOf(s)); // is a pair
+              temp.getA().setState(-1);
+              temp.getB().setState(-1);
               //remove from train line
             }
           }
