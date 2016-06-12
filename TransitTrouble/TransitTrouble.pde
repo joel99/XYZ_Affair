@@ -8,6 +8,7 @@ import java.util.HashSet;
 ArrayList<Train> _trains = new ArrayList<Train>();
 ArrayList<Station> _stations = new ArrayList<Station>(); // List of active Stations
 ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
+ArrayList<Button> _buttons = new ArrayList<Button>(); //List of ingame buttons 
 
 ArrayDeque<Draggable> _selected = new ArrayDeque<Draggable>();
 HashSet<Draggable> _hashed = new HashSet<Draggable>();
@@ -24,9 +25,6 @@ int dragType = 0;
 
 Map map = new Map();
 
-Train testTrain;
-
-
 void setup() {
   smooth(4);
   strokeWeight(8);
@@ -37,12 +35,13 @@ void setup() {
   // Debugging
   for (int i = 0; i < 1; i++) {
     genStation();
-    //genStation();
   }
   _trainlines.add(new TrainLine(_stations.get(0)));
   genStation();
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
-
+  
+  buttonSetup();
+  
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
    _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
@@ -57,6 +56,8 @@ void setup() {
    } 
    */
   // ==================================================
+  
+  //_trains.add( new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA()) );
 }
 
 void draw() {
@@ -79,7 +80,10 @@ void draw() {
     fill(0); // Debugging
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
   }
-  //testTrain.update(); // Debugging
+  for (Button b : _buttons) {
+    b.update(); 
+  }
+  
   updateDrag(); // Dragging Mechanism
 }
 
@@ -284,4 +288,16 @@ void grow() {
   for (Train tr : _trains) {
     tr.recalc();
   }
+}
+
+
+
+public void buttonSetup() {
+  int startX = 500; //where buttons start filling in (leftmost point)
+  int startY = 550; //what y level buttons fill in
+  
+  for (int i = 0; i < _trainlines.size(); i++) {
+    _buttons.add( new Button( startX + (i * 10), startY, 40, 20, _trainlines.get(i).c) );
+  }
+  
 }

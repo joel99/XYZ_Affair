@@ -85,8 +85,6 @@ public class Train {
   public void update() {
     move();
     fill(_connector.getTrainLine().c);
-
-
     
     int deltax = _targetX - _x;
     int deltay = _targetY - _y;
