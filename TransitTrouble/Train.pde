@@ -6,7 +6,8 @@
 import java.util.Stack;
 
 public class Train {
-  Stack<Person> _carriage;
+  ArrayList<Person> _carriage;
+  TrainLine _tl;
   Connector _connector;
   int _capacity = 6;
   int _x, _y, _targetX, _targetY;
@@ -17,16 +18,35 @@ public class Train {
   boolean _lock = false; //used for when train triggers _reachedMid multiple times
   //public static final int peakVelocity = 3;
   
-  public Train( Connector kinektor ) {
-    _carriage = new Stack<Person>(); // Initial Holding Capacity
+  int dir;
+  
+  public Train( int x, int y, Connector kinektor ) {
+    _carriage = new ArrayList<Person>(); // Initial Holding Capacity
     _connector = kinektor;
+    _tl = _connector.getTrainLine();
+    _docked = false;
+    //snap to connector line.
+    //SNAP to whichever part it's closer to.
+    int x1 = _connector._start.getX();
+    int y1 = _connector._start.getY();
+    int x2 = _connector._end.getX();
+    int y2 = _connector._end.getY();
+    if (_connector.hasMid()){
+    int xmid = _connector.mid[0];
+    int ymid = _connector.mid[1];
+    }
+    else{
+    }
     _x = _connector._start.getX();
     _y = _connector._start.getY();
     
-    boolean _reachedTarget = false;
+    dir = 1;
+    
+    //boolean _reachedTarget = false;
     _docked = false;
     
     if ( _connector.hasMid() ) {
+      
       _targetX = _connector.transMid[0]; //get to mid first
       _targetY = _connector.transMid[1];
       _reachedMid = false;
@@ -35,6 +55,8 @@ public class Train {
       _reachedMid = true; //target will be redirected to station in move()
       _targetX = _connector._end.getX();
       _targetY = _connector._end.getY();
+      _x = x;
+      _y = (dy / dx) * (_x - x1) + y1;
     }
   }
   
@@ -64,30 +86,20 @@ public class Train {
   public void update() {
     move();
     fill(_connector.getTrainLine().c);
-    if (_carriage.size() > 0) {
-      //load people
-      
+
+    int deltax = _targetX - _x;
+    int deltay = _targetY - _y;
+    if (deltax != 0 && deltay != 0){//we're on a diagonal.
+      int mult = (deltax * deltay) / abs(deltax * deltay);
+      translate(_x-_offsetX, _y-_offsetY);
+      rotate(mult * PI/4);
+      rect(0, 0, 30, 20, 2);
+      rotate(mult * -1 * PI / 4);
+      translate(-_x+_offsetX, -_y+_offsetY);
     }
-    rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
     
-    //DECEASED HOPES AND DREAMS LIE BELOW
-    /*
-    pushMatrix();
-    if (_x != _targetX || _y != _targetY) {
-      rotate(PI / 4); 
-    }
-   
-    //translate(width/2, height/2);
-    //rotate(PI/3.0);
-    rotate(1); 
-    translate((width/2), (height/2));
-    rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
-    println(_x + ", " + _y);
-    //translate(-(width/2), -(height/2));
-    rotate(-1);
-    translate(0-(width/2), 0-(height/2));
-    popMatrix();
-    */
+    else
+      rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
     
   }
   
