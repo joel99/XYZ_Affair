@@ -75,6 +75,7 @@ void draw() {
   }
   for (Station s : _stations) {
     s.update();
+    //if (_selectedStations.contains(s)) s.
     textSize(16); // Debugging
     fill(0); // Debugging
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
@@ -95,6 +96,7 @@ void updateDrag() {
 }
 
 //assumes I have an deque of stations and things to draggables to process
+//WE BUILD USING STATIONS AND PROCESS USING DEQUES!!!
 void executeSelected() {
   for (int i = 0; i < _selected.size() - 1; i++) {
     Draggable first = _selected.poll();
@@ -186,7 +188,7 @@ boolean mouseListenStation() {
       //case 1: already of interest - only take action if at end of deque (last done thing)
       if (_selectedStations.contains(s)){
         if (_selectedStations.peekLast() == s){
-          _selectedStations.pollLast();
+          _selectedStations.pollLast(); //<>//
           _selected.pollLast();
           
         }
