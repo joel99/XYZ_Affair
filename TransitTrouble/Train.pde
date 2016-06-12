@@ -43,15 +43,16 @@ public class Train {
     dir = 1;
     
     //boolean _reachedTarget = false;
+
+    boolean _reachedTarget = false;
     _docked = false;
-    
+
     if ( _connector.hasMid() ) {
       
       _targetX = _connector.transMid[0]; //get to mid first
       _targetY = _connector.transMid[1];
       _reachedMid = false;
-    }
-    else {
+    } else {
       _reachedMid = true; //target will be redirected to station in move()
       _targetX = _connector._end.getX();
       _targetY = _connector._end.getY();
@@ -59,7 +60,7 @@ public class Train {
       _y = (dy / dx) * (_x - x1) + y1;
     }
   }
-  
+
   public void move() {    
     int threshold = 5; //5 pixel variability
     if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold ) { //target is either mid or end
@@ -67,68 +68,26 @@ public class Train {
         _docked = true;
         _targetX = _connector._end.getX();
         _targetY = _connector._end.getY();
-      }
-      else { //just reached mid
+      } else { //just reached mid
         _reachedMid = true;
         _lock = true;
         _targetX = _connector._end.getX();
         _targetY = _connector._end.getY();
-      }  
-    }
-    else {
+      }
+    } else {
       _lock = false;
       _docked = false;
       _x -= Integer.compare(_x, _targetX); //if x<targetX: move -1, if same: stay in place, if x>targetX: move +1
       _y -= Integer.compare(_y, _targetY);
     }
   }
- 
-  public void drawTrain(){
-    //origins x y
-    beginShape();
-    int dx = _targetX - _x;
-    int dy = _targetY - _y;
-    int tempx = _x;
-    int tempy = _y;
-    if (dx == 0) {//draw vertical
-      tempx -= 10;
-      tempy -= 15;
-      vertex(tempx, tempy);
-      tempx += 20;
-      vertex(tempx, tempy);
-      tempy += 30;
-      vertex(tempx, tempy);
-      tempx -= 20;
-      vertex(tempx, tempy);
-    }
-    else if (dy == 0) {//draw horizontal
-      tempx -= 15;
-      tempy -= 10;
-      vertex(tempx, tempy);
-      tempy += 20;
-      vertex(tempx, tempy);
-      tempx += 30;
-      vertex(tempx, tempy);
-      tempy -= 20;
-      vertex(tempx, tempy);
-    }
-    else if (dx * dy > 0){//draw bottom left to top right
-      tempx += 10;
-    }
-    else{//other way
-    
-    }
-    
-    endShape();
-  } 
- 
+  
   public void update() {
-    drawTrain();
     move();
     fill(_connector.getTrainLine().c);
 
 
-    /*Stupid processing
+    
     int deltax = _targetX - _x;
     int deltay = _targetY - _y;
     if (deltax != 0 && deltay != 0){//we're on a diagonal.
@@ -142,26 +101,15 @@ public class Train {
     
     else
       rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
-    */
+    
   }
   
   public boolean isFull() {
     return _carriage.size() > _capacity; 
   }
   
-  public void pushPerson( Person p ) { //or Station s, may change later
-    _carriage.push(p); //load passenger on train
-    update();
-  }
-  
-  public void popPerson() {
-    _carriage.pop();
-    update();
-  }
-  
   
   public void recalc() {
     //IMPLEMENTATION HERE???
   }
-  
 }

@@ -1,6 +1,7 @@
+// 
 //a custom pair class to hold L,R of stations
 //not to conflate with the pair classes on the net, values are mutable
-public class Pair{
+public class Pair {
   
   private Draggable _a;
   private Draggable _b;

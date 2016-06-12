@@ -1,4 +1,4 @@
-  /*************************************
+/*************************************
  * TrainLine Class 
  * Collection of Stations joined together to form a train line.
  *************************************/
@@ -31,16 +31,16 @@ public class TrainLine {
   }
 
   //test method
-  public Station getStation(int i){
+  public Station getStation(int i) {
     return _stations.get(i);
   }
-  
-  public int indexOf(Station s){
+
+  public int indexOf(Station s) {
     return _stations.indexOf(s);
   }
-  
 
-  public ArrayList<Pair> getStationEnds(){
+
+  public ArrayList<Pair> getStationEnds() {
     return _stationEnds;
   }
 
@@ -101,7 +101,7 @@ public class TrainLine {
     }
   }
 
-  Draggable getOtherEnd(Station s, Draggable d){
+  Draggable getOtherEnd(Station s, Draggable d) {
     if (_stationEnds.size() > 0 && _stations.indexOf(s) != -1) {
       Pair temp = _stationEnds.get(_stations.indexOf(s));
       return temp.getOther(d);
@@ -112,23 +112,50 @@ public class TrainLine {
   Terminal[] getTerminals() {
     return new Terminal[]{_tStart, _tEnd};
   }
-  
-  public color getColor(){
+
+  public color getColor() {
     return c;
   }
 
-  /*
-  void addStation(Station s1, Station s2) {
-   s1.setEnd(false);
-   s2.setEnd(true);
-   if (s1.equals(_stations.get(0))) {
-   _stations.add(0, s2);
-   } else {
-   _stations.add(s2);
-   }
-   s2.setTrainLine(this);
-   }
-   */
+  /** addStation - Takes two stations, and inserts it into the TrainLine
+   * precond: s1, s2 are stations which are joined by the same connector
+   * postcond: The stations are connected s1 -- newStation -- s2 */
+  void addStation(Station s1, Station s2, Station newStation, Connector parent) {
+    println("STATIONS: " + _stations);
+    println("STATIONENDS: " + _stationEnds);
+
+    // Connect Stations
+    Connector c1 = new Connector(s1, newStation, this); // Between Station 1 and New Station
+    Connector c2 = new Connector(newStation, s2, this); // Between Station 2 and New Station
+    Pair Pair1 = _stationEnds.get(this.indexOf(s1)); // Station 1's Pair
+    Pair Pair2 = _stationEnds.get(this.indexOf(s2)); // Station 2's Pair
+    
+    Pair newPairStation = null; // Pair of the new Station
+
+    if (Pair1.getA() == parent) { 
+      Pair1.setA(c1);
+    }
+    if (Pair1.getB() == parent) { 
+      Pair1.setB(c1);
+    }
+    if (Pair2.getA() == parent) { 
+      Pair2.setA(c2);
+    }
+    if (Pair2.getB() == parent) { 
+      Pair2.setB(c2);
+    }
+    newPairStation = new Pair(c1, c2);
+
+    // Add Pair
+    _stationEnds.add(max(this.indexOf(s1), this.indexOf(s2)), newPairStation);
+
+    // Add Station
+    _stations.add(max(this.indexOf(s1), this.indexOf(s2)), newStation);
+
+    println("STATIONS: " + _stations);
+    println("STATIONENDS: " + _stationEnds);
+  }
+
   void connect(Station s1, Station s2) {
     stroke(c);
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
@@ -182,7 +209,6 @@ public class TrainLine {
   void recalc() {
     for (Pair p : _stationEnds) {
       p.getA().recalc();
-      
     }
     _tStart.recalc();
     _tEnd.recalc();

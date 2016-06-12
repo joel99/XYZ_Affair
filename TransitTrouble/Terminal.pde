@@ -2,8 +2,8 @@
 
 public class Terminal implements Draggable {
 
-  private Station _s;
   //holds first connector to get direction
+  private Station _s;
   private TrainLine _tl;
   private boolean isNotInit;
   public int state;
@@ -41,11 +41,11 @@ public class Terminal implements Draggable {
     y = newY;
   }
 
-  public int getState(){
+  public int getState() {
     return state;
   }
-  
-  public void setState(int newState){
+
+  public void setState(int newState) {
     state = newState;
   }
 
@@ -108,7 +108,7 @@ public class Terminal implements Draggable {
     if (state == -1)
       stroke(_tl.getColor() + 50);
     else 
-      stroke(_tl.getColor());
+    stroke(_tl.getColor());
     if (isNotInit) {
       calcXY();
       isNotInit = false;
