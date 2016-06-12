@@ -5,20 +5,20 @@
 
 public class Button {
   
-  private int _x, _y;
-  private int _size, _detectRadius;
-  private color _c;
+  int _x, _y;
+  int _size, _detectRadius;
+  color _c;
   
   public Button( int x, int y, int size, int detectRadius, color c ) {    
     _x = x;
     _y = y;
     _size = size;
-    _detectRadius = detectRadius; 
+    _detectRadius = detectRadius;   
     _c = c;
   }
   
-  public boolean isMouseNear() {
-    return distPointToPoint(_x, _y, mouseX, mouseY) > _detectRadius;
+  public boolean isClicked() {
+    return mousePressed && distPointToPoint(_x, _y, mouseX, mouseY) < _detectRadius;
   }
   
   public float distPointToPoint( int x1, int y1, int x2, int y2 ) {
@@ -27,11 +27,15 @@ public class Button {
   
   
   public void update() {
-    pushMatrix();
     fill(_c);
-    stroke(0);
+    
+    if (isClicked()) {
+      stroke(0);
+      strokeWeight(5);
+    }
+    else noStroke();
+    
     ellipse( _x, _y, _size, _size ); //draw button
-    popMatrix();
   }
   
 }

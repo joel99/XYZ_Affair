@@ -293,11 +293,16 @@ void grow() {
 
 
 public void buttonSetup() {
-  int startX = 500; //where buttons start filling in (leftmost point)
-  int startY = 550; //what y level buttons fill in
+  int colorStartX = 500; //where color buttons start filling in (leftmost point)
+  int trainStartX = 200; //train button location, trainStartX on left, so it should be < colorStartX
+  int buttonY = 550; //what y level buttons fill in
   
-  for (int i = 0; i < _trainlines.size(); i++) {
-    _buttons.add( new Button( startX + (i * 10), startY, 40, 20, _trainlines.get(i).c) );
+  for (int i = 0; i < _trainlines.size(); i++) { //trainline color buttons
+    _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
   }
+  
+  _buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110,110,110)) );
+  
+  
   
 }
