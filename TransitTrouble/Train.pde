@@ -57,7 +57,7 @@ public class Train {
       _targetX = _connector._end.getX();
       _targetY = _connector._end.getY();
       _x = x;
-      _y = (dy / dx) * (_x - x1) + y1;
+      //_y = (dy / dx) * (_x - x1) + y1;
     }
   }
 

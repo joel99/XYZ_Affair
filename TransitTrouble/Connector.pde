@@ -96,7 +96,6 @@ public class Connector implements Draggable {
     float dist2 = dist(mouseX, mouseY, x2, y2); // Distance between S2 and Mouse
     return dist1 + dist2 < dist + 5; // Threshold Value - Adjust?
     //return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4 + 2; // Threshold Value - Adjust?
->>>>>>> 0cc81604075aa064766114a05bb99570ac2f010a
   }
 
   /** isNear - checks if triangle inequality is satisfied for Connectors
