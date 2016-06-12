@@ -51,11 +51,15 @@ public class Connector implements Draggable {
     state = newState;
   }
   
-  public boolean isOn(int x1, int y1, int x2, int y2) {
+  public boolean isOn(int x1, int y1, int x2, int y2, int x3, int y3, int threshold){
     float dist = dist(x1, y1, x2, y2);
-    float dist1 = dist(x1, y1, mouseX, mouseY);
-    float dist2 = dist(mouseX, mouseY, x2, y2);
-    return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4;
+    float dist1 = dist(x1, y1, x3, y3);
+    float dist2 = dist(x3, y3, x2, y2);
+    return dist1 + dist2 < dist + threshold;
+  }
+  
+  public boolean isOn(int x1, int y1, int x2, int y2) {
+    return isOn(x1, y1, x2, y2, mouseX, mouseY, width / (2 * map.activeW + 1) / 4);
   }
   
   public boolean isNear() {

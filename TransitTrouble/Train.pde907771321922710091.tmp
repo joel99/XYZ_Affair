@@ -32,8 +32,8 @@ public class Train {
     int x2 = _connector._end.getX();
     int y2 = _connector._end.getY();
     if (_connector.hasMid()){
-    int xmid = _connector.mid[0];
-    int ymid = _connector.mid[1];
+    int xmid = _connector.getTransMid()[0];
+    int ymid = _connector.getTransMid()[1];
     }
     else{
     }
@@ -83,10 +83,44 @@ public class Train {
     }
   }
  
+  public void drawTrain(){
+    //origins x y
+    beginShape();
+    int dx = _targetX - _x;
+    int dy = _targetY - _y;
+    int tempx = _x;
+    int tempy = _y;
+    if (dx == 0) {//draw vertical
+      tempx -= 10;
+      tempy -= 15;
+      vertex(tempx, tempy);
+      tempx += 20;
+      vertex(tempx, tempy);
+      tempy += 30;
+      vertex(tempx, tempy);
+      tempx -= 20;
+      vertex(tempx, tempy);
+    }
+    else if (dy == 0) {//draw horizontal
+    
+    }
+    else if (dx * dy > 0){//draw bottom left to top right
+    
+    }
+    else{//other way
+    
+    }
+    
+    endShape();
+  } 
+ 
   public void update() {
+    drawTrain();
     move();
     fill(_connector.getTrainLine().c);
 
+
+    /*Stupid processing
     int deltax = _targetX - _x;
     int deltay = _targetY - _y;
     if (deltax != 0 && deltay != 0){//we're on a diagonal.
@@ -100,7 +134,7 @@ public class Train {
     
     else
       rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
-    
+    */
   }
   
   public boolean isFull() {
