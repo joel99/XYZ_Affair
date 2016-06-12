@@ -102,10 +102,18 @@ public class Train {
       vertex(tempx, tempy);
     }
     else if (dy == 0) {//draw horizontal
-    
+      tempx -= 15;
+      tempy -= 10;
+      vertex(tempx, tempy);
+      tempy += 20;
+      vertex(tempx, tempy);
+      tempx += 30;
+      vertex(tempx, tempy);
+      tempy -= 20;
+      vertex(tempx, tempy);
     }
     else if (dx * dy > 0){//draw bottom left to top right
-    
+      tempx += 10;
     }
     else{//other way
     
