@@ -1,19 +1,24 @@
-//class Connector - holds train line data between stations
-//to implement draggable
-public class Connector implements Draggable {
-  //holds at most 3 nodes
-  int pos; //in case more than train line passes through same spot
-  int state; //construction level
-  //0 - tentative
-  //1 - confirmed
-  //-1 - confirmed to be possibly deleted
-  Station _start;
-  Station _end;
-  TrainLine _tl;
-  int[] mid;  //holds turning point (if existing)
-  int[] transMid;  //holds actual x y coords of mid.
-  //make HITBOXES!!!
+/*************************************
+ * Connector Class 
+ * Links two Stations together.
+ *************************************/
 
+public class Connector implements Draggable {
+  // =======================================
+  // Instance Variables
+  // =======================================
+  int state; //construction level
+  // 0 - tentative
+  // 1 - confirmed
+  //-1 - confirmed to be possibly deleted // DELETE LATER
+  Station _start, _end;
+  TrainLine _tl;
+  int[] mid;  // Grid coordinates of turning point
+  int[] transMid;  // Map coordinates of turning point (post transformation) 
+
+  // =======================================
+  // Default Constructor
+  // =======================================
   public Connector(Station s1, Station s2, TrainLine tl) {
     _start = s1;
     _end = s2;
@@ -24,14 +29,28 @@ public class Connector implements Draggable {
     state = 0;
   }
 
+  // =======================================
+  // Mutators and Accessors
+  // ======================================= 
+  /** hasMid() 
+   * returns if a turning point exists for this Connector */
   boolean hasMid() {
     return mid != null;
   }
 
+  /** getTransMid()
+   * returns coordinates of transformed point, [x, y] */
   int[] getTransMid() {
     return transMid;
   }
+  /** getMid()
+   * returns grid coorinates of turning point, [x, y] */
+  int[] getMid  () {
+    return mid;
+  }
 
+  /** getStart(), getEnd()
+   * returns the stations at the start and end of this Connector */
   Station getStart() {
     return _start;
   }
@@ -39,25 +58,39 @@ public class Connector implements Draggable {
     return _end;
   }
 
+  /** getTrainLine()
+   * returns the TrainLine this connector belongs to */
   public TrainLine getTrainLine() {
     return _tl;
   }
 
-  public int getState(){
+  // OBSELETE
+  public int getState() {
     return state;
   }
-  
-  public void setState(int newState){
+  public void setState(int newState) {
     state = newState;
   }
-  
+
+  // =======================================
+  // TrainLine Methods
+  // =======================================
+  /** isOn - checks if triangle inequality is satisfied
+   * @param x1 - Map X of Station 1
+   * @param y1 - Map Y of Station 1
+   * @param x2 - Map X of Station 2
+   * @param y2 - Map Y of Station 2
+   * returns whether the  */
   public boolean isOn(int x1, int y1, int x2, int y2) {
-    float dist = dist(x1, y1, x2, y2);
-    float dist1 = dist(x1, y1, mouseX, mouseY);
-    float dist2 = dist(mouseX, mouseY, x2, y2);
-    return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4;
+    float dist = dist(x1, y1, x2, y2); // Distance between S1 and S2
+    float dist1 = dist(x1, y1, mouseX, mouseY); // Distance between S1 and Mouse
+    float dist2 = dist(mouseX, mouseY, x2, y2); // Distance between S2 and Mouse
+    return dist1 + dist2 < dist + 5; // Threshold Value - Adjust?
+    //return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4 + 2; // Threshold Value - Adjust?
   }
-  
+
+  /** isNear - checks if triangle inequality is satisfied for Connectors
+   * Helper function to account for cases when the connector has a turning point */
   public boolean isNear() {
     if (hasMid()) {
       return isOn(_start.getX(), _start.getY(), transMid[0], transMid[1]) || isOn(transMid[0], transMid[1], _end.getX(), _end.getY());
@@ -66,7 +99,10 @@ public class Connector implements Draggable {
     }
   }
 
-  //adapted from connect()
+  /** calcMid - Calculates grid coordinates of turning point, if they exist
+   * precond: 
+   * postcond: mid is updated to reflect turning point; null if no turning point exists
+   * adapted from connect() in Station */
   void calcMid(Station s1, Station s2) {
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
     //we use grid coordinates for simplicity in debugging.
@@ -97,22 +133,26 @@ public class Connector implements Draggable {
         diagy = y2;
         diagx = dy * m + x1;
       }
-
       mid = new int[]{diagx, diagy};
     }
   }
 
+  /** recalc()
+   * updates Map coordinates */
   public void recalc() {
     if (hasMid()) {
       transMid = map.transform(mid[0], mid[1]);
     }
   }
 
+  // =======================================
+  // Drawing Connector
+  // =======================================
   public void update() {
     if (state == -1 || state == 0)
       stroke(_tl.getColor() + 50);
     else 
-      stroke(_tl.getColor());
+    stroke(_tl.getColor());
     if (!hasMid()) {
       //println("I don't have a mid");
       line(_start.getX(), _start.getY(), _end.getX(), _end.getY());
