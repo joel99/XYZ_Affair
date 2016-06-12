@@ -100,6 +100,10 @@ public class TrainLine {
       _stationEnds.add(new Pair(c, _tEnd));
     }
   }
+  
+  void removeTerminal(){
+  
+  }
 
   Draggable getOtherEnd(Station s, Draggable d) {
     if (_stationEnds.size() > 0 && _stations.indexOf(s) != -1) {

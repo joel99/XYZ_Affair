@@ -19,6 +19,7 @@ boolean _mouseReleased = false;
 boolean _lock; // Used if initial click didn't find anything.
 TrainLine activeTrainLine = null;
 int dragType = 0;
+boolean justDraggedOnto = false; //aid for locking
 //0 - nothing, 1 - terminal, 2 - connector
 
 // Game Map - GUI
@@ -39,9 +40,9 @@ void setup() {
   _trainlines.add(new TrainLine(_stations.get(0)));
   genStation();
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
-  
+
   buttonSetup();
-  
+
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
    _trainlines.get(0).addTerminal( _stations.get(0), _stations.get(1) );
@@ -56,7 +57,7 @@ void setup() {
    } 
    */
   // ==================================================
-  
+
   //_trains.add( new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA()) );
 }
 
@@ -81,49 +82,64 @@ void draw() {
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
   }
   for (Button b : _buttons) {
-    b.update(); 
+    b.update();
   }
-  
+
   updateDrag(); // Dragging Mechanism
 }
 
 void updateDrag() {
   if (mousePressed && _mousePressed) { // Mouse is being pressed.
-    // CASE 1: Mouse was pressed before, and being held down now.  
+    // CASE 1: Mouse was pressed before, and being held down now.     
+    for (int i = 0; i < _selectedStations.size(); i++) {
+    }
     if (_lock)
       println("MOUSE STATE: LOCKED"); // Debugging
-    else if (mouseListenStation())
-      println("ADDED! " + _hashed.size()); // Debugging
-    // END CASE 1
+    else mouseListenStation();
   }
 }
 
 //assumes I have an deque of stations and things to draggables to process
 void executeSelected() {
-  for (int i = 0; i < _selected.size() - 1; i++) {
-    Draggable first = _selected.poll();
-    Draggable second = _selected.peekFirst();
-    Station firstStation = _selectedStations.poll();
-    Station secondStation = _selectedStations.peekFirst();
-    // If Terminal
+  println(_selectedStations.size());
+  while (_selectedStations.size() > 1) {
+    //CASE 1: ADDING TO TERMINAL
+    //move back until we get to a point where we can start building from. 
+    //while(_selectedStations.peekFirst() == o){}
     if (dragType == 1) {
-      Terminal tmp = (Terminal)first;
-      activeTrainLine.addTerminal(firstStation, secondStation);
-      println("EXECUTE: JOIN!"); // Debugging
-    }
+      //we're adding to terminal: find where we diverge from train line.
+      //ArrayList<Station> toDeleteStations = new ArrayList<>();
+      //toDelete
+      activeTrainLine.addTerminal(_selectedStations.pollFirst(), _selectedStations.peekFirst());
 
-    // If Connector
-    else if (dragType == 2) {
-      Station lastStation = _selectedStations.peekLast();
-      Connector tmp = (Connector)first;
-      activeTrainLine.addStation(firstStation, 
-        lastStation, 
-        secondStation, 
-        tmp);
-      println("EXECUTE: CRY!"); // Debugging
+      //first few should be removing?
     }
-
-    println("EXECUTED"); // Debugging
+    /*
+    Draggable first = _selected.poll();
+     Draggable second = _selected.peekFirst();
+     Station firstStation = _selectedStations.poll();
+     Station secondStation = _selectedStations.peekFirst();
+     // If Terminal
+     if (dragType == 1) {
+     Terminal tmp = (Terminal)first;
+     activeTrainLine.addTerminal(firstStation, secondStation);
+     println("EXECUTE: JOIN!"); // Debugging
+     }
+     
+     // If Connector
+     else if (dragType == 2) {
+     Station lastStation = _selectedStations.peekLast();
+     Connector tmp = (Connector)first;
+     activeTrainLine.addStation(firstStation, 
+     lastStation, 
+     secondStation, 
+     tmp);
+     println("EXECUTE: CRY!"); // Debugging
+     }
+     
+     println("EXECUTED"); // Debugging
+     }
+     */
   }
 }
 
@@ -144,11 +160,10 @@ outer:
       if (A != null && A.isNear())
         if (_hashed.add(A)) {
           _selected.add(A);
-          if (A instanceof Terminal){
+          if (A instanceof Terminal) {
             _selectedStations.add(((Terminal)A).getStation());
             dragType = 1;
-          }
-          else{
+          } else {
             Connector tmp = (Connector)A;
             _selectedStations.add(tmp.getStart());
             _selectedStations.add(tmp.getEnd());
@@ -161,11 +176,10 @@ outer:
       if (B != null && B.isNear())
         if (_hashed.add(B)) {
           _selected.add(B);
-          if (B instanceof Terminal){
+          if (B instanceof Terminal) {
             _selectedStations.add(((Terminal)B).getStation());
             dragType = 1;
-          }
-          else{
+          } else {
             Connector tmp = (Connector)B;
             _selectedStations.add(tmp.getStart());
             _selectedStations.add(tmp.getEnd());
@@ -184,32 +198,56 @@ outer:
 
 //precond: mouseListenStart() has been run, there is a train line of concern.
 boolean mouseListenStation() {
-  for (Station s: _stations){
+  boolean lockFlag = false;
+  for (Station s : _stations) {
     //process based on if in trainLine or not, if in activeConcern or not.
-    if (s.isNear()){
+    if (s.isNear()) {
+      lockFlag = true;
+      println("we're near some station");
       //case 1: already of interest - only take action if at end of deque (last done thing)
-      if (_selectedStations.contains(s)){
-        if (_selectedStations.peekLast() == s){
-          _selectedStations.pollLast();
-          _selected.pollLast();
-          
+      if (_selectedStations.contains(s)) {
+        println("we're near a station that is already of interest");
+        if (!justDraggedOnto) {
+          println("hum, this is interesting");
+          if (_selectedStations.peekLast() == s) {
+            println("POP IT OFF");
+            _selectedStations.pollLast();//remove
+            _selected.pollLast();
+            justDraggedOnto = true; //prevent immediate readding
+          }
+        } else {
+          println("but it's locked");
         }
       }
       //case 2: new station???
-      else{
+      else {
         //case 2a: is it not on the trainline: add
-        if (activeTrainLine.indexOf(s) == -1){
-          _selectedStations.add(s);
-          if (dragType == 1){
-            _selected.peekLast().setState(-1);
-          }
-          _selected.add(new Connector(_selectedStations.peekLast(), s, activeTrainLine));
-        }
-        else {//remove
+        if (!justDraggedOnto) {
+          if (activeTrainLine.indexOf(s) == -1) {
+            println("THIS IS A NEW STATION???");
+            justDraggedOnto = true;
+            _selectedStations.add(s);
+            println(_selectedStations);
+            //CASE: ADDING TO TERMINAL:
+            if (dragType == 1) {
+
+              _selected.add(new Connector(_selectedStations.peekLast(), s, activeTrainLine));
+              _selected.peekLast().setState(0);
+            }
+          } else {//remove
+            
           
+            if (dragType == 1) {
+              _selected.peekLast().setState(-1);
+            }
+          }
         }
       }
     }
+  }
+  if (!lockFlag) {
+    justDraggedOnto = false;
+    println("not near any station (justDraggedOnto is false)");
   }
   return false;
 }
@@ -246,6 +284,7 @@ void mouseReleased() {
   // END CASE 3
   _mousePressed = false;
   activeTrainLine = null;
+  dragType = 0;
   println("MOUSE STATE : UNPRESSED"); // Debugging
 }
 
@@ -296,13 +335,10 @@ public void buttonSetup() {
   int colorStartX = 500; //where color buttons start filling in (leftmost point)
   int trainStartX = 200; //train button location, trainStartX on left, so it should be < colorStartX
   int buttonY = 550; //what y level buttons fill in
-  
+
   for (int i = 0; i < _trainlines.size(); i++) { //trainline color buttons
     _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
   }
-  
-  _buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110,110,110)) );
-  
-  
-  
+
+  //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110,110,110)) );
 }

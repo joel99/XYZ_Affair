@@ -116,7 +116,7 @@ public class Station {
   }
 
   public boolean isNear() {
-    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 2;
+    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
   }
 
   // =======================================
