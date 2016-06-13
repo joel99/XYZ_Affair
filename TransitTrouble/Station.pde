@@ -55,7 +55,7 @@ public class Station {
       tmpPriority++; // 2
 
     _timeEnd = millis();
-    _timeStart = _timeEnd + 1000 * int(random(5)); // Adjust Later - Add 0 to 4 seconds of extra delay
+    _timeStart = _timeEnd + 1000 * int(random(4)); // Adjust Later - Add 0 to 3 seconds of extra delay
 
     // print("Passenger added!"); // Debugging
 
