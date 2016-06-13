@@ -144,8 +144,10 @@ public class Train {
    * postcond: Person is removed from _carriage and returned */
   Person getUnload() {
     for (int i = _carriage.size() - 1; i >= 0; i--) {
-      if (_carriage.get(i).getShape() == _end.getShape())
+      if (_carriage.get(i).getShape() == _end.getShape()){
+        score++;
         return _carriage.remove(i);
+      }
     }
     return null;
   }

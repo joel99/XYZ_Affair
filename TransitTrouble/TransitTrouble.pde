@@ -29,6 +29,9 @@ boolean _paused;
 
 TrainLine activeLine;
 
+int score;
+//every week you get a new train line and a new train.
+int week;
 
 // Game Map - GUI
 Map map = new Map();
@@ -588,4 +591,9 @@ public void buttonSetup() {
   //}
 
   //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
+}
+
+public void passWeek() {
+  trainButton.addTrain();
+  _buttons.add(new Button( 500 + (_buttons.size() * 10), 550, 40, 20, _trainlines.get(0).c)); 
 }
