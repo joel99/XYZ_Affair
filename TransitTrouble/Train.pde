@@ -18,6 +18,9 @@ public class Train {
   int _midDistance; 
   boolean _docked;
   float _x, _y;
+  int time1; // Internal Clock
+  int time2; // Internal Clock
+
 
   // =======================================
   // Default Constructor
@@ -107,9 +110,9 @@ public class Train {
     return _tl.getStation(newIndex);
   }
 
-  /** calcConnector() - updates connector between _start and _end
-   * precond: _start and _end both exist and are adjacent
-   * postcond: _connector is updated */
+  /** calcConnector() - finds Connector joining start and end
+   * precond: start and end are adjacent Stations
+   * postcond: returns the Connector joining the two Stations */
   Connector calcConnector(Station start, Station end) {
     Pair startEnds = _tl.getStationEnds().get(_tl.indexOf(start));
     Pair endEnds = _tl.getStationEnds().get(_tl.indexOf(end));
@@ -124,51 +127,96 @@ public class Train {
       return (Connector)startB;
     return null;
   }
-  
-  /* OBSELETE CODE - DELETE LATER 
-  void calcConnector() {
-    Pair startEnds = _tl.getStationEnds().get(_tl.indexOf(_start));
-    Draggable startA = startEnds.getA();
-    Draggable startB = startEnds.getB();
-    if (startA instanceof Connector) {
-      Connector A = (Connector)startA;
-      if (A.otherEnd(_start) == _end) {
-        _connector = A;
-      }
-    } else if (startB instanceof Connector) {
-      Connector B = (Connector)startB;
-      if (B.otherEnd(_start) == _end) {
-        _connector = B;
-      }
+
+  /** hasUnload - checks if there is a person to be unloaded
+   * precond: 
+   * postcond: returns whether there is a person with the same shape as the Station */
+  boolean hasUnload() {
+    for (Person p : _carriage) {
+      if (p.getShape() == _end.getShape()) 
+        return true;
     }
-    if (_connector == null) println("SUCKS TO SUCK");
+    return false;
   }
-  */
+
+  /** getUnload - removes a person from _carriage and unloads it
+   * precond: _carriage has someone to unload
+   * postcond: Person is removed from _carriage and returned */
+  Person getUnload() {
+    for (int i = _carriage.size() - 1; i >= 0; i--) {
+      if (_carriage.get(i).getShape() == _end.getShape())
+        return _carriage.remove(i);
+    }
+    return null;
+  }
+
+  /** hasLoad - checks if the Station has someone to be loaded
+   * precond: 
+   * postcond: returns whether there are people to load at the Station */
+  boolean hasLoad() {
+    return _end.getLineSize() > 0;
+  }
+
+  /** getLoad - checks if there is a person to be unloaded
+   * precond: 
+   * postcond: returns whether there is a person with the same shape as the Station */
+  void getLoad() {
+    _carriage.add(_end.popLine());
+  }
+
+  /* OBSELETE CODE - DELETE LATER 
+   void calcConnector() {
+   Pair startEnds = _tl.getStationEnds().get(_tl.indexOf(_start));
+   Draggable startA = startEnds.getA();
+   Draggable startB = startEnds.getB();
+   if (startA instanceof Connector) {
+   Connector A = (Connector)startA;
+   if (A.otherEnd(_start) == _end) {
+   _connector = A;
+   }
+   } else if (startB instanceof Connector) {
+   Connector B = (Connector)startB;
+   if (B.otherEnd(_start) == _end) {
+   _connector = B;
+   }
+   }
+   if (_connector == null) println("SUCKS TO SUCK");
+   }
+   */
 
   // =======================================
   // Train Movement and Docking
   // =======================================
   public void move() {
-    _moved++;
+    if (!_docked)
+      _moved++;
     if (_moved >= _distance) {
       _docked = true;
     }
-    if (_docked) {
-      // Unload and Load Passengers until done
-      // If done, _docked = false, switch paths
-
+    if (_docked && time1 > time2) {
+      time2 = time1 + 750; // 0.75 seconds delay
+      // Unload Passengers 
+      if (hasUnload()) {
+        getUnload();
+      }
+      // Load Passengers 
+      else if (hasLoad() && !isFull()) {
+        getLoad();
+      }
       // Set New Destination
-      Station s = getNextStation();
-      _start = _end;
-      _end = s;
+      else {
+        Station s = getNextStation();
+        _start = _end;
+        _end = s;
 
-      // Reset Connector
-      _connector = calcConnector(_start, _end);
+        // Reset Connector
+        _connector = calcConnector(_start, _end);
 
-      // Reset Distances
-      calcDistances();
+        // Reset Distances
+        calcDistances();
 
-      _docked = false;
+        _docked = false;
+      }
     }
   }
 
@@ -212,7 +260,10 @@ public class Train {
   // Train Drawing
   // =======================================
   public void update() {
+    time1 = millis();
     move();
     drawTrain(_x, _y, _tl.getColor(), recalc());
+    fill(0);
+    text(_carriage.size(), _x, _y); // Debugging
   }
 }

@@ -45,10 +45,10 @@ void drawTrain(float x, float y, color c, int dir) {
   rectMode(CENTER);
   noStroke();
   fill(c);
-  
+
   float theta = atan(0.5);
   float phi = 0;
-  float r = width / (map.maxX - map.minX) / 5;
+  float r = width / (map.maxX - map.minX) / 4;
   if (dir == 2 || dir == 8) // 90 degrees
     phi += PI / 2;
   if (dir == 9 || dir == 1) // 45 degrees
@@ -63,8 +63,14 @@ void drawTrain(float x, float y, color c, int dir) {
   float y3 = -y1;
   float x4 = -x2;
   float y4 = -y2;
-  x1 += x; x2 += x; x3 += x; x4 += x;
-  y1 += y; y2 += y; y3 += y; y4 += y;
+  x1 += x; 
+  x2 += x; 
+  x3 += x; 
+  x4 += x;
+  y1 += y; 
+  y2 += y; 
+  y3 += y; 
+  y4 += y;
   quad(x1, y1, x2, y2, x3, y3, x4, y4);
 }
 
