@@ -20,15 +20,13 @@ public class Station {
   private boolean isEnd;
   private int _timeStart, _timeEnd; // Timing - Used for passenger generation
   private static final int _CAPACITY = 12; // 12 people at most
-  private Draggable d1;
-  private Draggable d2;
-
+  
   // =======================================
   // Default Constructor
   // Creates a station on the lattice grid of Map.
   // =======================================
   public Station(int[] coords) {
-    _shape = 0; // To adjust depending on time
+    _shape = (int)random(3); // To adjust depending on time
     _x = coords[0];
     _y = coords[1];
     _gridX = coords[2];
@@ -57,7 +55,7 @@ public class Station {
       tmpPriority++; // 2
 
     _timeEnd = millis();
-    _timeStart = _timeEnd + 1000 * int(random(5)); // Adjust Later - Add 0 to 4 seconds of extra delay
+    _timeStart = _timeEnd + 1000 * int(random(4)); // Adjust Later - Add 0 to 3 seconds of extra delay
 
     // print("Passenger added!"); // Debugging
 
@@ -115,8 +113,45 @@ public class Station {
     return oldY;
   }
 
-  public boolean isNear() {
-    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
+  /** getCrowd
+   * returns crowdedness value of this Station */
+  float getCrowd() {
+    return _crowd;
+  }
+  /** setCrowd
+   * sets crowdedness value to specified float */
+  void setCrowd(float newCrowd) {
+    _crowd = newCrowd;
+  }
+
+  /** isEnd
+   * returns whether this Station is at the front or end of the TrainLine */
+  boolean isEnd() {
+    return isEnd;
+  }
+  /** setEnd
+   * precond: boolean b, telling whether this station is an end Station
+   * postcond: isEnd is updated to reflect the Station's state */
+  void setEnd(boolean b) {
+    isEnd = b;
+  }
+  
+  /** getShape
+   * returns shape of this Station */
+  int getShape() {
+    return _shape; 
+  }
+  
+  /** getLineSize
+   * returns number of Persons waiting at the Station */
+  int getLineSize() {
+    return _line.size(); 
+  }
+  
+  /** popLine
+   * removes and returns the next person in line */
+  Person popLine() {
+    return _line.poll(); 
   }
 
   // =======================================
@@ -150,33 +185,14 @@ public class Station {
     return null;
   }
 
-  /** isEnd
-   * returns whether this Station is at the front or end of the TrainLine */
-  boolean isEnd() {
-    return isEnd;
-  }
-  /** setEnd
-   * precond: boolean b, telling whether this station is an end Station
-   * postcond: isEnd is updated to reflect the Station's state */
-  void setEnd(boolean b) {
-    isEnd = b;
-  }
-
-  /** getCrowd
-   * returns crowdedness value of this Station */
-  float getCrowd() {
-    return _crowd;
-  }
-  /** setCrowd
-   * sets crowdedness value to specified float */
-  void setCrowd(float newCrowd) {
-    _crowd = newCrowd;
+  public boolean isNear() {
+    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
   }
 
   /** recalc
    * precond: integer array contained mapX and mapY
    * postcond: sets _x and _y accordingly */
-  void recalc(){
+  void recalc() {
     int[] temp = map.transform(_gridX, _gridY);
     _x = temp[0];
     _y = temp[1];
@@ -193,7 +209,7 @@ public class Station {
     calculateCrowd();
 
     // Update Line
-    if (_timeEnd - 1000 >= _timeStart) { // 1 seconds
+    if (_timeEnd - 5000 >= _timeStart) { // 5 seconds
       addPassenger();
     }
     // print(getCrowd()); // Debugging
