@@ -224,11 +224,10 @@ public class TrainLine {
 
     // Add Station
     _stations.add(max(this.indexOf(s1), this.indexOf(s2)), newStation);
-
   }
-  
+
   //remove station in midst of connectors
-  void removeStation(Station s){
+  void removeStation(Station s) {
     int i = _stations.indexOf(s);
     println("removing  index " + i);
     Pair p = _stationEnds.get(_stations.indexOf(s));
@@ -241,7 +240,7 @@ public class TrainLine {
     else d1 = p1.getA();
     if (p2.getA() == c2) d2 = p2.getB();
     else d2 = p2.getA();
-    Connector c = new Connector(_stations.get(i - 1), _stations.get(i + 1),this);
+    Connector c = new Connector(_stations.get(i - 1), _stations.get(i + 1), this);
     _stationEnds.set(i-1, new Pair(d1, c));
     _stationEnds.set(i+1, new Pair(c, d2));
     _stationEnds.remove(i);
@@ -267,7 +266,7 @@ public class TrainLine {
     }
   }
 
-  Station otherAdjacent(Station pivot, Station adj){
+  Station otherAdjacent(Station pivot, Station adj) {
     int i = _stations.indexOf(pivot);
     int j = _stations.indexOf(adj);
     if (j == i + 1) return _stations.get(i-1);
@@ -308,6 +307,31 @@ public class TrainLine {
       int[] Diag_xy = map.transform(diagx, diagy);
       line(s1.getX(), s1.getY(), Diag_xy[0], Diag_xy[1]);
       line(Diag_xy[0], Diag_xy[1], s2.getX(), s2.getY());
+    }
+  }
+
+  void connectMouse(Station s) {
+    stroke(c);
+    int diagx, diagy;
+    int x1 = s.getX();
+    int y1 = s.getY();
+    int dx = mouseX - x1;
+    int dy = mouseY - y1;
+    if (dx == 0 || dy == 0 || abs(dx) == abs(dy)) {
+      line(x1, y1, mouseX, mouseY);
+    } else {
+      int m;
+      if (dx * dy > 0) m = 1;
+      else m = -1;
+      if (abs(dx) < abs(dy)) {
+        diagx = mouseX;
+        diagy = m * dx + y1;
+      } else {
+        diagy = mouseY;
+        diagx = dy * m + x1;
+      }
+      line(x1, y1, diagx, diagy);
+      line(diagx, diagy, x1, y1);
     }
   }
 

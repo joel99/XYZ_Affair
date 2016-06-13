@@ -50,7 +50,6 @@ public class Button {
     if (isActive) {
       stroke(0);
       strokeWeight(5);
-      println("AYYY");
     }
     else noStroke();
     
