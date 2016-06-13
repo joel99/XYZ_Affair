@@ -209,7 +209,7 @@ public class Station {
     calculateCrowd();
 
     // Update Line
-    if (_timeEnd - 1000 >= _timeStart) { // 1 seconds
+    if (_timeEnd - 5000 >= _timeStart) { // 5 seconds
       addPassenger();
     }
     // print(getCrowd()); // Debugging
