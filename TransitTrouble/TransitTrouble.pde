@@ -113,7 +113,7 @@ void draw() {
   // Clear Screen
   if (_lost) {
     background(255, 255, 255);
-    text("lol get rekt", width/2, height/2);
+    text("Final Score: " + score , width/2, height/2);
   }
 }
 
@@ -215,7 +215,18 @@ void updateDrag() {
     for (int i = 0; i < _selectedStations.size(); i++) {
     }
     if (!_lock) mouseListenStation();
-  }
+    /*
+    Station[] dispStations = new Station[_selectedStations.size()];
+    Object[] objStations = _selectedStations.toArray();
+    for (int i = 0; i < dispStations.length; i++){
+      dispStations[i] = (Station) objStations[i];
+    }
+    for (int i = 0; i < dispStations.length - 1; i++){
+      activeTrainLine.connect(dispStations[i], dispStations[i+1]);
+    }
+    if (dispStations.length > 0) activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
+    */
+    }
 }
 
 //assumes I have an deque of stations and things to draggables to process
@@ -282,7 +293,7 @@ outer:
     //            Try hashing if near mouse
     //            If hash success, add it to list of selected
     //            Otherwise, keep checking
-    //if (tl != activeTrainLine) continue;
+    if (tl != activeTrainLine) continue;
     // Pairs -- Connectors
     for (Pair p : tl.getStationEnds()) {
       Draggable A = p.getA();
