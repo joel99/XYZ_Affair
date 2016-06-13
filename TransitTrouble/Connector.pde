@@ -70,25 +70,19 @@ public class Connector implements Draggable {
   }
   public void setState(int newState) {
     state = newState;
-  }
-  
-  
-  public boolean isOn(int x1, int y1, int x2, int y2, int x3, int y3, int threshold){
-    float dist = dist(x1, y1, x2, y2);
-    float dist1 = dist(x1, y1, x3, y3);
-    float dist2 = dist(x3, y3, x2, y2);
-    return dist1 + dist2 < dist + threshold;
-  }
-  
+  } 
 
   // =======================================
-  // TrainLine Methods
+  // Connector Methods
   // =======================================
   /** isOn - checks if triangle inequality is satisfied
    * @param x1 - Map X of Station 1
    * @param y1 - Map Y of Station 1
    * @param x2 - Map X of Station 2
    * @param y2 - Map Y of Station 2
+   * @param x3 - Mouse X coordinate
+   * @param y3 - Mouse Y coordinate
+   * @param threshold - Threshold value in pixels
    * returns whether the  */
   public boolean isOn(int x1, int y1, int x2, int y2) {
     float dist = dist(x1, y1, x2, y2); // Distance between S1 and S2
@@ -96,6 +90,12 @@ public class Connector implements Draggable {
     float dist2 = dist(mouseX, mouseY, x2, y2); // Distance between S2 and Mouse
     return dist1 + dist2 < dist + 5; // Threshold Value - Adjust?
     //return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4 + 2; // Threshold Value - Adjust?
+  } 
+  public boolean isOn(int x1, int y1, int x2, int y2, int x3, int y3, int threshold) {
+    float dist = dist(x1, y1, x2, y2);
+    float dist1 = dist(x1, y1, x3, y3);
+    float dist2 = dist(x3, y3, x2, y2);
+    return dist1 + dist2 < dist + threshold;
   }
 
   /** isNear - checks if triangle inequality is satisfied for Connectors
@@ -152,6 +152,19 @@ public class Connector implements Draggable {
     if (hasMid()) {
       transMid = map.transform(mid[0], mid[1]);
     }
+  }
+
+  /** otherEnd(Station) - finds Station at other end of this connector
+   * precond: Station s is one of _start or _end
+   * postcond: If s == _start, _end
+   *              s == _end, _start
+   *              else, null */
+  public Station otherEnd(Station s) {
+    if (s == _start)
+      return _end;
+    if (s == _end)
+      return _start;
+    return null; 
   }
 
   // =======================================
