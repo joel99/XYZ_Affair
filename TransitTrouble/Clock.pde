@@ -36,4 +36,15 @@ public class Clock{
     text(DAYS[_day], _x - 2*_r, _y);
   
   }
+  void update(int flag) {
+    fill(80);
+    noStroke();
+    ellipse(_x, _y, _r, _r);
+    stroke(255);
+    strokeWeight(4);
+    line(_x, _y, sin(radians(_time)) * _r + _x, -cos(radians(_time)) * _r + _y);
+    stroke(0);
+    text(DAYS[_day], _x - 2*_r, _y);
+  
+  }
 }

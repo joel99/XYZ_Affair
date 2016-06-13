@@ -338,4 +338,19 @@ public class TrainLine {
       _stations.get(i).update();
     }
   }
+  void update(int flag) {
+    //draw terminals
+    _tStart.update();
+    _tEnd.update();
+    //draw the rest.
+    for (int i = 1; i < _stationEnds.size(); i++) {
+      _stationEnds.get(i).getA().update();
+    }
+    for (int i = 0; i < _stationEnds.size(); i++) {
+      _stationEnds.get(i).getB().update();
+    }
+    for (int i = 0; i < _stations.size(); i++) {
+      _stations.get(i).update(0);
+    }
+  }
 }

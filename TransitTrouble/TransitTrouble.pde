@@ -2,6 +2,10 @@
  * Transit Trouble by XYZ Affair 
  *************************************/
 //NOTE: SCREEN RATIO 3:2
+
+// =======================================
+// Instance Variables
+// =======================================
 import java.util.ArrayDeque;
 import java.util.HashSet;
 
@@ -21,27 +25,31 @@ TrainLine activeTrainLine = null;
 int dragType = 0;
 boolean justDraggedOnto = false; //aid for locking
 //0 - nothing, 1 - terminal, 2 - connector
+boolean _paused;
 
 TrainLine activeLine;
 
-// Game Map - GUI
 
+// Game Map - GUI
 Map map = new Map();
 Clock gameClock;
 
+// =======================================
+// Setup
+// =======================================
 void setup() {
   smooth(4);
   strokeWeight(8);
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
 
-  gameClock = new Clock(850,50);
+  gameClock = new Clock(850, 50);
 
   // ==================================================
   // Debugging
-  
+
   genStation();
-  
+
   _trainlines.add(new TrainLine(_stations.get(0)));
 
   activeLine = _trainlines.get(0); //TEMPORARY
@@ -50,6 +58,7 @@ void setup() {
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
 
   buttonSetup();
+
   _trains.add(new Train(_stations.get(0), 
     _stations.get(1), 
     _trainlines.get(0)));
@@ -72,47 +81,79 @@ void setup() {
   //_trains.add( new Train((Connector)_trainlines.get(0)._stationEnds.get(1).getA()) );
 }
 
+// =======================================
+// Draw
+// =======================================
 void draw() {
-  background(255, 255, 255);
+  if (!_paused) { // Unpaused
+    background(255, 255, 255);
+    map.debug(); //Debugging - Maps red dots to each grid coordinate
+    fill(255);
+    //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor // Debugging
 
-  /*
-   ArrayList<Train> _trains = new ArrayList<Train>();
-   ArrayList<Station> _stations = new ArrayList<Station>(); // List of active Stations
-   ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
-   ArrayList<Button> _buttons = new ArrayList<Button>(); //List of ingame buttons
-   */
+    //  buttonSetup(); //when more train lines get added
 
-  // println(_buttons);
-  //println("STATIONS: " + _stations);
-  //for (TrainLine tl : _trainlines) {
-    //println("TRAINLINE: " + tl.getStations());
-    //println("TRAINLINE PAIRS: " + tl.getStationEnds());
-  //}
+    // Updating Clock
+    updateClock();
 
-  map.debug(); //Debugging - Maps red dots to each grid coordinate
-  //stroke(255);
-  fill(255);
+    // Updating Trainlines 
+    updateTrainLines();
 
-  //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
+    // Updating Stations
+    updateStations();
 
-  //  buttonSetup(); //when more train lines get added
+    // Updating Buttons
+    updateButtons();
 
-  int initDay = gameClock.getDay();
-  gameClock.update();
-  int postDay = gameClock.getDay();
-  if (initDay != postDay) { //if the day just changed in gameClock
-    genStation();
+    // Updating Trains
+    updateTrains();
+    
+  } else { // Paused
+    background(255, 255, 255);
+    map.debug(); //Debugging - Maps red dots to each grid coordinate
+    fill(255);
+    
+    updateClock(0);
+    updateTrainLines(0); // No need for flag.
+    updateStations(0);
+    updateButtons(); // No need for flag.
+    updateTrains(0);
   }
-  
+  updateDrag(); // Dragging Mechanism
+}
+
+// =======================================
+// Updating
+// =======================================
+void updateTrainLines() {
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
+}
+void updateTrainLines(int flag) {
+  for (TrainLine tl : _trainlines) {
+    tl.update(0);
+  }
+}
+
+void updateStations() { 
   for (Station s : _stations) {
     s.update();
     textSize(16); // Debugging
     fill(0); // Debugging
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
   }
+}
+void updateStations(int flag) { 
+  for (Station s : _stations) {
+    s.update(0);
+    textSize(16); // Debugging
+    fill(0); // Debugging
+    text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
+  }
+}
+
+void updateButtons() {
   for (Button b : _buttons) {
     b.update();
     if (b instanceof ButtonMovable && ((ButtonMovable)b).isActive()) {
@@ -129,13 +170,38 @@ void draw() {
       ((ButtonMovable)b).drawCursor( w, h, dragTrainColor );
     }
   }
+}
+
+void updateTrains() { 
   for (Train tr : _trains) {
     tr.update();
   }
-
-  updateDrag(); // Dragging Mechanism
+}void updateTrains(int flag) { 
+  for (Train tr : _trains) {
+    tr.update(0);
+  }
 }
 
+void updateClock() {
+  int initDay = gameClock.getDay();
+  gameClock.update();
+  int postDay = gameClock.getDay();
+  if (initDay != postDay) { //if the day just changed in gameClock
+    genStation();
+  }
+}
+void updateClock(int flag) {
+  int initDay = gameClock.getDay();
+  gameClock.update(0);
+  int postDay = gameClock.getDay();
+  if (initDay != postDay) { //if the day just changed in gameClock
+    genStation();
+  }
+}
+
+// =======================================
+// Helper Methods
+// =======================================
 void updateDrag() {
   if (mousePressed && _mousePressed) { // Mouse is being pressed.
     // CASE 1: Mouse was pressed before, and being held down now.     
@@ -178,8 +244,8 @@ void executeSelected() {
     //CASE 2: ADDING MIDWAY
     if (dragType == 2) {
       println("HEYO" + _selectedStations.size());
-      for (int i = 0; i < _selectedStations.size(); i++){
-      //  println(_selectedStations.(i));
+      for (int i = 0; i < _selectedStations.size(); i++) {
+        //  println(_selectedStations.(i));
       }
 
       //so essentially, like above, but using beginning AND end
@@ -315,15 +381,14 @@ boolean mouseListenStation() {
             if (_selectedStations.peekFirst() == s || _selectedStations.peekLast() == s) {
               //we're passing over something of concern that we use as a leveraging point later (not actually disconnect). disconnect it, and get the next item.
               println("something's actually happening");
-              if (_selectedStations.peekFirst() == s){
+              if (_selectedStations.peekFirst() == s) {
                 println("we're removing first");
                 Station temp  = _selectedStations.pollFirst();
                 Station forward = _selectedStations.peekFirst();
                 _selectedStations.addFirst(temp);
                 _selectedStations.addFirst(activeTrainLine.otherAdjacent(temp, forward));
                 justDraggedOnto = true;
-              }
-              else {
+              } else {
                 println("we're removing last");
                 Station temp = _selectedStations.pollLast();
                 Station prev = _selectedStations.peekLast();
@@ -395,11 +460,20 @@ boolean mouseListenStation() {
 }
 
 // ==================================================
-// Helper Methods
+// Key Listeners
 // ==================================================
 void keyPressed() {
-  println("LMAO");
-  genStation();
+  char pressed = key;
+  println("PRESSED: " + pressed);
+  if (pressed == 'd' || pressed == 'D') {
+    genStation();
+  }
+  if (pressed == 'p' || pressed == 'P') {
+    if (_paused)
+      _paused = false;
+    else
+      _paused = true;
+  }
   // _trainlines.get(0).addTerminal(_trainlines.get(0).getStation(0), _stations.get(_stations.size() - 1)); // Debugging
 }
 
@@ -467,8 +541,6 @@ void grow() {
     tl.recalc();
   }
 }
-
-
 
 public void buttonSetup() {
   int colorStartX = 500; //where color buttons start filling in (leftmost point)

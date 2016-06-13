@@ -266,4 +266,12 @@ public class Train {
     fill(0);
     text(_carriage.size(), _x, _y); // Debugging
   }
+  public void update(int flag) { // Paused
+    int difference = millis() - time1;
+    time1 = millis();
+    time2 += difference;
+    drawTrain(_x, _y, _tl.getColor(), recalc());
+    fill(0);
+    text(_carriage.size(), _x, _y); // Debugging
+  }
 }
