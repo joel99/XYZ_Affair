@@ -27,7 +27,7 @@ boolean justDraggedOnto = false; //aid for locking
 //0 - nothing, 1 - terminal, 2 - connector
 boolean _paused;
 boolean _lost;
-
+boolean _newTrainLineMode = false;
 TrainLine activeLine;
 
 int score;
@@ -60,7 +60,7 @@ void setup() {
 
   genStation();
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
-
+  activeTrainLine = _trainlines.get(0);
   buttonSetup();
 
   _trains.add(new Train(_stations.get(0), 
@@ -164,11 +164,13 @@ void draw() {
 // =======================================
 void updateTrainLines() {
   for (TrainLine tl : _trainlines) {
+    if (tl.getStations().size() != 0)
     tl.update();
   }
 }
 void updateTrainLines(int flag) {
   for (TrainLine tl : _trainlines) {
+    if (tl.getStations().size() != 0)
     tl.update(0);
   }
 }
@@ -256,6 +258,11 @@ void updateDrag() {
     }
     if (!_lock) mouseListenStation();
   }
+  //Station[] dispStations = (Station[])_selectedStations.toArray();
+  //for (int i = 0; i < dispStations.length - 1; i++){
+  //  activeTrainLine.connect(dispStations[i], dispStations[i+1]);
+  //}
+  //activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
 }
 
 //assumes I have an deque of stations and things to draggables to process
@@ -359,7 +366,7 @@ outer:
     //            Try hashing if near mouse
     //            If hash success, add it to list of selected
     //            Otherwise, keep checking
-
+    //if (tl != activeTrainLine) continue;
     // Pairs -- Connectors
     for (Pair p : tl.getStationEnds()) {
       Draggable A = p.getA();
@@ -522,6 +529,14 @@ void keyPressed() {
 }
 
 void mousePressed() {
+  if (activeTrainLine.getStations().size() == 0){
+    for (Station s: _stations){
+      if (s.isNear()){
+        _trainlines.set(_trainlines.indexOf(activeTrainLine), new TrainLine(s, activeTrainLine.c));
+      }
+    }
+  }
+  
   if (mouseListenStart()) { // Track what was just clicked.
     println("ADDED! " + _hashed.size()); // Debugging
     println("found on mouseclick");
@@ -542,10 +557,16 @@ void mouseReleased() {
   _hashedStations.clear();
   _selectedStations.clear();
   // END CASE 3
+  //activeTrainLine = null;
   _mousePressed = false;
-  activeTrainLine = null;
   dragType = 0;
   println("MOUSE STATE : UNPRESSED"); // Debugging
+  if (trainButton.isActive()) {
+    //find closest station of activeTrainLine
+    _trains.add(new Train(closestStation(), 
+    activeTrainLine));
+    trainButton.removeTrain();
+  }
 }
 
 void genStation() {
@@ -582,6 +603,7 @@ void grow() {
     s.recalc();
   }
   for (TrainLine tl : _trainlines) {
+    if (tl.getStations().size() != 0)
     tl.recalc();
   }
 }
@@ -602,22 +624,24 @@ public void buttonSetup() {
   //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
 }
 
-/* DOESN'T WORK
- TrainLine closestTrainLine() {
- Station closest;
- float shortest = 99999; // 800 x 600 screen, no problems here
- for (Station s : _stations) {
- float distance = dist(mouseX, mouseY, s.getX(), s.getY());
- if (distance < shortest) {
- shortest = distance;
- closest = s;
- }
- }
- return closest.getTrainLine();
- }
- */
+Station closestStation() {
+  Station closest = null;
+  float shortest = 99999; // 800 x 600 screen, no problems here
+  for (Station s : activeTrainLine.getStations()) {
+    float distance = dist(mouseX, mouseY, s.getX(), s.getY());
+    if (distance < shortest) {
+      shortest = distance;
+      closest = s;
+    }
+  }
+  return closest;
+}
+
 
 public void passWeek() {
   trainButton.addTrain();
-  _buttons.add(new Button( 500 + (_buttons.size() * 10), 550, 40, 20, _trainlines.get(0).c));
+  _trainlines.add(new TrainLine());
+  _buttons.add(new Button( 500 + ((_buttons.size() + 1) * 15), 550, 40, 20, _trainlines.get(_trainlines.size() - 1).c));
+  //change color
+  
 }

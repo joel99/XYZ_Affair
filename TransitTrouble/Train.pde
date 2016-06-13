@@ -39,6 +39,26 @@ public class Train {
     // Find Distance Between Stations
     calcDistances();
   }
+  
+  public Train(Station start, TrainLine tl){
+    _carriage = new ArrayList<Person>();
+    _start = start;
+    _tl = tl;
+    _docked = false;
+    //get a random station to go to;
+    Station newStation;
+    int i = tl.indexOf(start);
+    if (i == 0) {newStation = tl.getStation(1);
+    println("nop");
+    }
+    else if (i == tl.getStations().size() - 1) {newStation = tl.getStation(tl.getStations().size() - 2);
+    println("nopx2");
+    }
+    else{ println("nopx3");newStation = tl.getStation(tl.indexOf(start) + 1);}
+    _end = newStation;
+    _connector = calcConnector(_start, _end);
+    calcDistances();
+  }
 
   // =======================================
   // Methods

@@ -26,11 +26,15 @@ public class ButtonMovable extends Button {
     _quantity++;
   }
 
+  public void removeTrain(){
+    _quantity--;
+  }
+  
   public void update() {
     float oldStroke = g.strokeWeight;  
     if (!mousePressed && active) active = false;
 
-    if (super.isPressed()) {
+    if (super.isPressed() && _quantity > 0) {
       active = true;
       stroke(0); 
       strokeWeight(3);

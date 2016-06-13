@@ -19,6 +19,12 @@ public class TrainLine {
   // Default Constructor
   // Creates a TrainLine. 
   // =======================================
+  public TrainLine(){
+    _stations = new ArrayList<Station>();
+    _stationEnds = new ArrayList<Pair>();
+    c = color(int(random(255)), int(random(255)), int(random(255)));
+  }
+  
   public TrainLine(Station s) {
     _stations = new ArrayList<Station>();
     _stationEnds = new ArrayList<Pair>();
@@ -28,6 +34,17 @@ public class TrainLine {
     _stationEnds.add(new Pair(_tStart, _tEnd));
     _tEnd.calcXY();
     c = color(int(random(255)), int(random(255)), int(random(255)));
+  }
+ 
+  public TrainLine(Station s, color c) {
+    _stations = new ArrayList<Station>();
+    _stationEnds = new ArrayList<Pair>();
+    _stations.add(s);
+    _tStart = new Terminal(s, this);
+    _tEnd = new Terminal(s, this);
+    _stationEnds.add(new Pair(_tStart, _tEnd));
+    _tEnd.calcXY();
+    this.c = c;
   }
 
   // =======================================

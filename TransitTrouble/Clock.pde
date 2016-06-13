@@ -23,8 +23,8 @@ public class Clock{
   void update() {
     fill(80);
     noStroke();
-    _time += 1;
-    if (_time >= 720) {
+    _time += 3;
+    if (_time >= 360) {
       if (_day == 6) passWeek();
       _day = (_day + 1) % 7;
       _time -= 720;
