@@ -221,6 +221,20 @@ public class TrainLine {
     return abs(_stations.indexOf(s1) - _stations.indexOf(s2)) == 1;
   }
 
+  Connector findCommon(Station s1, Station s2){
+    int i1 = _stations.indexOf(s1);
+    int i2 = _stations.indexOf(s2);
+    if (abs(i1 - i2) != 1) { 
+      println("uh oh");
+      return null;}
+    else{
+      Pair p1 = _stationEnds.get(i1);
+      Pair p2 = _stationEnds.get(i2);
+      if (p1.getA() == p2.getA() || p1.getA() == p2.getB()) return (Connector) p1.getA();
+      else return (Connector) p1.getB();
+    }
+  }
+
   void connect(Station s1, Station s2) {
     stroke(c);
     int x1, y1, x2, y2, dx, dy, diagx, diagy;

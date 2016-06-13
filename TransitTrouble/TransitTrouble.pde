@@ -127,6 +127,21 @@ void executeSelected() {
       println("we made it");
       //first few should be removing?
     }
+    
+    //CASE 2: ADDING MIDWAY
+    if (dragType == 2){
+      //so essentially, like above, but using beginning AND end
+      Stack<Station> toDeleteLeft = new Stack<Station>();
+      Stack<Station> toDeleteRight = new Stack<Station>();
+      if (_selectedStations.size() <= 2) break;
+      Connector activeConnector = (Connector)_selected.peekFirst();
+      while (_selectedStations.size() > 2){
+        activeTrainLine.addStation(_selectedStations.pollFirst(), _selectedStations.peekLast(),  _selectedStations.peekFirst(), activeConnector);
+        //reset activeConnector to connector between the peekFirst() and the peekLast():
+        activeConnector = activeTrainLine.findCommon(_selectedStations.peekFirst(), _selectedStations.peekLast());
+      }
+    }
+    
     /*
     Draggable first = _selected.poll();
      Draggable second = _selected.peekFirst();
@@ -182,7 +197,6 @@ outer:
             _selectedStations.add(tmp.getEnd());
             dragType = 2;
           }
-          println("selected connect");
           flag = true;
           break outer;
         }
@@ -198,13 +212,11 @@ outer:
             _selectedStations.add(tmp.getEnd());
             dragType = 2;
           }
-          println("selected connect");
           flag = true;
           break outer;
         }
     }
   }
-  //println("stuff is exec");
   if (flag && _selected.size() == 1) activeTrainLine = _selected.getFirst().getTrainLine();
   return flag; // Nothing Detected
 }
@@ -219,8 +231,8 @@ boolean mouseListenStation() {
       //case 1: already of interest - only take action if at end of deque (last done thing)
       if (_selectedStations.contains(s)) {
         if (!justDraggedOnto) {
-          println("hum, this is interesting");
           if (_selectedStations.peekLast() == s) {
+            if (dragType == 1){
             if (_selectedStations.size() > 1){
             println("POP IT OFF");
             _selectedStations.pollLast();//remove
@@ -234,6 +246,9 @@ boolean mouseListenStation() {
               _selectedStations.addFirst(s);
               justDraggedOnto = true;
             }
+            }
+            else {  //1b: already of interest, but it's connector
+            }
           }
         } else {
           println("but it's locked");
@@ -246,12 +261,17 @@ boolean mouseListenStation() {
           if (activeTrainLine.indexOf(s) == -1) {
             println("THIS IS A NEW STATION???");
             justDraggedOnto = true;
-            _selectedStations.add(s);
             //CASE: ADDING TO TERMINAL:
-            if (dragType == 1) {
-              
+            if (dragType == 1) {  
+              _selectedStations.add(s);  
               _selected.add(new Connector(_selectedStations.peekLast(), s, activeTrainLine));
               _selected.peekLast().setState(0);
+            }
+            //CASE: ADDING TO CONNECTOR
+            else {
+              Station tmp = _selectedStations.pollLast();
+              _selectedStations.add(s);
+              _selectedStations.add(tmp);
             }
           } else {//remove
             //is it on the stationline???
