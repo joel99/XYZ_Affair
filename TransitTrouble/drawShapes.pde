@@ -89,13 +89,13 @@ void drawStation(int x, int y, int shapeID) {
   strokeWeight(2);
   float r = width / (map.maxX - map.minX) / 5.0; // Radius
   switch(shapeID) {
-  case 0:
+  case 0: // Circle
     ellipse(x, y, 2 * r, 2 * r);
     break;
-  case 1:
-    polygon(x, y, 1.25 * r, 3, -PI/2);
+  case 1: // Triangle
+    polygon(x, y + r/4, 1.25 * r, 3, -PI/2);
     break;
-  case 2:
+  case 2: // Square
     polygon(x, y, 1.25 * r, 4, PI/4);
     break;
   default:

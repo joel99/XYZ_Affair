@@ -20,7 +20,7 @@ public class Station {
   private boolean isEnd;
   private int _timeStart, _timeEnd; // Timing - Used for passenger generation
   private static final int _CAPACITY = 12; // 12 people at most
-  
+
   // =======================================
   // Default Constructor
   // Creates a station on the lattice grid of Map.
@@ -59,7 +59,10 @@ public class Station {
 
     // print("Passenger added!"); // Debugging
 
-    return _line.add(new Person(tmpPriority));
+    int personShape = int(random(3));
+    while (personShape == _shape)
+      personShape = int(random(3));
+    return _line.add(new Person(tmpPriority, personShape));
   }
 
   /** calculateCrowd - calculates crowdedness of Station
@@ -69,8 +72,10 @@ public class Station {
     _crowd += (_line.size() - 6) * 0.001; // BALANCE LATER
     if (_crowd < 0)
       _crowd = 0;
-    if (_crowd > 999) // END GAME - IMPLEMENT LATER
-      ;
+    if (_crowd >= 1) { // END GAME - IMPLEMENT LATER
+      _crowd = 1;
+      println("YOU LOST!");
+    }
   }
 
   // =======================================
@@ -135,23 +140,23 @@ public class Station {
   void setEnd(boolean b) {
     isEnd = b;
   }
-  
+
   /** getShape
    * returns shape of this Station */
   int getShape() {
-    return _shape; 
+    return _shape;
   }
-  
+
   /** getLineSize
    * returns number of Persons waiting at the Station */
   int getLineSize() {
-    return _line.size(); 
+    return _line.size();
   }
-  
+
   /** popLine
    * removes and returns the next person in line */
   Person popLine() {
-    return _line.poll(); 
+    return _line.poll();
   }
 
   // =======================================
