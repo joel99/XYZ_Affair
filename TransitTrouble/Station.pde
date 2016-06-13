@@ -14,7 +14,7 @@ public class Station {
   private int _y;
   private int _gridX;
   private int _gridY;
-  private float _crowd; // Health - Higher = Bad
+  private float _crowd; // Health: Higher = Bad
   private PriorityQueue<Person> _line;
   private ArrayList<TrainLine> _trainLines;
   private boolean isEnd;
