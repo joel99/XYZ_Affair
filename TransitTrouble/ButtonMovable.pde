@@ -45,7 +45,7 @@ public class ButtonMovable extends Button {
     text( _quantity, _x+_size/2.5, _y-_size/2.5 ); //display quantity on topright of button
     
     fill(255);
-    rect(_x - _size/4, _y - _size/6, _size/2, _size/3); //display white train icon
+    rect(_x, _y, _size/2, _size/3); //display white train icon
     
   }
     

@@ -93,12 +93,34 @@ void drawStation(int x, int y, int shapeID) {
     ellipse(x, y, 2 * r, 2 * r);
     break;
   case 1:
+<<<<<<< HEAD
+    /*
+    beginShape();
+    vertex(x, y + r);
+       
+    vertex(x, y + r);
+    translate(x,y);
+    rotate(2 * PI/3);
+    vertex(x, y + r);
+    endShape(CLOSE);
+    */
+    polygon(x, y, r, 3);
+=======
     polygon(x, y, 1.25 * r, 3, -PI/2);
+>>>>>>> 7f64cdb866fd8b91856cb6aedac52a35ed77f751
     break;
+    
   case 2:
+<<<<<<< HEAD
+    rect(x-r, y-r, r, 4);
+    break;
+  default:
+=======
     polygon(x, y, 1.25 * r, 4, PI/4);
+>>>>>>> 7f64cdb866fd8b91856cb6aedac52a35ed77f751
     break;
   }
+  
 }
 
 //SHAPES IN ORDER (Add more)

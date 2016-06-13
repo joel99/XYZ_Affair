@@ -27,6 +27,7 @@ TrainLine activeLine;
 // Game Map - GUI
 
 Map map = new Map();
+Clock gameClock;
 
 void setup() {
   smooth(4);
@@ -34,11 +35,13 @@ void setup() {
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
 
+  gameClock = new Clock(850,50);
+
   // ==================================================
   // Debugging
-  for (int i = 0; i < 1; i++) {
-    genStation();
-  }
+  
+  genStation();
+  
   _trainlines.add(new TrainLine(_stations.get(0)));
 
   activeLine = _trainlines.get(0); //TEMPORARY
@@ -94,6 +97,13 @@ void draw() {
 
   //  buttonSetup(); //when more train lines get added
 
+  int initDay = gameClock.getDay();
+  gameClock.update();
+  int postDay = gameClock.getDay();
+  if (initDay != postDay) { //if the day just changed in gameClock
+    genStation();
+  }
+  
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
