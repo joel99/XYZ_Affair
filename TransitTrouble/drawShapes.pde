@@ -17,7 +17,8 @@ void drawStationLine(int x, int y, PriorityQueue<Person> line) {
   noStroke(); 
   fill(0, 0, 0, 75);
   float r = width / (map.maxX - map.minX) / 5.5; // Radius of Station, ~Diameter of Person
-  for (int i = 0; i < line.size(); i++) {
+  int i = 0;
+  for (Person p : line) {
     float drawX = x; 
     float drawY = y;
 
@@ -26,7 +27,8 @@ void drawStationLine(int x, int y, PriorityQueue<Person> line) {
     drawY -= 0.55 * r;
     if (i >= 6) // Bottom Row
       drawY += 1.1 * r;
-    drawPerson(drawX, drawY, r, 1); // Top Row
+    drawPerson(drawX, drawY, r, p.getShape()); // Top Row
+    i++;
   }
 }
 
@@ -34,8 +36,12 @@ void drawStationLine(int x, int y, PriorityQueue<Person> line) {
 // People
 // =======================================
 void drawPerson(float x, float y, float r, int shape) {
-  if (shape == 1)
+  if (shape == 0) // Circle
     ellipse(x, y, r, r);
+  if (shape == 1) // Triangle
+    polygon(x, y + r/10, 0.625 * r, 3, -PI/2);
+  if (shape == 2) // Square
+    polygon(x, y, 0.625 * r, 4, PI/4);
 }
 
 // =======================================
@@ -81,12 +87,13 @@ void drawStation(int x, int y, int shapeID) {
   fill(255);
   stroke(0);
   strokeWeight(2);
-  int r = width / (map.maxX - map.minX) / 5; // Radius
+  float r = width / (map.maxX - map.minX) / 5.0; // Radius
   switch(shapeID) {
   case 0:
     ellipse(x, y, 2 * r, 2 * r);
     break;
   case 1:
+<<<<<<< HEAD
     /*
     beginShape();
     vertex(x, y + r);
@@ -98,12 +105,19 @@ void drawStation(int x, int y, int shapeID) {
     endShape(CLOSE);
     */
     polygon(x, y, r, 3);
+=======
+    polygon(x, y, 1.25 * r, 3, -PI/2);
+>>>>>>> 7f64cdb866fd8b91856cb6aedac52a35ed77f751
     break;
     
   case 2:
+<<<<<<< HEAD
     rect(x-r, y-r, r, 4);
     break;
   default:
+=======
+    polygon(x, y, 1.25 * r, 4, PI/4);
+>>>>>>> 7f64cdb866fd8b91856cb6aedac52a35ed77f751
     break;
   }
   
@@ -112,12 +126,12 @@ void drawStation(int x, int y, int shapeID) {
 //SHAPES IN ORDER (Add more)
 //[circle,triangle,square,pentagon,hexagon,arrow,star]
 //Polygon generation code from processing API
-void polygon(int x, int y, int radius, int npoints) {
-  float angle = TWO_PI / npoints;
+void polygon(float x, float y, float radius, int npoints, float offset) {
+  float angle = radians(360 / npoints);
   beginShape();
-  for (int a = 0; a < TWO_PI; a += angle) {
-    int sx = x + (int)(cos(a) * radius);
-    int sy = y + (int)(sin(a) * radius);
+  for (int a = 0; a < npoints; a++) {
+    float sx = x + (cos(offset + a * angle) * radius);
+    float sy = y + (sin(offset + a * angle) * radius);
     vertex(sx, sy);
   }
   endShape(CLOSE);
