@@ -131,12 +131,11 @@ void draw() {
 
     // Updating Trains
     updateTrains();
-    
   } else { // Paused
     background(255, 255, 255);
     map.debug(); //Debugging - Maps red dots to each grid coordinate
     fill(255);
-    
+
     updateClock(0);
     updateTrainLines(0); // No need for flag.
     updateStations(0);
@@ -337,7 +336,6 @@ void executeSelected() {
      */
   }
 }
-
 
 boolean mouseListenStart() {
   boolean flag = false;
@@ -589,3 +587,18 @@ public void buttonSetup() {
 
   //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
 }
+
+/* DOESN'T WORK
+TrainLine closestTrainLine() {
+  Station closest;
+  float shortest = 99999; // 800 x 600 screen, no problems here
+  for (Station s : _stations) {
+    float distance = dist(mouseX, mouseY, s.getX(), s.getY());
+    if (distance < shortest) {
+      shortest = distance;
+      closest = s;
+    }
+  }
+  return closest.getTrainLine();
+}
+*/ 
