@@ -36,5 +36,34 @@ XYZ_Affair Devlog
 06.06.16
 - Added isEnd sensitivity when adding stations - Joel
 - SCRATCH ABOVE... Lots of backend structure changed, new Connector and Terminal class, TrainLine now holds arraylists of connectors and has two terminals. Adding new stations will be based completely on those two classes being dragged, not stations being clicked. To do - add hitboxes for interactivity. - Joel
+============================================
 
 ============================================
+06.10.16
+- Started Draggable Interface functionality - Joel
+- Trains start at one station and move toward the midpoint, then toward the target station - William
+- Displaying station timers and station passenger line - Zicheng
+============================================
+
+============================================
+06.11.16
+- Clock implementation - Joel
+- Button and ButtonMovable classes to instantiate Train/TrainLine buttons - William
+- More Draggable work - Zicheng
+============================================
+
+============================================
+06.12.16
+- Clock implementation - Joel
+- Button and ButtonMovable classes to instantiate Train/TrainLine buttons - William
+- Code Rehaul 1 - Joel
+- Code Rehaul 2 - Zicheng
+- Code Rehaul 3 - Joel
+- Stand by and watch helplessly as he wished he planned his time better and didn't still have a USH project to do - William
+============================================
+
+============================================
+06.12.16
+- Make the game as presentable as possible - Joel, Zicheng, William
+============================================
+
