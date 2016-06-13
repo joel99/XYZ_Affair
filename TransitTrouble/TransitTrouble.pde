@@ -26,6 +26,7 @@ int dragType = 0;
 boolean justDraggedOnto = false; //aid for locking
 //0 - nothing, 1 - terminal, 2 - connector
 boolean _paused;
+boolean _lost;
 
 TrainLine activeLine;
 
@@ -89,8 +90,8 @@ void setup() {
 // =======================================
 void draw() {
   background(255, 255, 255);
-
   /*
+  
    ArrayList<Train> _trains = new ArrayList<Train>();
    ArrayList<Station> _stations = new ArrayList<Station>(); // List of active Stations
    ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
@@ -111,6 +112,10 @@ void draw() {
   //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
 
   //  buttonSetup(); //when more train lines get added
+
+  // Lose Condition
+  if (_lost)
+    noLoop();
 
   if (!_paused) { // Unpaused
     background(255, 255, 255);
@@ -146,6 +151,12 @@ void draw() {
     updateTrains(0);
   }
   updateDrag(); // Dragging Mechanism
+
+  // Clear Screen
+  if (_lost) {
+    background(255, 255, 255);
+    text("lol get rekt", width/2, height/2);
+  }
 }
 
 // =======================================
@@ -592,21 +603,21 @@ public void buttonSetup() {
 }
 
 /* DOESN'T WORK
-TrainLine closestTrainLine() {
-  Station closest;
-  float shortest = 99999; // 800 x 600 screen, no problems here
-  for (Station s : _stations) {
-    float distance = dist(mouseX, mouseY, s.getX(), s.getY());
-    if (distance < shortest) {
-      shortest = distance;
-      closest = s;
-    }
-  }
-  return closest.getTrainLine();
-}
-*/ 
+ TrainLine closestTrainLine() {
+ Station closest;
+ float shortest = 99999; // 800 x 600 screen, no problems here
+ for (Station s : _stations) {
+ float distance = dist(mouseX, mouseY, s.getX(), s.getY());
+ if (distance < shortest) {
+ shortest = distance;
+ closest = s;
+ }
+ }
+ return closest.getTrainLine();
+ }
+ */
 
 public void passWeek() {
   trainButton.addTrain();
-  _buttons.add(new Button( 500 + (_buttons.size() * 10), 550, 40, 20, _trainlines.get(0).c)); 
+  _buttons.add(new Button( 500 + (_buttons.size() * 10), 550, 40, 20, _trainlines.get(0).c));
 }

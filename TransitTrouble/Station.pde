@@ -72,9 +72,8 @@ public class Station {
     _crowd += (_line.size() - 6) * 0.001; // BALANCE LATER
     if (_crowd < 0)
       _crowd = 0;
-    if (_crowd >= 1) { // END GAME - IMPLEMENT LATER
-      _crowd = 1;
-      println("YOU LOST!");
+    if (_crowd >= 2 * PI) {
+      _lost = true; // Lower the value to something smaller for debugging. Draw score, etc. under draw() in TransitTrouble.
     }
   }
 
