@@ -39,6 +39,36 @@ void drawPerson(float x, float y, float r, int shape) {
 }
 
 // =======================================
+// Trains
+// =======================================
+void drawTrain(float x, float y, color c, int dir) {
+  rectMode(CENTER);
+  noStroke();
+  fill(c);
+  
+  float theta = atan(0.5);
+  float phi = 0;
+  float r = width / (map.maxX - map.minX) / 5;
+  if (dir == 2 || dir == 8) // 90 degrees
+    phi += PI / 2;
+  if (dir == 9 || dir == 1) // 45 degrees
+    phi += PI / 4;
+  if (dir == 7 || dir == 3) // -45 degrees
+    phi -= PI / 4;
+  float x1 = r * cos(theta + phi);
+  float y1 = r * sin(theta + phi);
+  float x2 = r * cos(-theta + phi);
+  float y2 = r * sin(-theta + phi);
+  float x3 = -x1;
+  float y3 = -y1;
+  float x4 = -x2;
+  float y4 = -y2;
+  x1 += x; x2 += x; x3 += x; x4 += x;
+  y1 += y; y2 += y; y3 += y; y4 += y;
+  quad(x1, y1, x2, y2, x3, y3, x4, y4);
+}
+
+// =======================================
 // General
 // =======================================
 void drawStation(int x, int y, int shapeID) {
