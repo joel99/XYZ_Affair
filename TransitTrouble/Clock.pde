@@ -25,6 +25,7 @@ public class Clock{
     noStroke();
     _time += 1;
     if (_time >= 720) {
+      if (_day == 6) passWeek();
       _day = (_day + 1) % 7;
       _time -= 720;
     }

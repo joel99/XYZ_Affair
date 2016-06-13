@@ -22,7 +22,9 @@ public class ButtonMovable extends Button {
     rect( mouseX - w/2, mouseY - h/2, w, h );
   }
 
-
+  public void addTrain(){
+    _quantity++;
+  }
 
   public void update() {
     float oldStroke = g.strokeWeight;  
