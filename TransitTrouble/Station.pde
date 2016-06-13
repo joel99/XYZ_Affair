@@ -223,4 +223,14 @@ public class Station {
     drawStation(_x, _y, _shape);
     drawStationLine(_x, _y, _line);
   }
+  void update(int flag) {
+    // Update Time
+    int difference = millis() - _timeEnd;
+    _timeEnd = millis();
+    _timeStart += difference;
+
+    drawStationHealth(_x, _y, _crowd);
+    drawStation(_x, _y, _shape);
+    drawStationLine(_x, _y, _line);
+  }
 }
