@@ -78,23 +78,23 @@ void draw() {
    ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
    ArrayList<Button> _buttons = new ArrayList<Button>(); //List of ingame buttons
    */
-   
-   println(_buttons);
+
+  // println(_buttons);
+  //println("STATIONS: " + _stations);
+  //for (TrainLine tl : _trainlines) {
+    //println("TRAINLINE: " + tl.getStations());
+    //println("TRAINLINE PAIRS: " + tl.getStationEnds());
+  //}
 
   map.debug(); //Debugging - Maps red dots to each grid coordinate
   //stroke(255);
   fill(255);
 
   //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
-<<<<<<< HEAD
-  
-  //buttonSetup(); //when more train lines get added
-  
-=======
 
-//  buttonSetup(); //when more train lines get added
+  //  buttonSetup(); //when more train lines get added
 
-for (TrainLine tl : _trainlines) {
+  for (TrainLine tl : _trainlines) {
     tl.update();
   }
   for (Station s : _stations) {

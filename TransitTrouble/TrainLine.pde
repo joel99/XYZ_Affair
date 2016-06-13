@@ -50,6 +50,14 @@ public class TrainLine {
   public ArrayList<Pair> getStationEnds() {
     return _stationEnds;
   }
+  
+  public ArrayList<Station> getStations() {
+    return _stations; 
+  }
+  
+  public int size() {
+    return _stations.size(); 
+  }
 
   public color getColor() {
     return c;
