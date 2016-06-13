@@ -39,15 +39,9 @@ void setup() {
 
   // ==================================================
   // Debugging
-<<<<<<< HEAD
-  for (int i = 0; i < 1; i++) {
-    genStation();
-  }
-=======
   
   genStation();
   
->>>>>>> 675f2e939968f8861f0b68362d1789c02f7a2e13
   _trainlines.add(new TrainLine(_stations.get(0)));
 
   activeLine = _trainlines.get(0); //TEMPORARY
@@ -101,10 +95,6 @@ void draw() {
 
   //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
 
-<<<<<<< HEAD
-  buttonSetup(); //when more train lines get added
-
-=======
   //  buttonSetup(); //when more train lines get added
 
   int initDay = gameClock.getDay();
@@ -114,7 +104,6 @@ void draw() {
     genStation();
   }
   
->>>>>>> 675f2e939968f8861f0b68362d1789c02f7a2e13
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
@@ -188,13 +177,11 @@ void executeSelected() {
 
     //CASE 2: ADDING MIDWAY
     if (dragType == 2) {
-<<<<<<< HEAD
       println("HEYO" + _selectedStations.size());
       for (int i = 0; i < _selectedStations.size(); i++){
       //  println(_selectedStations.(i));
       }
-=======
->>>>>>> 675f2e939968f8861f0b68362d1789c02f7a2e13
+
       //so essentially, like above, but using beginning AND end
       Stack<Station> toDeleteLeft = new Stack<Station>();
       Stack<Station> toDeleteRight = new Stack<Station>();
@@ -313,21 +300,13 @@ boolean mouseListenStation() {
       //case 1: already of interest - only take action if at end of deque (last done thing)
       if (_selectedStations.contains(s)) {
         if (!justDraggedOnto) {
-<<<<<<< HEAD
           if (dragType == 1) {
             if (_selectedStations.peekLast() == s) {
               if (_selectedStations.size() > 1) {
-=======
-          if (_selectedStations.peekLast() == s) {
-            if (dragType == 1) {
-              if (_selectedStations.size() > 1) {
-                println("POP IT OFF");
->>>>>>> 675f2e939968f8861f0b68362d1789c02f7a2e13
                 _selectedStations.pollLast();//remove
                 _selected.pollLast();
                 justDraggedOnto = true; //prevent immediate readding
               } else {
-<<<<<<< HEAD
                 _selectedStations.addFirst(s);
                 justDraggedOnto = true;
               }
@@ -367,15 +346,6 @@ boolean mouseListenStation() {
                 }
               }
               _selectedStations.add(trackLast);
-=======
-                println("passed over the og");
-                //add code to delete og if nothing else happens.
-                //this means we're deleting the og.
-                _selectedStations.addFirst(s);
-                justDraggedOnto = true;
-              }
-            } else {  //1b: already of interest, but it's connector
->>>>>>> 675f2e939968f8861f0b68362d1789c02f7a2e13
             }
           }
         } else {
