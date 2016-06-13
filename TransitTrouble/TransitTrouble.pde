@@ -109,14 +109,6 @@ void draw() {
 
   //  buttonSetup(); //when more train lines get added
 
-  int initDay = gameClock.getDay();
-  gameClock.update();
-  int postDay = gameClock.getDay();
-  if (initDay != postDay) { //if the day just changed in gameClock
-    genStation();
-  }
-
-
   if (!_paused) { // Unpaused
     background(255, 255, 255);
     map.debug(); //Debugging - Maps red dots to each grid coordinate
