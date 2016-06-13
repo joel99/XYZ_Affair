@@ -88,8 +88,7 @@ public class Connector implements Draggable {
     float dist = dist(x1, y1, x2, y2); // Distance between S1 and S2
     float dist1 = dist(x1, y1, mouseX, mouseY); // Distance between S1 and Mouse
     float dist2 = dist(mouseX, mouseY, x2, y2); // Distance between S2 and Mouse
-    return dist1 + dist2 < dist + 5; // Threshold Value - Adjust?
-    //return dist1 + dist2 < dist + width / (2 * map.activeW + 1) / 4 + 2; // Threshold Value - Adjust?
+    return dist1 + dist2 < dist + 5; // Threshold Value
   } 
   public boolean isOn(int x1, int y1, int x2, int y2, int x3, int y3, int threshold) {
     float dist = dist(x1, y1, x2, y2);
@@ -176,7 +175,6 @@ public class Connector implements Draggable {
     else 
     stroke(_tl.getColor());
     if (!hasMid()) {
-      //println("I don't have a mid");
       line(_start.getX(), _start.getY(), _end.getX(), _end.getY());
     } else {
       line(_start.getX(), _start.getY(), transMid[0], transMid[1]);

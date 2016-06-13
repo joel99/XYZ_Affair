@@ -20,7 +20,6 @@ public class Button {
   
   public boolean isClicked() {
     if (mousePressed && distPointToPoint(_x, _y, mouseX, mouseY) < _detectRadius) {
-      println("we're clicked???");
       activate();
       return true;
     }

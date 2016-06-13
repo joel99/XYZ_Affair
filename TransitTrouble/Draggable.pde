@@ -2,9 +2,6 @@ public interface Draggable {
 
   TrainLine getTrainLine();
 
-  //int getX();
-  //int getY();
-
   int getState();
   void setState(int newState);
 

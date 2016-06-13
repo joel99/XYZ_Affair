@@ -35,7 +35,6 @@ public class Station {
     _timeStart = millis();
     _timeEnd = _timeStart + 15000;
     _trainLines = new ArrayList<TrainLine>();
-    // println(_shape, _x, _y, _gridX, _gridY); // Debugging
   }
 
   // =======================================
@@ -56,8 +55,6 @@ public class Station {
 
     _timeEnd = millis();
     _timeStart = _timeEnd + 1000 * int(random(4)); // Adjust Later - Add 0 to 3 seconds of extra delay
-
-    // print("Passenger added!"); // Debugging
 
     int personShape = int(random(3));
     while (personShape == _shape)
@@ -216,8 +213,6 @@ public class Station {
     if (_timeEnd - 5000 >= _timeStart) { // 5 seconds
       addPassenger();
     }
-    // print(getCrowd()); // Debugging
-    // println(_timeEnd, _timeStart);
     drawStationHealth(_x, _y, _crowd);
     drawStation(_x, _y, _shape);
     drawStationLine(_x, _y, _line);
