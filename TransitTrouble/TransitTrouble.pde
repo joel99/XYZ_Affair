@@ -75,7 +75,7 @@ void draw() {
   
   //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
   
-  buttonSetup(); //when more train lines get added
+  //buttonSetup(); //when more train lines get added
   
   for (TrainLine tl : _trainlines) {
     tl.update();
