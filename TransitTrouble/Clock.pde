@@ -33,6 +33,7 @@ public class Clock{
     strokeWeight(4);
     line(_x, _y, sin(radians(_time)) * _r + _x, -cos(radians(_time)) * _r + _y);
     stroke(0);
+    textSize(20);
     text(DAYS[_day], _x - 2*_r, _y);
   
   }

@@ -5,6 +5,7 @@
 
 public class Button {
   
+  boolean isActive;
   int _x, _y;
   int _size, _detectRadius;
   color _c;
@@ -18,7 +19,24 @@ public class Button {
   }
   
   public boolean isClicked() {
-    return mousePressed && distPointToPoint(_x, _y, mouseX, mouseY) < _detectRadius;
+    if (mousePressed && distPointToPoint(_x, _y, mouseX, mouseY) < _detectRadius) {
+      println("we're clicked???");
+      activate();
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean isPressed() {
+    return (mousePressed && distPointToPoint(_x, _y, mouseX, mouseY) < _detectRadius);
+  }
+  
+  public void deactivate(){
+    isActive = false;
+  }
+  
+  public void activate(){
+    isActive = true;
   }
   
   public float distPointToPoint( int x1, int y1, int x2, int y2 ) {
@@ -29,9 +47,10 @@ public class Button {
   public void update() {
     fill(_c);
     
-    if (isClicked()) {
+    if (isActive) {
       stroke(0);
       strokeWeight(5);
+      println("AYYY");
     }
     else noStroke();
     

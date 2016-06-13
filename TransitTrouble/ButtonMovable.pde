@@ -28,7 +28,7 @@ public class ButtonMovable extends Button {
     float oldStroke = g.strokeWeight;  
     if (!mousePressed && active) active = false;
 
-    if (super.isClicked()) {
+    if (super.isPressed()) {
       active = true;
       stroke(0); 
       strokeWeight(3);

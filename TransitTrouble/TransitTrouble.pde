@@ -8,8 +8,8 @@ import java.util.HashSet;
 ArrayList<Train> _trains = new ArrayList<Train>();
 ArrayList<Station> _stations = new ArrayList<Station>(); // List of active Stations
 ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
-ArrayList<Button> _buttons = new ArrayList<Button>(); //List of ingame buttons 
-
+ArrayList<Button> _buttons = new ArrayList<Button>(); //List of TRAINLINE BUTTONS
+ButtonMovable trainButton;
 ArrayDeque<Draggable> _selected = new ArrayDeque<Draggable>();
 HashSet<Draggable> _hashed = new HashSet<Draggable>();
 ArrayDeque<Station> _selectedStations = new ArrayDeque<Station>();
@@ -35,13 +35,13 @@ void setup() {
   background(255, 255, 255); // White - Subject to Change
   size(900, 600); // Default Size - Subject to Change
 
-  gameClock = new Clock(850,50);
+  gameClock = new Clock(850, 50);
 
   // ==================================================
   // Debugging
-  
+
   genStation();
-  
+
   _trainlines.add(new TrainLine(_stations.get(0)));
 
   activeLine = _trainlines.get(0); //TEMPORARY
@@ -85,8 +85,8 @@ void draw() {
   // println(_buttons);
   //println("STATIONS: " + _stations);
   //for (TrainLine tl : _trainlines) {
-    //println("TRAINLINE: " + tl.getStations());
-    //println("TRAINLINE PAIRS: " + tl.getStationEnds());
+  //println("TRAINLINE: " + tl.getStations());
+  //println("TRAINLINE PAIRS: " + tl.getStationEnds());
   //}
 
   map.debug(); //Debugging - Maps red dots to each grid coordinate
@@ -103,7 +103,7 @@ void draw() {
   if (initDay != postDay) { //if the day just changed in gameClock
     genStation();
   }
-  
+
   for (TrainLine tl : _trainlines) {
     tl.update();
   }
@@ -113,22 +113,48 @@ void draw() {
     fill(0); // Debugging
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
   }
+
+  trainButton.update();
+  if (trainButton.isActive()) {
+    color dragTrainColor = color(150);
+    int w = 30;
+    int h = 20;
+    for (Pair p : activeLine._stationEnds) {
+      if ( p.getA() instanceof Connector && ((Connector)p.getA()).isNear() ) {
+        dragTrainColor = activeLine.c;
+        w = 40;
+        h = 30;
+      }
+    }
+    trainButton.drawCursor(w, h, dragTrainColor);
+  }
   for (Button b : _buttons) {
     b.update();
-    if (b instanceof ButtonMovable && ((ButtonMovable)b).isActive()) {
-      color dragTrainColor = color(150, 150, 150);
-      int w = 30;
-      int h = 20;
-      for (Pair p : activeLine._stationEnds) {
-        if ( p.getA() instanceof Connector && ((Connector)p.getA()).isNear() ) {
-          dragTrainColor = activeLine.c;
-          w = 40;
-          h = 30;
-        }
+  
+  if (b instanceof ButtonMovable && ((ButtonMovable)b).isActive()) {
+    color dragTrainColor = color(150, 150, 150);
+    int w = 30;
+    int h = 20;
+    for (Pair p : activeLine._stationEnds) {
+      if ( p.getA() instanceof Connector && ((Connector)p.getA()).isNear() ) {
+        dragTrainColor = activeLine.c;
+        w = 40;
+        h = 30;
       }
-      ((ButtonMovable)b).drawCursor( w, h, dragTrainColor );
+    }
+    ((ButtonMovable)b).drawCursor( w, h, dragTrainColor );
+  }}
+
+  //offset by 1 index because of train button
+  for (int i = 0; i < _buttons.size(); i++) {
+    if (_buttons.get(i).isClicked()) {
+      activeTrainLine = _trainlines.get(i);
+      //deactivate other buttons
+      for (int j = 0; j < _buttons.size(); j++)
+        if (j != i) _buttons.get(j).deactivate();
     }
   }
+
   for (Train tr : _trains) {
     tr.update();
   }
@@ -141,9 +167,7 @@ void updateDrag() {
     // CASE 1: Mouse was pressed before, and being held down now.     
     for (int i = 0; i < _selectedStations.size(); i++) {
     }
-    if (_lock)
-      println("MOUSE STATE: LOCKED"); // Debugging
-    else mouseListenStation();
+    if (!_lock) mouseListenStation();
   }
 }
 
@@ -178,8 +202,8 @@ void executeSelected() {
     //CASE 2: ADDING MIDWAY
     if (dragType == 2) {
       println("HEYO" + _selectedStations.size());
-      for (int i = 0; i < _selectedStations.size(); i++){
-      //  println(_selectedStations.(i));
+      for (int i = 0; i < _selectedStations.size(); i++) {
+        //  println(_selectedStations.(i));
       }
 
       //so essentially, like above, but using beginning AND end
@@ -315,15 +339,14 @@ boolean mouseListenStation() {
             if (_selectedStations.peekFirst() == s || _selectedStations.peekLast() == s) {
               //we're passing over something of concern that we use as a leveraging point later (not actually disconnect). disconnect it, and get the next item.
               println("something's actually happening");
-              if (_selectedStations.peekFirst() == s){
+              if (_selectedStations.peekFirst() == s) {
                 println("we're removing first");
                 Station temp  = _selectedStations.pollFirst();
                 Station forward = _selectedStations.peekFirst();
                 _selectedStations.addFirst(temp);
                 _selectedStations.addFirst(activeTrainLine.otherAdjacent(temp, forward));
                 justDraggedOnto = true;
-              }
-              else {
+              } else {
                 println("we're removing last");
                 Station temp = _selectedStations.pollLast();
                 Station prev = _selectedStations.peekLast();
@@ -475,9 +498,13 @@ public void buttonSetup() {
   int trainStartX = 200; //train button location, trainStartX on left, so it should be < colorStartX
   int buttonY = 550; //what y level buttons fill in
 
-  for (int i = 0; i < _trainlines.size(); i++) { //trainline color buttons
-    _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
-  }
+  trainButton = new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110));
+  _buttons.add(new Button( colorStartX + (10), buttonY, 40, 20, _trainlines.get(0).c));
+  _buttons.get(0).activate();
 
-  _buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
+  //for (int i = 0; i < _trainlines.size(); i++) { //trainline color buttons
+  // _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
+  //}
+
+  //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
 }
