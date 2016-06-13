@@ -213,8 +213,28 @@ public class TrainLine {
     // Add Station
     _stations.add(max(this.indexOf(s1), this.indexOf(s2)), newStation);
 
-    println("STATIONS: " + _stations);
-    println("STATIONENDS: " + _stationEnds);
+  }
+  
+  //remove station in midst of connectors
+  void removeStation(Station s){
+    int i = _stations.indexOf(s);
+    println("removing  index " + i);
+    Pair p = _stationEnds.get(_stations.indexOf(s));
+    Connector c1 = findCommon(s, _stations.get(i-1));
+    Connector c2 = findCommon(s, _stations.get(i+1));
+    Pair p1 = _stationEnds.get(i-1);
+    Pair p2 = _stationEnds.get(i+1);
+    Draggable d1, d2; //for the parts of station ends to keep
+    if (p1.getA() == c1) d1 = p1.getB();
+    else d1 = p1.getA();
+    if (p2.getA() == c2) d2 = p2.getB();
+    else d2 = p2.getA();
+    Connector c = new Connector(_stations.get(i - 1), _stations.get(i + 1),this);
+    _stationEnds.set(i-1, new Pair(d1, c));
+    _stationEnds.set(i+1, new Pair(c, d2));
+    _stationEnds.remove(i);
+    _stations.remove(i);
+    //
   }
 
   boolean isAdjacent(Station s1, Station s2){
@@ -233,6 +253,13 @@ public class TrainLine {
       if (p1.getA() == p2.getA() || p1.getA() == p2.getB()) return (Connector) p1.getA();
       else return (Connector) p1.getB();
     }
+  }
+
+  Station otherAdjacent(Station pivot, Station adj){
+    int i = _stations.indexOf(pivot);
+    int j = _stations.indexOf(adj);
+    if (j == i + 1) return _stations.get(i-1);
+    else return _stations.get(i+1);
   }
 
   void connect(Station s1, Station s2) {
