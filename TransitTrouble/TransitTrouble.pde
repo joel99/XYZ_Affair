@@ -42,6 +42,9 @@ void setup() {
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
 
   buttonSetup();
+  _trains.add(new Train(_stations.get(0),
+                        _stations.get(1),
+                        _trainlines.get(0)));
 
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
@@ -235,8 +238,8 @@ boolean mouseListenStation() {
               _selected.peekLast().setState(0);
             }
           } else {//remove
-            
-          
+
+
             if (dragType == 1) {
               _selected.peekLast().setState(-1);
             }
@@ -323,9 +326,6 @@ void grow() {
   }
   for (TrainLine tl : _trainlines) {
     tl.recalc();
-  }
-  for (Train tr : _trains) {
-    tr.recalc();
   }
 }
 

@@ -6,108 +6,152 @@
 import java.util.Stack;
 
 public class Train {
+  // =======================================
+  // Instance Variables
+  // =======================================
   ArrayList<Person> _carriage;
-  TrainLine _tl;
-  Connector _connector;
-  int _capacity = 6;
-  int _x, _y, _targetX, _targetY;
-  int _offsetX = 15;
-  int _offsetY = 10;
-  boolean _reachedMid;
+  Connector _connector; // Connector the train will travel on.
+  TrainLine _tl; // Trainline this train belongs to.
+  Station _start, _end; // Moving from _start to _end
+  int _moved;
+  int _distance;
+  int _midDistance; 
   boolean _docked;
-  boolean _lock = false; //used for when train triggers _reachedMid multiple times
-  //public static final int peakVelocity = 3;
-  
-  int dir;
-  
-  public Train( int x, int y, Connector kinektor ) {
-    _carriage = new ArrayList<Person>(); // Initial Holding Capacity
-    _connector = kinektor;
-    _tl = _connector.getTrainLine();
-    _docked = false;
-    //snap to connector line.
-    //SNAP to whichever part it's closer to.
-    int x1 = _connector._start.getX();
-    int y1 = _connector._start.getY();
-    int x2 = _connector._end.getX();
-    int y2 = _connector._end.getY();
-    if (_connector.hasMid()){
-    int xmid = _connector.getTransMid()[0];
-    int ymid = _connector.getTransMid()[1];
-    }
-    else{
-    }
-    _x = _connector._start.getX();
-    _y = _connector._start.getY();
-    
-    dir = 1;
-    
-    //boolean _reachedTarget = false;
+  float _x, _y;
 
-    boolean _reachedTarget = false;
+  // =======================================
+  // Default Constructor
+  // =======================================
+  public Train(Station start, Station end, TrainLine tl) {
+    _carriage = new ArrayList<Person>();
+    _start = start; 
+    _end = end;
+    _tl = tl;
     _docked = false;
 
-    if ( _connector.hasMid() ) {
-      
-      _targetX = _connector.transMid[0]; //get to mid first
-      _targetY = _connector.transMid[1];
-      _reachedMid = false;
-    } else {
-      _reachedMid = true; //target will be redirected to station in move()
-      _targetX = _connector._end.getX();
-      _targetY = _connector._end.getY();
-      _x = x;
-      //_y = (dy / dx) * (_x - x1) + y1;
-    }
-  }
-
-  public void move() {    
-    int threshold = 5; //5 pixel variability
-    if ( sqrt( pow(_targetX - _x, 2) + pow(_targetY - _y, 2) ) < threshold ) { //target is either mid or end
-      if ( _reachedMid && !_lock ) { //if had already reached mid, then target was end station's target and you've reached the end
-        _docked = true;
-        _targetX = _connector._end.getX();
-        _targetY = _connector._end.getY();
-      } else { //just reached mid
-        _reachedMid = true;
-        _lock = true;
-        _targetX = _connector._end.getX();
-        _targetY = _connector._end.getY();
+    // Initialize Connector
+    Pair startEnds = _tl.getStationEnds().get(_tl.indexOf(_start));
+    Draggable startA = startEnds.getA();
+    Draggable startB = startEnds.getB();
+    if (startA instanceof Connector) {
+      Connector A = (Connector)startA;
+      if (A.otherEnd(_start) == _end) {
+        _connector = A;
       }
-    } else {
-      _lock = false;
-      _docked = false;
-      _x -= Integer.compare(_x, _targetX); //if x<targetX: move -1, if same: stay in place, if x>targetX: move +1
-      _y -= Integer.compare(_y, _targetY);
+    } else if (startB instanceof Connector) {
+      Connector B = (Connector)startB;
+      if (B.otherEnd(_start) == _end) {
+        _connector = B;
+      }
     }
+    if (_connector == null) println("SUCKS TO SUCK");
+
+    // Find Distance Between Stations
+    _distance = calcDistance();
+    _midDistance = calcMidDistance();
+    _moved = 0;
   }
-  
+
+  // =======================================
+  // Methods
+  // =======================================
+  /** calcDistance() - finds distance between _start and _end Stations
+   * precond: _start, _end exist
+   * postcond: returns distance (diagonals count as 1) * 100 */
+  public int calcDistance() {
+    int x1 = _start.getGridX();
+    int y1 = _start.getGridY();
+    int x2 = _end.getGridX();
+    int y2 = _end.getGridY();
+    int taxicab = abs(x1 - x2) + abs(y1 - y2);
+    int diag = min(abs(x1 - x2), abs(y1 - y2));
+    return 100 * (taxicab - diag);
+  }
+
+  /** calcMidDistance() - finds distance between _start and midpoint of _connector
+   * precond: _start, _connector exist
+   * postcond: returns distance (diagonals count as 1) * 100 */
+  public int calcMidDistance() {
+    if (!_connector.hasMid()) // Connector doesn't have a midpoint
+      return 0; 
+    int x1 = _start.getGridX();
+    int y1 = _start.getGridY();
+    int xm = _connector.getMid()[0];
+    int ym = _connector.getMid()[1];
+    int taxicab = abs(x1 - xm) + abs(y1 - ym);
+    int diag = min(abs(x1 - xm), abs(y1 - ym));
+    return 100 * (taxicab - diag);
+  }
+
+  /** isFull()
+   * returns whether the traincar is full */
+  public boolean isFull() {
+    return _carriage.size() > 5;
+  }
+
+  /** calcDirection(x1,y1,x2,y2)
+   * Finds direction of pair of points x2,y2 compared to x1,y1
+   * precond: x1,y1 and x2,y2 are not the same point
+   * postcond: Returns int representing station orientation as follows: 
+   * 7 8 9
+   * 4 S 6 where S is the first station
+   * 1 2 3
+   **/
+  int calcDirection(int x1, int y1, int x2, int y2) {
+    int ret = 0;
+    if (y1 >  y2) ret += 0;
+    if (y1 == y2) ret += 1;
+    if (y1 <  y2) ret += 2;
+    ret *= 3;
+    if (x1 >  x2) ret += 1;
+    if (x1 == x2) ret += 2;
+    if (x1 <  x2) ret += 3;
+    return ret;
+  }
+
+  // =======================================
+  // Train Movement and Docking
+  // =======================================
+  public void move() {
+    _moved++;
+    if (_moved >= _distance) 
+      _docked = true;
+    //  SWITCH STUFF HERE
+  }
+
+  /** recalc()
+   * recalculates the map X and map Y of a train, and returns the direction it's heading */
+  public int recalc() {
+    int startX, startY, endX, endY;
+    float percent = _moved * 1.0 / _distance * 1.0;  
+    startX = _start.getX();
+    startY = _start.getY();
+    endX = _end.getX();
+    endY = _end.getY();
+    if (_midDistance == 0) { // Linear mapping from _start to _end
+      percent = _moved * 1.0 / _distance * 1.0;
+    } 
+
+    if (_moved < _midDistance) { // On Diagonal -- Distance from Start to Mid
+      endX = _connector.getTransMid()[0];
+      endY = _connector.getTransMid()[1];
+      percent = _moved * 1.0 / _midDistance * 1.0;
+    } else { // On Horizontal / Vertical -- Distance from Mid to End
+      startX = _connector.getTransMid()[0];
+      startY = _connector.getTransMid()[1];
+      percent = (_moved - _midDistance) * 1.0 / (_distance - _midDistance) * 1.0;
+    }
+    _x = percent * (endX - startX) + startX;    
+    _y = percent * (endY - startY) + startY;
+    
+    return calcDirection(startX,startY,endX,endY);
+  }
+
+  // =======================================
+  // Train Drawing
+  // =======================================
   public void update() {
     move();
-    fill(_connector.getTrainLine().c);
-    
-    int deltax = _targetX - _x;
-    int deltay = _targetY - _y;
-    if (deltax != 0 && deltay != 0){//we're on a diagonal.
-      int mult = (deltax * deltay) / abs(deltax * deltay);
-      translate(_x-_offsetX, _y-_offsetY);
-      rotate(mult * PI/4);
-      rect(0, 0, 30, 20, 2);
-      rotate(mult * -1 * PI / 4);
-      translate(-_x+_offsetX, -_y+_offsetY);
-    }
-    
-    else
-      rect(_x-_offsetX, _y-_offsetY, 30, 20, 2);
-    
-  }
-  
-  public boolean isFull() {
-    return _carriage.size() > _capacity; 
-  }
-  
-  
-  public void recalc() {
-    //IMPLEMENTATION HERE???
+    drawTrain(_x, _y, _tl.getColor(), recalc());
   }
 }

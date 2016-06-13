@@ -30,7 +30,15 @@ public class TrainLine {
     c = color(int(random(255)), int(random(255)), int(random(255)));
   }
 
-  //test method
+  // =======================================
+  // Mutators and Accessors
+  // ======================================= 
+
+  //return ends of the lines assuming that size > 0
+  Station[] getEnds() {
+    return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
+  }
+  
   public Station getStation(int i) {
     return _stations.get(i);
   }
@@ -39,9 +47,12 @@ public class TrainLine {
     return _stations.indexOf(s);
   }
 
-
   public ArrayList<Pair> getStationEnds() {
     return _stationEnds;
+  }
+  
+  public color getColor() {
+    return c;
   }
 
   // =======================================
@@ -100,10 +111,6 @@ public class TrainLine {
       _stationEnds.add(new Pair(c, _tEnd));
     }
   }
-  
-  void removeTerminal(){
-  
-  }
 
   Draggable getOtherEnd(Station s, Draggable d) {
     if (_stationEnds.size() > 0 && _stations.indexOf(s) != -1) {
@@ -117,9 +124,6 @@ public class TrainLine {
     return new Terminal[]{_tStart, _tEnd};
   }
 
-  public color getColor() {
-    return c;
-  }
 
   /** addStation - Takes two stations, and inserts it into the TrainLine
    * precond: s1, s2 are stations which are joined by the same connector
@@ -196,16 +200,6 @@ public class TrainLine {
       line(Diag_xy[0], Diag_xy[1], s2.getX(), s2.getY());
     }
   }
-
-  // =======================================
-  // Mutators and Accessors
-  // ======================================= 
-
-  //return ends of the lines assuming that size > 0
-  Station[] getEnds() {
-    return new Station[]{_stations.get(0), _stations.get(_stations.size() - 1)};
-  }
-
 
   // =======================================
   // Drawing Trainline
