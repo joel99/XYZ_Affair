@@ -15,7 +15,7 @@ public class Person implements Comparable {
   // =======================================
   Person() {
     _priority = 0; // Lowest Priority 
-    _shape = randomShape();
+    _shape = 0; // Replace with randomShape() later;
   }
   Person(int priority) {
     this();

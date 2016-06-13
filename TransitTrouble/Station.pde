@@ -113,8 +113,45 @@ public class Station {
     return oldY;
   }
 
-  public boolean isNear() {
-    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
+  /** getCrowd
+   * returns crowdedness value of this Station */
+  float getCrowd() {
+    return _crowd;
+  }
+  /** setCrowd
+   * sets crowdedness value to specified float */
+  void setCrowd(float newCrowd) {
+    _crowd = newCrowd;
+  }
+
+  /** isEnd
+   * returns whether this Station is at the front or end of the TrainLine */
+  boolean isEnd() {
+    return isEnd;
+  }
+  /** setEnd
+   * precond: boolean b, telling whether this station is an end Station
+   * postcond: isEnd is updated to reflect the Station's state */
+  void setEnd(boolean b) {
+    isEnd = b;
+  }
+  
+  /** getShape
+   * returns shape of this Station */
+  int getShape() {
+    return _shape; 
+  }
+  
+  /** getLineSize
+   * returns number of Persons waiting at the Station */
+  int getLineSize() {
+    return _line.size(); 
+  }
+  
+  /** popLine
+   * removes and returns the next person in line */
+  Person popLine() {
+    return _line.poll(); 
   }
 
   // =======================================
@@ -148,33 +185,14 @@ public class Station {
     return null;
   }
 
-  /** isEnd
-   * returns whether this Station is at the front or end of the TrainLine */
-  boolean isEnd() {
-    return isEnd;
-  }
-  /** setEnd
-   * precond: boolean b, telling whether this station is an end Station
-   * postcond: isEnd is updated to reflect the Station's state */
-  void setEnd(boolean b) {
-    isEnd = b;
-  }
-
-  /** getCrowd
-   * returns crowdedness value of this Station */
-  float getCrowd() {
-    return _crowd;
-  }
-  /** setCrowd
-   * sets crowdedness value to specified float */
-  void setCrowd(float newCrowd) {
-    _crowd = newCrowd;
+  public boolean isNear() {
+    return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
   }
 
   /** recalc
    * precond: integer array contained mapX and mapY
    * postcond: sets _x and _y accordingly */
-  void recalc(){
+  void recalc() {
     int[] temp = map.transform(_gridX, _gridY);
     _x = temp[0];
     _y = temp[1];
