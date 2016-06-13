@@ -1,24 +1,35 @@
 /*************************************
  * ButtonMovable Class 
- * Subclass for Train / (Tentative) Locomotive Buttons in game (that can be clicked and dropped)
+ * Subclass for Train / (Tentative) Locomotive Buttons in game (that can be dragged and dropped)
  *************************************/
 
 public class ButtonMovable extends Button {
   
   int _quantity; //number of trains stacked up (in stock)
+  boolean active;
   
   public ButtonMovable( int x, int y, int quantity, int size, int detectRadius, color c ) {
     super(x, y, size, detectRadius, c);
     _quantity = quantity;
   }  
-  
-  boolean isDragged() {
-    return mousePressed;
+    
+  public boolean isActive() {
+    return active; 
   }
-  
+    
+  public void drawCursor( int w, int h, color c ) {
+    fill(c);
+    rect( mouseX - w/2, mouseY - h/2, w, h );
+  }
+    
+    
+    
   public void update() {
     
+    if (!mousePressed && active) active = false;
+        
     if (super.isClicked()) {
+      active = true;
       stroke(0); 
       strokeWeight(5);
       textSize(30);
