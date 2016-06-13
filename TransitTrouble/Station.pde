@@ -20,13 +20,13 @@ public class Station {
   private boolean isEnd;
   private int _timeStart, _timeEnd; // Timing - Used for passenger generation
   private static final int _CAPACITY = 12; // 12 people at most
-
+  
   // =======================================
   // Default Constructor
   // Creates a station on the lattice grid of Map.
   // =======================================
   public Station(int[] coords) {
-    _shape = 0; // To adjust depending on time
+    _shape = (int)random(3); // To adjust depending on time
     _x = coords[0];
     _y = coords[1];
     _gridX = coords[2];
