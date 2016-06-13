@@ -76,10 +76,11 @@ void draw() {
     tr.update();
   }
   for (Station s : _stations) {
-    s.update();
+        s.update();
     textSize(16); // Debugging
     fill(0); // Debugging
     text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
+
   }
   for (Button b : _buttons) {
     b.update();
@@ -105,13 +106,25 @@ void executeSelected() {
   while (_selectedStations.size() > 1) {
     //CASE 1: ADDING TO TERMINAL
     //move back until we get to a point where we can start building from. 
-    //while(_selectedStations.peekFirst() == o){}
     if (dragType == 1) {
       //we're adding to terminal: find where we diverge from train line.
-      //ArrayList<Station> toDeleteStations = new ArrayList<>();
-      //toDelete
+      Stack<Station> toDelete = new Stack<Station>();
+      //pop em (the stations that are in the region of interest that are also on trainline) off into a stack for removal by terminal.
+      //last one isn't actually selected - pop it back on after.
+      while(activeTrainLine.indexOf(_selectedStations.peekFirst()) != -1){
+        toDelete.push(_selectedStations.pollFirst());
+        println("pushing thing");
+      }
+      //last one isn't actually to be deleted, just pop it back on
+      _selectedStations.addFirst(toDelete.pop());
+      //remove stations
+      while (toDelete.size() != 0){
+        println("POPPING OFF STATIONS");
+        activeTrainLine.removeTerminalStation(toDelete.pop());
+      }
+      if (_selectedStations.size() <= 1) break;
       activeTrainLine.addTerminal(_selectedStations.pollFirst(), _selectedStations.peekFirst());
-
+      println("we made it");
       //first few should be removing?
     }
     /*
@@ -203,17 +216,24 @@ boolean mouseListenStation() {
     //process based on if in trainLine or not, if in activeConcern or not.
     if (s.isNear()) {
       lockFlag = true;
-      println("we're near some station");
       //case 1: already of interest - only take action if at end of deque (last done thing)
       if (_selectedStations.contains(s)) {
-        println("we're near a station that is already of interest");
         if (!justDraggedOnto) {
           println("hum, this is interesting");
           if (_selectedStations.peekLast() == s) {
+            if (_selectedStations.size() > 1){
             println("POP IT OFF");
             _selectedStations.pollLast();//remove
             _selected.pollLast();
             justDraggedOnto = true; //prevent immediate readding
+            }
+            else {
+              println("passed over the og");
+              //add code to delete og if nothing else happens.
+              //this means we're deleting the og.
+              _selectedStations.addFirst(s);
+              justDraggedOnto = true;
+            }
           }
         } else {
           println("but it's locked");
@@ -227,18 +247,22 @@ boolean mouseListenStation() {
             println("THIS IS A NEW STATION???");
             justDraggedOnto = true;
             _selectedStations.add(s);
-            println(_selectedStations);
             //CASE: ADDING TO TERMINAL:
             if (dragType == 1) {
-
+              
               _selected.add(new Connector(_selectedStations.peekLast(), s, activeTrainLine));
               _selected.peekLast().setState(0);
             }
           } else {//remove
-            
-          
+            //is it on the stationline???
+            //if so, check if it's active (editable) - either end of the _selectedStations - if so
+            //we insert the next thing @ the first index
             if (dragType == 1) {
-              _selected.peekLast().setState(-1);
+              if (//the current station is adjacent to the first selected station - presumably not already in the selection set, because we account for that above.
+              activeTrainLine.isAdjacent(_selectedStations.peekFirst(), s)){
+                _selectedStations.addFirst(s);
+              }
+              //_selected.peekLast().setState(-1);
             }
           }
         }
@@ -247,7 +271,7 @@ boolean mouseListenStation() {
   }
   if (!lockFlag) {
     justDraggedOnto = false;
-    println("not near any station (justDraggedOnto is false)");
+    //println("not near any station (justDraggedOnto is false)");
   }
   return false;
 }
