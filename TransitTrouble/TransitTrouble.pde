@@ -22,6 +22,8 @@ int dragType = 0;
 boolean justDraggedOnto = false; //aid for locking
 //0 - nothing, 1 - terminal, 2 - connector
 
+TrainLine activeLine;
+
 // Game Map - GUI
 
 Map map = new Map();
@@ -38,6 +40,9 @@ void setup() {
     genStation();
   }
   _trainlines.add(new TrainLine(_stations.get(0)));
+  
+  activeLine = _trainlines.get(0); //TEMPORARY
+  
   genStation();
   _trainlines.get(0).addTerminal(_stations.get(0), _stations.get(1));
 
@@ -67,13 +72,13 @@ void draw() {
   map.debug(); //Debugging - Maps red dots to each grid coordinate
   //stroke(255);
   fill(255);
-  ellipse(mouseX, mouseY, 60, 60); // Debugging
-
+  
+  //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
+  
+  buttonSetup(); //when more train lines get added
+  
   for (TrainLine tl : _trainlines) {
     tl.update();
-  }
-  for (Train tr : _trains) {
-    tr.update();
   }
   for (Station s : _stations) {
     s.update();
@@ -83,6 +88,22 @@ void draw() {
   }
   for (Button b : _buttons) {
     b.update();
+    if (b instanceof ButtonMovable && ((ButtonMovable)b).isActive()) {
+      color dragTrainColor = color(150, 150, 150);
+      int w = 30;
+      int h = 20;
+      for (Pair p : activeLine._stationEnds) {
+        if ( p.getA() instanceof Connector && ((Connector)p.getA()).isNear() ) {
+          dragTrainColor = activeLine.c;
+          w = 40;
+          h = 30;
+        }
+      }
+      ((ButtonMovable)b).drawCursor( w, h, dragTrainColor );
+    }
+  }
+  for (Train tr : _trains) {
+    tr.update();
   }
 
   updateDrag(); // Dragging Mechanism
@@ -340,5 +361,5 @@ public void buttonSetup() {
     _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
   }
 
-  //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110,110,110)) );
+  _buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110,110,110)) );
 }
