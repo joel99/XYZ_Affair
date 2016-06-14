@@ -10,7 +10,6 @@ public class TrainLine {
   ArrayList<Station> _stations;
   //corresponding list of tuples of draggables for _stations to track double ends.
   ArrayList<Pair> _stationEnds; 
-  //ArrayList<Connector> _connectors;
   Terminal _tStart;
   Terminal _tEnd;
   color c;
@@ -22,7 +21,7 @@ public class TrainLine {
   public TrainLine(){
     _stations = new ArrayList<Station>();
     _stationEnds = new ArrayList<Pair>();
-    c = color(int(random(220)) + 15, int(random(220)) + 15, int(random(220)) + 15);
+    c = color(int(random(150)) + 75, int(random(150)) + 75, int(random(150)) + 75);
   }
   
   public TrainLine(Station s) {
@@ -94,9 +93,6 @@ public class TrainLine {
 
   //addTerminal - adds to either end, adjusting _stations and _stationEnds
   void addTerminal(Station s, Station sNew) {
-    for (int i = 0; i < _stations.size(); i++) {
-      println(_stations.get(i));
-    }
     if (_stations.size() == 1) {
       //it doesn't matterrr have the thing recalc, wlog use tEnd for this new station
       Connector c= new Connector(s, sNew, this);
@@ -108,9 +104,7 @@ public class TrainLine {
       //update stationEnds
       _stationEnds.set(0, new Pair(_tStart, c));
       _stationEnds.add(new Pair(c, _tEnd));
-      //this is a problem.
     } else {
-      //println("hmm");
       int end; //either 0 or size - 1 (slightly more compact method of coding)
       //first check whichever end to retain.
       if (s == _stations.get(0)) {
@@ -120,7 +114,6 @@ public class TrainLine {
         end = _stationEnds.size() - 1;
         _tEnd = new Terminal(sNew, this);
       }
-      //println("hmm2 " + end);
       Connector c = new Connector(sNew, s, this);
 
       if (end == 0) _stations.add(end, sNew);
@@ -141,24 +134,15 @@ public class TrainLine {
       else 
       _stationEnds.add(new Pair(c, _tEnd));
 
-      for (int i = 0; i < _stations.size(); i++) {
-        println(_stations.get(i));
-      }
     }
   }
 
   //precond - s is end station
   void removeTerminalStation(Station s) {
-    for (int i = 0; i < _stations.size(); i++) {
-      println(_stations.get(i));
-    }
     int i = _stations.indexOf(s);  //this should be either 0 or size - 1. use to reduce redundant code
     _stations.remove(i);
-    println(i);
-    if (i != 0) println("NOT ZERO???");
     Draggable dRemove;
     //find end to remove (end that is not terminal of current end station)
-    println(i);//whhy is this twooooosfjslkfjl
     Pair oldEnd = _stationEnds.remove(i);
     if (oldEnd.getA() instanceof Terminal) {
       dRemove = oldEnd.getB();
@@ -168,31 +152,22 @@ public class TrainLine {
 
     //just so indices make sense after removal
     if (i != 0) i--;
-    println(i);
     Pair newEnd = _stationEnds.get(i);
 
 
-    for (int j = 0; j < _stationEnds.size(); j++) println(_stationEnds.get(j) + " : " + _stationEnds.get(j).getA() + " " + _stationEnds.get(j).getB() );
-    println("STATION ENDS : " + _stationEnds.size());
     Terminal t = new Terminal(_stations.get(i), this);
     if (i == 0) _tStart = t;
     else _tEnd = t;
 
-    println(newEnd);
     //sets the relevant new end with a terminal
     if (newEnd.getA() == dRemove) {
-      println("remove end a");
       //getB is the one we want to keep
       _stationEnds.set(i, new Pair(t, newEnd.getB()));
     } else if (newEnd.getB() == dRemove) {
-      println("remove end b");
       _stationEnds.set(i, new Pair(t, newEnd.getA()));
     } else {
-      println("huh");
     }
-    println("b");
-    for (int j = 0; j < _stationEnds.size(); j++) println(_stationEnds.get(j) + " : " + _stationEnds.get(j).getA() + " " + _stationEnds.get(j).getB() );
-  }
+}
 
   Draggable getOtherEnd(Station s, Draggable d) {
     if (_stationEnds.size() > 0 && _stations.indexOf(s) != -1) {
@@ -211,8 +186,6 @@ public class TrainLine {
    * precond: s1, s2 are stations which are joined by the same connector
    * postcond: The stations are connected s1 -- newStation -- s2 */
   void addStation(Station s1, Station s2, Station newStation, Connector parent) {
-    println("STATIONS: " + _stations);
-    println("STATIONENDS: " + _stationEnds);
 
     // Connect Stations
     Connector c1 = new Connector(s1, newStation, this); // Between Station 1 and New Station
@@ -246,7 +219,6 @@ public class TrainLine {
   //remove station in midst of connectors
   void removeStation(Station s) {
     int i = _stations.indexOf(s);
-    println("removing  index " + i);
     Pair p = _stationEnds.get(_stations.indexOf(s));
     Connector c1 = findCommon(s, _stations.get(i-1));
     Connector c2 = findCommon(s, _stations.get(i+1));
@@ -273,7 +245,6 @@ public class TrainLine {
     int i1 = _stations.indexOf(s1);
     int i2 = _stations.indexOf(s2);
     if (abs(i1 - i2) != 1) { 
-      println("uh oh");
       return null;
     } else {
       Pair p1 = _stationEnds.get(i1);
@@ -355,6 +326,7 @@ public class TrainLine {
   }
 
   void update() {
+    strokeWeight(5);
     //draw terminals
     _tStart.update();
     _tEnd.update();
@@ -371,6 +343,7 @@ public class TrainLine {
   }
   
   void update(int flag) {
+    strokeWeight(5);
     //draw terminals
     _tStart.update();
     _tEnd.update();

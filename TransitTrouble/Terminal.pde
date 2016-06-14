@@ -14,7 +14,6 @@ public class Terminal implements Draggable {
     _s = s;
     _tl = tl;
     isNotInit = true;
-    //calcXY();
   }
 
   public Station getStation() {

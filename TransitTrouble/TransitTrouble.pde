@@ -49,9 +49,6 @@ void setup() {
 
   gameClock = new Clock(850, 50);
 
-  // ==================================================
-  // Debugging
-
   genStation();
 
   _trainlines.add(new TrainLine(_stations.get(0)));
@@ -88,28 +85,11 @@ void setup() {
 // =======================================
 void draw() {
   background(255, 255, 255);
-  /*
-  
-   ArrayList<Train> _trains = new ArrayList<Train>();
-   ArrayList<Station> _stations = new ArrayList<Station>(); // List of active Stations
-   ArrayList<TrainLine> _trainlines = new ArrayList<TrainLine>(); // List of active Trainlines
-   ArrayList<Button> _buttons = new ArrayList<Button>(); //List of ingame buttons
-   */
-
-  // println(_buttons);
-  //println("STATIONS: " + _stations);
-  //for (TrainLine tl : _trainlines) {
-  //println("TRAINLINE: " + tl.getStations());
-  //println("TRAINLINE PAIRS: " + tl.getStationEnds());
-  //}
 
   //map.debug(); //Debugging - Maps red dots to each grid coordinate
   //stroke(255);
+
   fill(255);
-
-  //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor
-
-  //  buttonSetup(); //when more train lines get added
 
   // Lose Condition
   if (_lost)
@@ -119,9 +99,6 @@ void draw() {
     background(255, 255, 255);
     //map.debug(); //Debugging - Maps red dots to each grid coordinate
     fill(255);
-    //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor // Debugging
-
-    //  buttonSetup(); //when more train lines get added
 
     // Updating Clock
     updateClock();
@@ -153,7 +130,7 @@ void draw() {
   // Clear Screen
   if (_lost) {
     background(255, 255, 255);
-    text("lol get rekt", width/2, height/2);
+    text("Final Score: " + score , width/2, height/2);
   }
 }
 
@@ -272,15 +249,17 @@ void updateDrag() {
       activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
       }
     }
+
   }
 }
 
 //assumes I have an deque of stations and things to draggables to process
 void executeSelected() {
+
   for (Station s: _stations){
     s.unhighlight();
   }
-  println("executing " + _selectedStations.size());
+
   while (_selectedStations.size() > 1) {
     //CASE 1: ADDING TO TERMINAL
     //move back until we get to a point where we can start building from. 
@@ -291,38 +270,29 @@ void executeSelected() {
       //last one isn't actually selected - pop it back on after.
       while (activeTrainLine.indexOf(_selectedStations.peekFirst()) != -1) {
         toDelete.push(_selectedStations.pollFirst());
-        println("pushing thing");
       }
       //last one isn't actually to be deleted, just pop it back on
       _selectedStations.addFirst(toDelete.pop());
       //remove stations
       while (toDelete.size() != 0) {
-        println("POPPING OFF STATIONS");
         activeTrainLine.removeTerminalStation(toDelete.pop());
       }
       if (_selectedStations.size() <= 1) break;
       activeTrainLine.addTerminal(_selectedStations.pollFirst(), _selectedStations.peekFirst());
-      println("we made it");
-      //first few should be removing?
     }
 
     //CASE 2: ADDING MIDWAY
     if (dragType == 2) {
-      println("HEYO" + _selectedStations.size());
       for (int i = 0; i < _selectedStations.size(); i++) {
-        //  println(_selectedStations.(i));
       }
 
       //so essentially, like above, but using beginning AND end
       Stack<Station> toDeleteLeft = new Stack<Station>();
       Stack<Station> toDeleteRight = new Stack<Station>();
-      //copying above code structure and praying it works
       while (activeTrainLine.indexOf(_selectedStations.peekFirst()) != -1 && _selectedStations.size() > 1) {
-        println("pushed left");
         toDeleteLeft.push(_selectedStations.pollFirst());
       }
       while (activeTrainLine.indexOf(_selectedStations.peekLast()) != -1) {
-        println("pushed right");
         toDeleteRight.push(_selectedStations.pollLast());
       }
       _selectedStations.addFirst(toDeleteLeft.pop());
@@ -341,33 +311,6 @@ void executeSelected() {
         activeConnector = activeTrainLine.findCommon(_selectedStations.peekFirst(), _selectedStations.peekLast());
       }
     }
-
-    /*
-   Draggable first = _selected.poll();
-     Draggable second = _selected.peekFirst();
-     Station firstStation = _selectedStations.poll();
-     Station secondStation = _selectedStations.peekFirst();
-     // If Terminal
-     if (dragType == 1) {
-     Terminal tmp = (Terminal)first;
-     activeTrainLine.addTerminal(firstStation, secondStation);
-     println("EXECUTE: JOIN!"); // Debugging
-     }
-     
-     // If Connector
-     else if (dragType == 2) {
-     Station lastStation = _selectedStations.peekLast();
-     Connector tmp = (Connector)first;
-     activeTrainLine.addStation(firstStation, 
-     lastStation, 
-     secondStation, 
-     tmp);
-     println("EXECUTE: CRY!"); // Debugging
-     }
-     
-     println("EXECUTED"); // Debugging
-     }
-     */
   }
   if (activeTrainLine.getStations().size() > 0)
   activeTrainLine.recalc();//readjust terminals
@@ -382,7 +325,7 @@ outer:
     //            Try hashing if near mouse
     //            If hash success, add it to list of selected
     //            Otherwise, keep checking
-    //if (tl != activeTrainLine) continue;
+    if (tl != activeTrainLine) continue;
     // Pairs -- Connectors
     for (Pair p : tl.getStationEnds()) {
       Draggable A = p.getA();
@@ -448,23 +391,19 @@ boolean mouseListenStation() {
           } else { //we workin w/ connectors nao bois
             if (_selectedStations.peekFirst() == s || _selectedStations.peekLast() == s) {
               //we're passing over something of concern that we use as a leveraging point later (not actually disconnect). disconnect it, and get the next item.
-              println("something's actually happening");
               if (_selectedStations.peekFirst() == s) {
-                println("we're removing first");
                 Station temp  = _selectedStations.pollFirst();
                 Station forward = _selectedStations.peekFirst();
                 _selectedStations.addFirst(temp);
                 _selectedStations.addFirst(activeTrainLine.otherAdjacent(temp, forward));
                 justDraggedOnto = true;
               } else {
-                println("we're removing last");
                 Station temp = _selectedStations.pollLast();
                 Station prev = _selectedStations.peekLast();
                 _selectedStations.add(temp);
                 _selectedStations.add(activeTrainLine.otherAdjacent(temp, prev));
                 justDraggedOnto = true;
               }
-              println(_selectedStations.size());
             } else {
               //now we have deselection of some of the things involved. our area thing is right before peekLast(). So if we want to remove, we check if its location is one before peekLast to see if it's legal to remove.
               Station trackLast = _selectedStations.pollLast();
@@ -482,7 +421,6 @@ boolean mouseListenStation() {
             }
           }
         } else {
-          println("but it's locked");
         }
       }
       //case 2: new station???
@@ -491,7 +429,6 @@ boolean mouseListenStation() {
         //case 2a: is it not on the trainline: add
         if (!justDraggedOnto) {
           if (activeTrainLine.indexOf(s) == -1) {
-            println("THIS IS A NEW STATION???");
             justDraggedOnto = true;
             //CASE: ADDING TO TERMINAL:
             if (dragType == 1) {  
@@ -514,7 +451,6 @@ boolean mouseListenStation() {
                 activeTrainLine.isAdjacent(_selectedStations.peekFirst(), s)) {
                 _selectedStations.addFirst(s);
               }
-              //_selected.peekLast().setState(-1);
             }
           }
         }
@@ -523,9 +459,8 @@ boolean mouseListenStation() {
   }
   if (!lockFlag) {
     justDraggedOnto = false;
-    //println("not near any station (justDraggedOnto is false)");
   }
-  return false;
+  return lockFlag;
 }
 
 // ==================================================
@@ -533,7 +468,6 @@ boolean mouseListenStation() {
 // ==================================================
 void keyPressed() {
   char pressed = key;
-  println("PRESSED: " + pressed);
   if (pressed == 'd' || pressed == 'D') {
     genStation();
   }
@@ -543,27 +477,24 @@ void keyPressed() {
     else
       _paused = true;
   }
-  // _trainlines.get(0).addTerminal(_trainlines.get(0).getStation(0), _stations.get(_stations.size() - 1)); // Debugging
 }
 
 void mousePressed() {
   if (activeTrainLine.getStations().size() == 0) {
     for (Station s : _stations) {
       if (s.isNear()) {
-        _trainlines.set(_trainlines.indexOf(activeTrainLine), new TrainLine(s, activeTrainLine.c));
+        int i = _trainlines.indexOf(activeTrainLine);
+        _trainlines.set(i, new TrainLine(s, activeTrainLine.c));
+        activeTrainLine = _trainlines.get(i);
       }
     }
   }
 
   if (mouseListenStart()) { // Track what was just clicked.
-    println("ADDED! " + _hashed.size()); // Debugging
-    println("found on mouseclick");
   } else {
-    println("locking");
     _lock = true; // If nothing was clicked, lock the Deque
   }
   _mousePressed = true;
-  println("MOUSE STATE : PRESSED"); // Debugging
 }
 
 void mouseReleased() {
@@ -578,7 +509,6 @@ void mouseReleased() {
   //activeTrainLine = null;
   _mousePressed = false;
   dragType = 0;
-  println("MOUSE STATE : UNPRESSED"); // Debugging
   if (trainButton.isActive()) {
     //find closest station of activeTrainLine
     _trains.add(new Train(closestStation()));
@@ -601,7 +531,6 @@ void genStation() {
     ctr++;
   }
   _stations.add(new Station(map.transform(newStationX, newStationY)));
-  // print(_stations.get(_stations.size() - 1)._x + " " + _stations.get(_stations.size() - 1)._y + "\n");
   // voids station and everything immediately next to it as spots for future stations...
   for (int i = newStationX - 2; i < newStationX + 3; i++) {
     for (int j = newStationY - 2; j < newStationY + 3; j++) {
@@ -633,12 +562,6 @@ public void buttonSetup() {
   trainButton = new ButtonMovable( trainStartX, buttonY, 2, 60, 30, color(110));
   _buttons.add(new Button( colorStartX + (10), buttonY, 40, 20, _trainlines.get(0).c));
   _buttons.get(0).activate();
-
-  //for (int i = 0; i < _trainlines.size(); i++) { //trainline color buttons
-  // _buttons.add( new Button( colorStartX + (i * 10), buttonY, 40, 20, _trainlines.get(i).c) );
-  //}
-
-  //_buttons.add( new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110, 110, 110)) );
 }
 
 Station closestStation() {

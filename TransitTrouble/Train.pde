@@ -37,7 +37,6 @@ public class Train {
     _end = end;
     // Initialize Connector
     _connector = calcConnector(_start, _end);
-    //calcConnector();
 
     // Find Distance Between Stations
     calcDistances();
@@ -192,25 +191,6 @@ public class Train {
     _carriage.add(_end.popLine());
   }
 
-  /* OBSELETE CODE - DELETE LATER 
-   void calcConnector() {
-   Pair startEnds = _tl.getStationEnds().get(_tl.indexOf(_start));
-   Draggable startA = startEnds.getA();
-   Draggable startB = startEnds.getB();
-   if (startA instanceof Connector) {
-   Connector A = (Connector)startA;
-   if (A.otherEnd(_start) == _end) {
-   _connector = A;
-   }
-   } else if (startB instanceof Connector) {
-   Connector B = (Connector)startB;
-   if (B.otherEnd(_start) == _end) {
-   _connector = B;
-   }
-   }
-   if (_connector == null) println("SUCKS TO SUCK");
-   }
-   */
 
   // =======================================
   // Train Movement and Docking

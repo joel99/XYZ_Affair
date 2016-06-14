@@ -16,7 +16,6 @@ public class Map {
   public int minY;
 
   public Map() {
-    //stroke(255, 0, 0);
     w = 30;
     h = 20;
     //center holds bottom right corner of array;
