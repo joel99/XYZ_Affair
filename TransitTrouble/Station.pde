@@ -20,7 +20,7 @@ public class Station {
   private boolean isEnd;
   private int _timeStart, _timeEnd; // Timing - Used for passenger generation
   private static final int _CAPACITY = 12; // 12 people at most
-
+  boolean isHighlighted;
   // =======================================
   // Default Constructor
   // Creates a station on the lattice grid of Map.
@@ -35,7 +35,7 @@ public class Station {
     _timeStart = millis();
     _timeEnd = _timeStart + 15000;
     _trainLines = new ArrayList<TrainLine>();
-    // println(_shape, _x, _y, _gridX, _gridY); // Debugging
+    isHighlighted = false;
   }
 
   // =======================================
@@ -192,7 +192,14 @@ public class Station {
   public boolean isNear() {
     return dist(mouseX, mouseY, _x, _y) < width / (2 * map.activeW + 1) / 4;
   }
-
+   
+  void highlight(){
+    isHighlighted = true;
+  }
+  
+  void unhighlight(){
+    isHighlighted = false;
+  }
   /** recalc
    * precond: integer array contained mapX and mapY
    * postcond: sets _x and _y accordingly */
@@ -219,7 +226,7 @@ public class Station {
     // print(getCrowd()); // Debugging
     // println(_timeEnd, _timeStart);
     drawStationHealth(_x, _y, _crowd);
-    drawStation(_x, _y, _shape);
+    drawStation(_x, _y, _shape, isHighlighted);
     drawStationLine(_x, _y, _line);
   }
   void update(int flag) {
@@ -229,7 +236,7 @@ public class Station {
     _timeStart += difference;
 
     drawStationHealth(_x, _y, _crowd);
-    drawStation(_x, _y, _shape);
+    drawStation(_x, _y, _shape, isHighlighted);
     drawStationLine(_x, _y, _line);
   }
 }

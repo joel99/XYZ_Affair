@@ -83,9 +83,12 @@ void drawTrain(float x, float y, color c, int dir) {
 // =======================================
 // General
 // =======================================
-void drawStation(int x, int y, int shapeID) {
+void drawStation(int x, int y, int shapeID, boolean isHighLight) {
   fill(255);
-  stroke(0);
+  if (isHighLight){
+    stroke(activeTrainLine.c);
+  }
+  else stroke(0);
   strokeWeight(2);
   float r = width / (map.maxX - map.minX) / 5.0; // Radius
   switch(shapeID) {

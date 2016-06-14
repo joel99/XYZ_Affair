@@ -20,18 +20,21 @@ public class Train {
   float _x, _y;
   int time1; // Internal Clock
   int time2; // Internal Clock
-
+  int dir; 
 
   // =======================================
   // Default Constructor
   // =======================================
-  public Train(Station start, Station end, TrainLine tl) {
+  public Train() {
+    _tl = activeTrainLine;
     _carriage = new ArrayList<Person>();
-    _start = start; 
-    _end = end;
-    _tl = tl;
     _docked = false;
-
+    dir = 1;
+  }
+  public Train(Station start, Station end) {
+    this();
+    _start = start;
+    _end = end;
     // Initialize Connector
     _connector = calcConnector(_start, _end);
     //calcConnector();
@@ -39,25 +42,27 @@ public class Train {
     // Find Distance Between Stations
     calcDistances();
   }
-  
-  public Train(Station start, TrainLine tl){
-    _carriage = new ArrayList<Person>();
+
+  public Train(Station start) {
+    this();
     _start = start;
-    _tl = tl;
-    _docked = false;
     //get a random station to go to;
     Station newStation;
-    int i = tl.indexOf(start);
-    if (i == 0) {newStation = tl.getStation(1);
-    println("nop");
+    int i = _tl.indexOf(start);
+    if (i == 0) {
+      newStation = _tl.getStation(1);
+    } else if (i == _tl.getStations().size() - 1) {
+      newStation = _tl.getStation(_tl.getStations().size() - 2);
+    } else {
+      newStation = _tl.getStation(_tl.indexOf(start) + 1);
     }
-    else if (i == tl.getStations().size() - 1) {newStation = tl.getStation(tl.getStations().size() - 2);
-    println("nopx2");
-    }
-    else{ println("nopx3");newStation = tl.getStation(tl.indexOf(start) + 1);}
     _end = newStation;
     _connector = calcConnector(_start, _end);
     calcDistances();
+  }
+
+  public Train(int x, int y) {//oh snap
+    this();
   }
 
   // =======================================
@@ -123,10 +128,11 @@ public class Train {
   Station getNextStation() {
     int startIndex = _tl.indexOf(_start);
     int endIndex = _tl.indexOf(_end);
-    int dir = endIndex - startIndex;
     int newIndex = endIndex + dir;
-    if (newIndex < 0 || newIndex >= _tl.size())
+    if (newIndex < 0 || newIndex >= _tl.size()){
       newIndex -= 2 * dir;
+      dir *= -1;
+    }
     return _tl.getStation(newIndex);
   }
 
@@ -164,7 +170,7 @@ public class Train {
    * postcond: Person is removed from _carriage and returned */
   Person getUnload() {
     for (int i = _carriage.size() - 1; i >= 0; i--) {
-      if (_carriage.get(i).getShape() == _end.getShape()){
+      if (_carriage.get(i).getShape() == _end.getShape()) {
         score++;
         return _carriage.remove(i);
       }

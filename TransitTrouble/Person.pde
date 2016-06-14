@@ -20,6 +20,7 @@ public class Person implements Comparable {
   Person(int priority, int shape) {
     this();
     _priority = priority;
+    _shape = shape;
   }
 
   /** randomShape() - Returns a random integer from 0 to 6

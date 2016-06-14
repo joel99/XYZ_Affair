@@ -22,7 +22,7 @@ public class TrainLine {
   public TrainLine(){
     _stations = new ArrayList<Station>();
     _stationEnds = new ArrayList<Pair>();
-    c = color(int(random(255)), int(random(255)), int(random(255)));
+    c = color(int(random(220)) + 15, int(random(220)) + 15, int(random(220)) + 15);
   }
   
   public TrainLine(Station s) {
@@ -290,24 +290,14 @@ public class TrainLine {
     else return _stations.get(i+1);
   }
 
-  void connect(Station s1, Station s2) {
+  void connect(int x1, int y1, int x2, int y2){
     stroke(c);
-    int x1, y1, x2, y2, dx, dy, diagx, diagy;
-    //we use grid coordinates for simplicity in debugging.
-    x1 = s1.getGridX();
-    y1 = s1.getGridY();
-    x2 = s2.getGridX();
-    y2 = s2.getGridY();
+    int dx, dy, diagx, diagy;
     dx = x2 - x1;
     dy = y2 - y1;
-
-    //we only need one line 
     if (dx == 0 || dy == 0 || abs(dx) == abs(dy)) {
-      line(s1.getX(), s1.getY(), s2.getX(), s2.getY());
+      line(x1, y1, x2, y2);
     }
-    //we need a diagonal and then a horizontal/vertical
-    //calculate the x/y of turning point.
-    //requires some casework
     else {
       int m; //slope for line
       if (dx * dy > 0) m = 1;
@@ -321,36 +311,36 @@ public class TrainLine {
         diagy = y2;
         diagx = dy * m + x1;
       }
-      int[] Diag_xy = map.transform(diagx, diagy);
-      line(s1.getX(), s1.getY(), Diag_xy[0], Diag_xy[1]);
-      line(Diag_xy[0], Diag_xy[1], s2.getX(), s2.getY());
+      
+      line(x1, y1, diagx, diagy);
+      line(diagx, diagy, x2, y2);
     }
   }
-
+  
+  void connect(Station s1, Station s2) {
+    int x1 = s1.getX();
+    int y1 = s1.getY();
+    int x2 = s2.getX();
+    int y2 = s2.getY();
+    connect(x1,y1,x2,y2);
+  }
+  
   void connectMouse(Station s) {
-    stroke(c);
-    int diagx, diagy;
     int x1 = s.getX();
     int y1 = s.getY();
-    int dx = mouseX - x1;
-    int dy = mouseY - y1;
-    if (dx == 0 || dy == 0 || abs(dx) == abs(dy)) {
-      line(x1, y1, mouseX, mouseY);
-    } else {
-      int m;
-      if (dx * dy > 0) m = 1;
-      else m = -1;
-      if (abs(dx) < abs(dy)) {
-        diagx = mouseX;
-        diagy = m * dx + y1;
-      } else {
-        diagy = mouseY;
-        diagx = dy * m + x1;
-      }
-      line(x1, y1, diagx, diagy);
-      line(diagx, diagy, x1, y1);
-    }
+    int x2 = mouseX;
+    int y2 = mouseY;
+    connect(x1,y1,x2,y2);
   }
+  
+  void connectMouse(Station s, boolean flipped){
+    int x1 = mouseX;
+    int y1 = mouseY;
+    int x2 = s.getX();
+    int y2 = s.getY();
+    connect(x1, y1, x2, y2);
+  }
+  
 
   // =======================================
   // Drawing Trainline
@@ -379,6 +369,7 @@ public class TrainLine {
       _stations.get(i).update();
     }
   }
+  
   void update(int flag) {
     //draw terminals
     _tStart.update();

@@ -112,7 +112,7 @@ public class Connector implements Draggable {
    * precond: 
    * postcond: mid is updated to reflect turning point; null if no turning point exists
    * adapted from connect() in Station */
-  void calcMid(Station s1, Station s2) {
+  void calcMid(Station s2, Station s1) {//switcheroo for ease of heart (we can actually fix by going to places where connectors are instantiated backwards)
     int x1, y1, x2, y2, dx, dy, diagx, diagy;
     //we use grid coordinates for simplicity in debugging.
     x1 = s1.getGridX();
@@ -142,6 +142,7 @@ public class Connector implements Draggable {
         diagy = y2;
         diagx = dy * m + x1;
       }
+      
       mid = new int[]{diagx, diagy};
     }
   }

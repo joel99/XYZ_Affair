@@ -63,9 +63,7 @@ void setup() {
   activeTrainLine = _trainlines.get(0);
   buttonSetup();
 
-  _trains.add(new Train(_stations.get(0), 
-    _stations.get(1), 
-    _trainlines.get(0)));
+  _trains.add(new Train(_stations.get(0), _stations.get(1)));
 
   /*
   _trainlines.get(0).connect( _stations.get(0), _stations.get(1) );
@@ -105,7 +103,7 @@ void draw() {
   //println("TRAINLINE PAIRS: " + tl.getStationEnds());
   //}
 
-  map.debug(); //Debugging - Maps red dots to each grid coordinate
+  //map.debug(); //Debugging - Maps red dots to each grid coordinate
   //stroke(255);
   fill(255);
 
@@ -119,7 +117,7 @@ void draw() {
 
   if (!_paused) { // Unpaused
     background(255, 255, 255);
-    map.debug(); //Debugging - Maps red dots to each grid coordinate
+    //map.debug(); //Debugging - Maps red dots to each grid coordinate
     fill(255);
     //ellipse(mouseX, mouseY, 40, 40);      <-- Hollow circle cursor // Debugging
 
@@ -141,7 +139,7 @@ void draw() {
     updateTrains();
   } else { // Paused
     background(255, 255, 255);
-    map.debug(); //Debugging - Maps red dots to each grid coordinate
+    //map.debug(); //Debugging - Maps red dots to each grid coordinate
     fill(255);
 
     updateClock(0);
@@ -165,13 +163,13 @@ void draw() {
 void updateTrainLines() {
   for (TrainLine tl : _trainlines) {
     if (tl.getStations().size() != 0)
-    tl.update();
+      tl.update();
   }
 }
 void updateTrainLines(int flag) {
   for (TrainLine tl : _trainlines) {
     if (tl.getStations().size() != 0)
-    tl.update(0);
+      tl.update(0);
   }
 }
 
@@ -180,7 +178,6 @@ void updateStations() {
     s.update();
     textSize(16); // Debugging
     fill(0); // Debugging
-    text(_stations.indexOf(s), s.getX(), s.getY()); // Debugging
   }
 }
 void updateStations(int flag) { 
@@ -254,19 +251,35 @@ void updateClock(int flag) {
 void updateDrag() {
   if (mousePressed && _mousePressed) { // Mouse is being pressed.
     // CASE 1: Mouse was pressed before, and being held down now.     
-    for (int i = 0; i < _selectedStations.size(); i++) {
+    if (!_lock) {
+      mouseListenStation();
+      Station[] dispStations = new Station[_selectedStations.size()];
+      Object[] objStations = _selectedStations.toArray();
+      for (int i = 0; i < dispStations.length; i++) {
+        dispStations[i] = (Station) objStations[i];
+      }
+      if (dragType == 1){
+      for (int i = 0; i < dispStations.length - 1; i++) {
+        activeTrainLine.connect(dispStations[i], dispStations[i+1]);
+      }
+      activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
+      }
+      else {
+      for (int i = 0; i < dispStations.length - 2; i++) {//skip last station
+        activeTrainLine.connect(dispStations[i], dispStations[i+1]);
+      }
+      activeTrainLine.connectMouse(dispStations[dispStations.length - 2], true); //this one is flipped...
+      activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
+      }
     }
-    if (!_lock) mouseListenStation();
   }
-  //Station[] dispStations = (Station[])_selectedStations.toArray();
-  //for (int i = 0; i < dispStations.length - 1; i++){
-  //  activeTrainLine.connect(dispStations[i], dispStations[i+1]);
-  //}
-  //activeTrainLine.connectMouse(dispStations[dispStations.length - 1]);
 }
 
 //assumes I have an deque of stations and things to draggables to process
 void executeSelected() {
+  for (Station s: _stations){
+    s.unhighlight();
+  }
   println("executing " + _selectedStations.size());
   while (_selectedStations.size() > 1) {
     //CASE 1: ADDING TO TERMINAL
@@ -356,6 +369,9 @@ void executeSelected() {
      }
      */
   }
+  if (activeTrainLine.getStations().size() > 0)
+  activeTrainLine.recalc();//readjust terminals
+  
 }
 
 boolean mouseListenStart() {
@@ -416,6 +432,7 @@ boolean mouseListenStation() {
       lockFlag = true;
       //case 1: already of interest - only take action if at end of deque (last done thing)
       if (_selectedStations.contains(s)) {
+        s.highlight();
         if (!justDraggedOnto) {
           if (dragType == 1) {
             if (_selectedStations.peekLast() == s) {
@@ -470,6 +487,7 @@ boolean mouseListenStation() {
       }
       //case 2: new station???
       else {
+        s.unhighlight();
         //case 2a: is it not on the trainline: add
         if (!justDraggedOnto) {
           if (activeTrainLine.indexOf(s) == -1) {
@@ -529,14 +547,14 @@ void keyPressed() {
 }
 
 void mousePressed() {
-  if (activeTrainLine.getStations().size() == 0){
-    for (Station s: _stations){
-      if (s.isNear()){
+  if (activeTrainLine.getStations().size() == 0) {
+    for (Station s : _stations) {
+      if (s.isNear()) {
         _trainlines.set(_trainlines.indexOf(activeTrainLine), new TrainLine(s, activeTrainLine.c));
       }
     }
   }
-  
+
   if (mouseListenStart()) { // Track what was just clicked.
     println("ADDED! " + _hashed.size()); // Debugging
     println("found on mouseclick");
@@ -563,8 +581,7 @@ void mouseReleased() {
   println("MOUSE STATE : UNPRESSED"); // Debugging
   if (trainButton.isActive()) {
     //find closest station of activeTrainLine
-    _trains.add(new Train(closestStation(), 
-    activeTrainLine));
+    _trains.add(new Train(closestStation()));
     trainButton.removeTrain();
   }
 }
@@ -604,7 +621,7 @@ void grow() {
   }
   for (TrainLine tl : _trainlines) {
     if (tl.getStations().size() != 0)
-    tl.recalc();
+      tl.recalc();
   }
 }
 
@@ -613,7 +630,7 @@ public void buttonSetup() {
   int trainStartX = 200; //train button location, trainStartX on left, so it should be < colorStartX
   int buttonY = 550; //what y level buttons fill in
 
-  trainButton = new ButtonMovable( trainStartX, buttonY, 5, 60, 30, color(110));
+  trainButton = new ButtonMovable( trainStartX, buttonY, 2, 60, 30, color(110));
   _buttons.add(new Button( colorStartX + (10), buttonY, 40, 20, _trainlines.get(0).c));
   _buttons.get(0).activate();
 
@@ -643,5 +660,4 @@ public void passWeek() {
   _trainlines.add(new TrainLine());
   _buttons.add(new Button( 500 + ((_buttons.size() + 1) * 15), 550, 40, 20, _trainlines.get(_trainlines.size() - 1).c));
   //change color
-  
 }
